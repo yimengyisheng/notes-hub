@@ -1,0 +1,127 @@
+{
+  "num": "06",
+  "topic": "HTTP 首部",
+  "date": "2026-08-12",
+  "questions": [
+    "HTTP 首部字段由什么构成？",
+    "首部字段分哪 4 种类型？",
+    "端到端首部和逐跳首部有什么区别？",
+    "Cache-Control 有哪些常用指令？",
+    "Connection 首部有什么作用？",
+    "Host 为什么是唯一必须的请求首部？",
+    "ETag 和 Vary 是干什么的？",
+    "Set-Cookie 有哪些属性？",
+    "X-Frame-Options 和 DNT 是干什么的？"
+  ],
+  "modules": [
+    {
+      "icon": "🏷️",
+      "color": "green",
+      "title": "首部字段基础",
+      "bullets": [
+        "结构：首部字段名: 字段值，用冒号分隔",
+        "一个字段可有多个值，如 Keep-Alive: timeout=15, max=100",
+        "重复字段名时浏览器处理逻辑不一致，规范未明确",
+        "HTTP/1.1 定义了 47 种首部字段"
+      ],
+      "table": {"head": ["类型", "用途"], "rows": [
+        ["通用首部", "请求和响应两方都会使用"],
+        ["请求首部", "客户端发请求时使用"],
+        ["响应首部", "服务器返回响应时使用"],
+        ["实体首部", "针对报文实体部分使用"]
+      ]}
+    },
+    {
+      "icon": "🔀",
+      "color": "orange",
+      "title": "端到端 vs 逐跳",
+      "vs": {"a": {"h": "端到端 End-to-end", "t": "转发给请求/响应最终的接收目标，必须保存在缓存生成的响应中，且必须被转发。"}, "b": {"h": "逐跳 Hop-by-hop", "t": "只对单次转发有效，经过缓存或代理不再转发；共 8 个：Connection、Keep-Alive、Proxy-Authenticate、Proxy-Authorization、Trailer、TE、Transfer-Encoding、Upgrade。"}},
+      "callout": {"text": "使用逐跳首部需提供 Connection 首部字段；除此之外其他字段都属于端到端首部。", "star": true}
+    },
+    {
+      "icon": "💾",
+      "color": "blue",
+      "title": "Cache-Control 指令",
+      "table": {"head": ["指令", "说明"], "rows": [
+        ["no-cache", "强制向源服务器再次验证（≠不缓存）"],
+        ["no-store", "真正不缓存请求或响应的任何内容"],
+        ["max-age", "响应的最大 Age 值，秒"],
+        ["s-maxage", "仅适用于公共缓存服务器，忽略 Expires 和 max-age"],
+        ["min-fresh", "返回至少还未过指定时间的缓存资源"],
+        ["max-stale", "即使过期也照常接收"],
+        ["only-if-cached", "仅从本地缓存取，否则返回 504"],
+        ["must-revalidate", "代理再验证，失效返回 504，忽略 max-stale"],
+        ["no-transform", "缓存不可改变实体主体媒体类型"]
+      ]},
+      "bullets": [
+        "public：其他用户也可利用缓存；private：只对特定用户返回缓存",
+        "HTTP/1.1 缓存服务器优先处理 max-age，忽略 Expires"
+      ]
+    },
+    {
+      "icon": "🔗",
+      "color": "green",
+      "title": "常用通用首部",
+      "bullets": [
+        "Connection：控制不再转发给代理的首部 + 管理持久连接（close 断开、Keep-Alive 维持）",
+        "Date：创建报文的日期时间（RFC1123 格式）",
+        "Pragma：HTTP/1.0 遗留字段，仅 no-cache，向后兼容用",
+        "Trailer：说明报文主体后记录了哪些首部（配合分块传输）",
+        "Transfer-Encoding：指定报文主体传输编码，仅分块有效",
+        "Upgrade：检测能否用更高版本或其他协议通信，需配 Connection:Upgrade，可返回 101",
+        "Via：追踪传输路径，可避免请求回环，常与 TRACE 配合",
+        "Warning：告知缓存相关问题的警告，定义了 7 种警告码"
+      ]
+    },
+    {
+      "icon": "📤",
+      "color": "blue",
+      "title": "请求首部字段",
+      "bullets": [
+        "Accept 系列：媒体类型/字符集/内容编码/语言 + q 权重（0~1）",
+        "Host：唯一必须包含的请求首部，虚拟主机靠它区分域名",
+        "Authorization：401 响应后携带的认证信息",
+        "条件请求：If-Match/If-None-Match（ETag）、If-Modified-Since/If-Unmodified-Since（时间）、If-Range",
+        "Max-Forwards：TRACE/OPTIONS 每次转发减 1，为 0 时直接返回响应，用于排查转发失败",
+        "Range：字节范围请求，返回 206",
+        "Referer：请求原始资源 URI，查询字符串可能泄露 ID 和密码",
+        "User-Agent：传达浏览器和用户代理信息"
+      ]
+    },
+    {
+      "icon": "📥",
+      "color": "green",
+      "title": "响应与实体首部",
+      "bullets": [
+        "ETag：资源唯一性标识，强 ETag 细微变化都变、弱 ETag 加 W/ 只提示是否相同",
+        "Location：配合 3xx 提供重定向 URI",
+        "Vary：缓存控制，请求首部不同则必须从源服务器重新获取",
+        "WWW-Authenticate：401 响应必带，含认证方案和 realm 质询",
+        "Accept-Ranges：能否处理范围请求（bytes/none）",
+        "Server：HTTP 服务器应用程序信息",
+        "Retry-After：503 或 3xx 时告知多久后再次请求",
+        "Content-Type：实体媒体类型 type/subtype + charset",
+        "Content-Length、Content-Range、Content-MD5（Base64 校验）、Expires、Last-Modified、Allow"
+      ]
+    },
+    {
+      "icon": "🍪",
+      "color": "orange",
+      "title": "Cookie 与其他首部",
+      "table": {"head": ["首部", "说明"], "rows": [
+        ["Set-Cookie", "服务器开始状态管理时告知，属性含 NAME=VALUE、expires、path、domain、Secure、HttpOnly"],
+        ["Cookie", "客户端把收到的 Cookie 放进请求发送给服务器"]
+      ]},
+      "bullets": [
+        "HttpOnly 使 JavaScript 的 document.cookie 无法读取，防 XSS 窃取",
+        "Secure 仅在 HTTPS 安全连接时才发送 Cookie",
+        "X-Frame-Options：防点击劫持，值 DENY / SAMEORIGIN",
+        "X-XSS-Protection：控制浏览器 XSS 防护开关（0/1）",
+        "DNT：Do Not Track，0 同意被追踪、1 拒绝",
+        "RFC6648 提议废除非标准参数前缀 X-"
+      ]
+    }
+  ],
+  "summary": "HTTP 首部字段以“名: 值”构成，分通用、请求、响应、实体 4 类，HTTP/1.1 共定义 47 种，另有 Cookie 等非标准字段。按转发行为分端到端和逐跳（8 个逐跳首部）。通用首部中 Cache-Control 指令最丰富（no-cache/no-store/max-age 等），Connection 管理持久连接，Via 追踪路径；请求首部中 Host 唯一必须，Accept 系列带 q 权重；响应首部中 ETag、Location、Vary、WWW-Authenticate 常用；Set-Cookie 的 HttpOnly 防 XSS，X-Frame-Options 防点击劫持。",
+  "oneliner": "首部四类 47 种：Cache-Control 管缓存、Host 必带、ETag 认资源、Set-Cookie 管状态、HttpOnly 防 XSS。"
+}

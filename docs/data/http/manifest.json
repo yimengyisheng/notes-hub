@@ -1,0 +1,63 @@
+{
+  "id": "http",
+  "type": "cornell",
+  "count": 11,
+  "chapters": [
+    {
+      "num": "01",
+      "title": "了解 Web 及网络基础",
+      "oneliner": "Web 靠 HTML+HTTP+URL 三件套，跑在 TCP/IP 四层协议上，URI 定位资源、URL 是它的一种形式。"
+    },
+    {
+      "num": "02",
+      "title": "简单的 HTTP 协议",
+      "oneliner": "HTTP 请求—响应一来一回、无状态靠 Cookie 补，方法有八种，持久连接加管线化提速。"
+    },
+    {
+      "num": "03",
+      "title": "HTTP 报文内的 HTTP 信息",
+      "oneliner": "报文首部+主体用空行分家，报文≠实体，压缩/分块/多部分/范围/内容协商五种技巧让传输更高效。"
+    },
+    {
+      "num": "04",
+      "title": "返回结果的 HTTP 状态码",
+      "oneliner": "状态码首位数定大类：2 成功、3 重定向、4 客户端错、5 服务器错；301 永久 302 临时，304 不是重定向。"
+    },
+    {
+      "num": "05",
+      "title": "与 HTTP 协作的 Web 服务器",
+      "oneliner": "虚拟主机靠 Host 区分域名，代理/网关/隧道三种转发，缓存省流量但要验有效性。"
+    },
+    {
+      "num": "06",
+      "title": "HTTP 首部",
+      "oneliner": "首部四类 47 种：Cache-Control 管缓存、Host 必带、ETag 认资源、Set-Cookie 管状态、HttpOnly 防 XSS。"
+    },
+    {
+      "num": "07",
+      "title": "确保 Web 安全的 HTTPS",
+      "oneliner": "HTTPS 是披着 SSL 外壳的 HTTP：混合加密交换密钥，CA 证书验身份，解决窃听、伪装、篡改三难题。"
+    },
+    {
+      "num": "08",
+      "title": "确认访问用户身份的认证",
+      "oneliner": "BASIC 是 Base64 裸奔、DIGEST 发摘要、SSL 证书贵，最常用还是表单认证 + Session ID + Cookie。"
+    },
+    {
+      "num": "09",
+      "title": "基于 HTTP 的功能追加协议",
+      "oneliner": "SPDY 加会话层多路复用、WebSocket 全双工推送、HTTP/2.0 基于它们标准化，WebDAV 管远程文件。"
+    },
+    {
+      "num": "10",
+      "title": "构建 Web 内容的技术",
+      "oneliner": "HTML+CSS 搭页面，JavaScript+DOM 让页面动起来，CGI/Servlet 生成动态内容，XML/RSS/JSON 管数据。"
+    },
+    {
+      "num": "11",
+      "title": "Web 的攻击技术",
+      "oneliner": "HTTP 本身很安全，危险的是 Web 应用：所有输入都不可信，输出必须转义，会话与错误消息也要小心。"
+    }
+  ],
+  "sections": []
+}

@@ -1,0 +1,98 @@
+{
+  "num": "08",
+  "topic": "确认访问用户身份的认证",
+  "date": "2026-08-12",
+  "questions": [
+    "认证核对的信息有哪些？",
+    "HTTP/1.1 有哪些认证方式？",
+    "BASIC 认证是怎么工作的？有什么缺点？",
+    "DIGEST 认证比 BASIC 强在哪？",
+    "SSL 客户端认证有什么问题？",
+    "为什么 Web 认证多半用基于表单认证？",
+    "Session 管理和 Cookie 是怎么配合的？",
+    "密码应该怎么安全保存？"
+  ],
+  "modules": [
+    {
+      "icon": "🔑",
+      "color": "green",
+      "title": "何为认证",
+      "bullets": [
+        "计算机无法判断使用者身份，需要客户端自报家门",
+        "核对信息：密码、动态令牌、数字证书、生物认证、IC 卡",
+        "只要能通过验证，计算机就默认是本人行为",
+        "掌控机密信息的密码绝不能让他人得到"
+      ],
+      "table": {"head": ["认证方式", "说明"], "rows": [
+        ["BASIC 认证", "HTTP/1.0 定义，Base64 编码，不常用"],
+        ["DIGEST 认证", "HTTP/1.1，质询/响应，不直接发密码"],
+        ["SSL 客户端认证", "客户端证书，安全等级高但费用高"],
+        ["基于表单认证", "Web 应用各自实现，最常用"]
+      ]}
+    },
+    {
+      "icon": "🧾",
+      "color": "orange",
+      "title": "BASIC 认证",
+      "flow": {"color": "blue", "steps": ["请求需认证资源", "返回 401 + WWW-Authenticate", "客户端把 ID:密码 Base64 编码", "写入 Authorization 发送", "服务器验证后返回资源"]},
+      "bullets": [
+        "例：guest:guest 经 Base64 编码为 Z3Vlc3Q6Z3Vlc3Q=",
+        "Base64 不是加密，无需附加信息即可解码",
+        "非加密线路上容易被窃听，盗号风险极高",
+        "浏览器一般无法实现认证注销",
+        "使用不便且安全性不足，并不常用"
+      ]
+    },
+    {
+      "icon": "🧩",
+      "color": "blue",
+      "title": "DIGEST 认证",
+      "bullets": [
+        "为弥补 BASIC 弱点，从 HTTP/1.1 起定义",
+        "质询/响应方式：发送给对方的只是响应摘要和计算结果",
+        "401 响应的 WWW-Authenticate 必须含 realm 和 nonce",
+        "nonce 是每次 401 返回的随机字符串",
+        "比起 BASIC，密码泄露的可能性降低"
+      ]
+    },
+    {
+      "icon": "💳",
+      "color": "green",
+      "title": "SSL 客户端认证",
+      "bullets": [
+        "用客户端证书证明通信对方是预料之内的客户端",
+        "证书需付费购买，每张对应每位用户，费用高",
+        "用户需自行安装证书，门槛高",
+        "现状：仅用于特殊业务，如银行网银",
+        "只能证明客户端存在，不能证明用户本人真实有效性"
+      ]
+    },
+    {
+      "icon": "📝",
+      "color": "green",
+      "title": "基于表单认证 + Session",
+      "flow": {"color": "blue", "steps": ["客户端 POST 登录信息（HTTPS）", "服务器验证并发放 Session ID", "Set-Cookie 写入 Session ID", "客户端保存为 Cookie", "下次请求自动携带验证"]},
+      "bullets": [
+        "表单认证不在 HTTP 协议中定义，由 Web 应用各自实现",
+        "Session ID 被第三方盗走就可伪装身份",
+        "Session ID 应使用难以推测的字符串，服务器端管理有效期",
+        "Cookie 加 httponly 属性减轻 XSS 损失",
+        "例：PHPSESSID=028a8c…"
+      ],
+      "callout": {"text": "Session ID 可想象成区分不同用户的等位号：登录后服务器把认证状态与 Session ID 绑定记录在服务器端。", "star": true}
+    },
+    {
+      "icon": "🧂",
+      "color": "orange",
+      "title": "密码的安全保存",
+      "bullets": [
+        "安全的保存方法：先加盐（salt）再散列（hash）",
+        "salt 是服务器随机生成的长字符串，与密码连接后生成散列值",
+        "两个用户同密码时 salt 不同、散列值不同，减少密码特征",
+        "直接保存明文密码的做法有泄露风险，应避免"
+      ]
+    }
+  ],
+  "summary": "认证靠核对只有本人知道或持有的信息：密码、动态令牌、数字证书、生物认证、IC 卡。HTTP/1.1 的四种认证方式是 BASIC（Base64 编码但非加密，易被窃听）、DIGEST（质询/响应，不直接发密码）、SSL 客户端认证（安全但证书贵）、基于表单认证（Web 应用各自实现，最常用）。表单认证靠 Session 管理 + Cookie：登录后服务器发放 Session ID，客户端存 Cookie 自动携带；Session ID 要难推测、管有效期、加 httponly。密码保存应加盐散列，避免明文。",
+  "oneliner": "BASIC 是 Base64 裸奔、DIGEST 发摘要、SSL 证书贵，最常用还是表单认证 + Session ID + Cookie。"
+}

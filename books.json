@@ -139,6 +139,15 @@
       "type": "cornell",
       "srcPath": "/Users/loveinalife/Desktop/康奈尔笔记-趣谈网络协议",
       "dataDir": "."
+    },
+    {
+      "id": "http",
+      "title": "《图解HTTP》康奈尔笔记",
+      "emoji": "📗",
+      "desc": "《图解HTTP》读书笔记 · 康奈尔笔记法：Web 与网络基础、HTTP 报文、状态码、首部、HTTPS、认证与 Web 攻击等核心知识。",
+      "type": "cornell",
+      "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-http",
+      "dataDir": "work"
     }
   ]
 }

@@ -1,0 +1,85 @@
+{
+  "num": "10",
+  "topic": "构建 Web 内容的技术",
+  "date": "2026-08-12",
+  "questions": [
+    "HTML 是什么？有哪些版本？",
+    "CSS 的设计理念是什么？",
+    "动态 HTML 是怎么实现的？",
+    "DOM 有什么用？",
+    "Web 应用和 CGI、Servlet 是什么关系？",
+    "XML 和 HTML 有什么区别？",
+    "RSS/Atom 是干什么的？",
+    "JSON 有什么特点？"
+  ],
+  "modules": [
+    {
+      "icon": "📝",
+      "color": "green",
+      "title": "HTML 与 CSS",
+      "bullets": [
+        "HTML 是发送 Web 超文本的标记语言，标签用 < > 包围",
+        "平时浏览的 Web 页面几乎全由 HTML 写成",
+        "版本：HTML 1.0（Mosaic 可解析）、HTML4.01（1999 年 W3C 推荐）、HTML5",
+        "HTML5 解决浏览器兼容性问题，把文本当数据、动画更生动"
+      ],
+      "bullets": [
+        "CSS 指定 HTML 元素的展现方式，让文档结构和设计分离",
+        "选择器（selector）+ 声明块（{} 内的声明）限定样式范围"
+      ]
+    },
+    {
+      "icon": "🎬",
+      "color": "blue",
+      "title": "动态 HTML 与 DOM",
+      "bullets": [
+        "动态 HTML：用客户端脚本 JavaScript 把静态 HTML 变动态",
+        "示例：点击新闻、可滚动地图（Google Maps）",
+        "DOM 是操作 HTML/XML 文档的 API，把元素当对象操作",
+        "用 document.getElementsByTagName 取出元素，改 style 改变样式"
+      ]
+    },
+    {
+      "icon": "⚙️",
+      "color": "orange",
+      "title": "Web 应用：CGI 与 Servlet",
+      "vs": {"a": {"h": "CGI", "t": "Web 服务器把请求转发给程序的一组机制，用 Perl/PHP/Ruby/C 编写。每次请求程序都要启动一次，访问量大时负载大。"}, "b": {"h": "Servlet", "t": "Java 接口，运行在与 Web 服务器相同的进程中，负载较小。运行环境叫 Web 容器或 Servlet 容器。"}},
+      "bullets": [
+        "静态内容：事先准备好的内容",
+        "动态内容：由程序创建的 HTML 内容",
+        "Web 应用作用于动态内容之上：购物网站、网银、SNS、搜索引擎"
+      ]
+    },
+    {
+      "icon": "🧩",
+      "color": "green",
+      "title": "XML 与 HTML 的区别",
+      "bullets": [
+        "XML 和 HTML 都从 SGML 简化而来",
+        "XML 用标签构成树形结构，可自定义扩展标签",
+        "从 XML 读数据比 HTML 简单，经语法分析器解析即可取出元素",
+        "HTML 样式改变后读取数据变困难，不适合记录数据结构",
+        "XML 易于复用，可用于两个应用之间交换数据格式化"
+      ]
+    },
+    {
+      "icon": "📰",
+      "color": "blue",
+      "title": "RSS/Atom 与 JSON",
+      "table": {"head": ["格式", "说明"], "rows": [
+        ["RSS", "版本 0.9/0.91/1.0/2.0，用于发布新闻博客更新"],
+        ["Atom", "供稿格式 + 出版协定"],
+        ["JSON", "以 JavaScript 对象表示法为基础的轻量级数据标记语言"]
+      ]},
+      "bullets": [
+        "RSS 和 Atom 都用到了 XML",
+        "RSS 阅读器几乎支持 RSS 所有版本和 Atom",
+        "JSON 数据类型：false/null/true/对象/数组/数字/字符串 7 种",
+        "JSON 更轻更纯粹，字符串形式可被 JavaScript 轻易读入",
+        "配合 Ajax 广泛应用，规范见 RFC4627"
+      ]
+    }
+  ],
+  "summary": "Web 内容由 HTML（标记语言）构建，CSS 分离结构与设计；动态 HTML 用 JavaScript + DOM 操作页面元素。Web 应用在动态内容上运行：CGI 每次请求启动程序负载大，Servlet 常驻服务器进程负载小。数据格式方面，XML 可自定义标签、便于程序读取和复用；RSS/Atom 基于 XML 发布更新信息；JSON 更轻量，有 7 种数据类型，配合 Ajax 广泛使用。",
+  "oneliner": "HTML+CSS 搭页面，JavaScript+DOM 让页面动起来，CGI/Servlet 生成动态内容，XML/RSS/JSON 管数据。"
+}
