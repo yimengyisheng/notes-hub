@@ -1,0 +1,38 @@
+{
+  "num": "08-8.5",
+  "topic": "基于表单认证",
+  "date": "2026-08-12",
+  "questions": [
+    "基于表单认证是什么？为什么最常用？",
+    "Session 管理和 Cookie 怎么配合？",
+    "密码应该怎么安全保存？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "为什么用表单认证",
+     "bullets": [
+       "基于表单认证不是 HTTP 协议定义的，客户端向 Web 应用发送登录信息",
+       "多数情况输入用户 ID 和密码，按认证结果决定成功与否",
+       "BASIC 和 DIGEST 认证几乎不怎么使用，SSL 客户端认证因费用尚未普及",
+       "SSH、FTP 有标准认证可用，但 Web 网站没有满足安全级别的标准规范",
+       "每个网站的表单认证实现各不相同，实现有问题的网站屡见不鲜"
+     ]},
+    {"icon": "🔄", "color": "green", "title": "Session 管理与 Cookie",
+     "flow": {"color": "green", "steps": ["POST 提交<br>登录信息", "服务器发放<br>Session ID", "Set-Cookie<br>写入浏览器", "下次请求自动<br>带上识别"]},
+     "bullets": [
+       "HTTP 是无状态协议，用 Cookie 管理 Session 弥补状态管理功能",
+       "Session ID 像区分不同用户的等位号，绑定认证状态记录在服务器端",
+       "Session ID 被第三方盗走就能伪装身份，必须防被盗或被猜出",
+       "Session ID 应使用难以推测的字符串，服务器端管理有效期",
+       "建议在 Cookie 上加 httponly 属性，减轻 XSS 攻击损失"
+     ]},
+    {"icon": "🔒", "color": "orange", "title": "密码的安全保存",
+     "bullets": [
+       "安全的保存方法：先加盐（salt）增加额外信息，再用散列函数计算后保存",
+       "盐是服务器随机生成的长度足够长的字符串，与密码连接后生成散列值",
+       "两个用户用同一密码时，因盐不同散列值也不同，很难用密码特征库破解",
+       "直接保存明文密码的做法存在导致密码泄露的风险"
+     ]}
+  ],
+  "summary": "基于表单认证由 Web 应用各自实现，是 Web 网站认证的主流。它用 Cookie 管理 Session：POST 提交登录信息，服务器发放 Session ID 写入 Set-Cookie，客户端下次自动带上以识别身份。密码应加盐散列保存，Session ID 用难推测的字符串并管理有效期，Cookie 加 httponly 减轻 XSS 损失。",
+  "oneliner": "表单认证最常用：Session ID 当等位号，密码加盐再散列，Cookie 加 httponly。"
+}

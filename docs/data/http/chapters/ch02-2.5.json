@@ -1,0 +1,34 @@
+{
+  "num": "02-2.5",
+  "topic": "告知服务器意图的 HTTP 方法",
+  "date": "2026-08-12",
+  "questions": [
+    "GET 和 POST 有什么区别？",
+    "PUT 和 DELETE 为什么一般网站不用？",
+    "HEAD 和 OPTIONS 各有什么用？",
+    "TRACE 和 CONNECT 各有什么用途？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "HTTP/1.1 方法一览",
+     "table": {"head": ["方法", "作用", "要点"], "rows": [
+       ["GET", "获取资源", "文本原样返回，CGI 返回执行结果；配合 If-Modified-Since 做条件请求"],
+       ["POST", "传输实体主体", "主要目的不是获取响应的主体内容"],
+       ["PUT", "传输文件", "主体包含文件内容存到请求 URI；无验证机制，一般网站不用，REST 可能开放"],
+       ["HEAD", "获得报文首部", "与 GET 一样但不返回主体，用于确认 URI 有效性与更新时间"],
+       ["DELETE", "删除文件", "按请求 URI 删除资源，与 PUT 相反；同样无验证机制"],
+       ["OPTIONS", "询问支持的方法", "返回 Allow 首部，如 GET, POST, HEAD, OPTIONS"],
+       ["TRACE", "追踪路径", "让服务器把请求环回；Max-Forwards 递减，易引发 XST，基本不用"],
+       ["CONNECT", "隧道连接代理", "要求用隧道协议连接代理，如 CONNECT proxy.hackr.jp:8080"]
+     ]}},
+    {"icon": "💡", "color": "green", "title": "记忆要点",
+     "bullets": [
+       "GET 取资源、POST 传数据、PUT 传文件、DELETE 删文件",
+       "PUT/DELETE 自身不带验证机制，配合 Web 应用验证或 REST 标准才可能开放",
+       "TRACE 用 Max-Forwards 首部字段控制经过的服务器数，减到 0 停止传输"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "一句话",
+     "callout": {"text": "方法就是告诉服务器'我想要什么'：取、传、改、删、查，各自有对应的方法。"}}
+  ],
+  "summary": "HTTP/1.1 的方法包括 GET（取资源）、POST（传实体主体）、PUT（传文件）、HEAD（只要首部）、DELETE（删文件）、OPTIONS（询问支持的方法）、TRACE（追踪路径）和 CONNECT（隧道连接代理）。PUT/DELETE 因无验证机制一般网站不使用，TRACE 易引发 XST 也基本不用。",
+  "oneliner": "GET 取、POST 传、PUT 传文件、DELETE 删——方法告诉服务器你想要什么。"
+}

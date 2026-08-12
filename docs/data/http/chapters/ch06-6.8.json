@@ -1,0 +1,31 @@
+{
+  "num": "06-6.8",
+  "topic": "其他首部字段",
+  "date": "2026-08-12",
+  "questions": [
+    "X-Frame-Options 防什么攻击？有哪些取值？",
+    "X-XSS-Protection 和 DNT 是什么？",
+    "P3P 是什么？X- 前缀为什么被提议废除？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "其他常用首部",
+     "table": {"head": ["首部", "类型", "作用"], "rows": [
+       ["X-Frame-Options", "响应首部", "控制内容在 Frame 的显示，防点击劫持；DENY 拒绝、SAMEORIGIN 仅同源许可"],
+       ["X-XSS-Protection", "响应首部", "控制浏览器 XSS 防护开关：0 无效、1 有效"],
+       ["DNT", "请求首部", "Do Not Track，拒绝被精准广告追踪：0 同意、1 拒绝"],
+       ["P3P", "响应首部", "让个人隐私变成程序可理解的形式，保护用户隐私"]
+     ]}},
+    {"icon": "📦", "color": "green", "title": "要点",
+     "bullets": [
+       "支持 X-Frame-Options 的浏览器：IE8、Firefox 3.6.9+、Chrome 4.1+、Safari 4+、Opera 10.50+",
+       "理想状态是在所有 Web 服务器端预先设定好 X-Frame-Options 字段值",
+       "P3P 步骤：创建隐私 → 保存到 /w3c/p3p.xml → 新建 Compact policies 输出到响应",
+       "X- 前缀曾用于区分非标准参数，但 RFC6648 提议停止该做法",
+       "对已在使用的 X- 前缀，不应要求变更"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "一句话",
+     "callout": {"text": "X-Frame-Options 防点击劫持、X-XSS-Protection 防脚本注入、DNT 拒绝追踪、P3P 保护隐私。"}}
+  ],
+  "summary": "除标准字段外还有常用非标准首部：X-Frame-Options 控制 Frame 显示防点击劫持（DENY/SAMEORIGIN），X-XSS-Protection 控制浏览器 XSS 防护开关，DNT 声明拒绝追踪，P3P 以程序可理解的形式保护隐私。X- 前缀区分非标准参数的做法已被 RFC6648 提议停止。",
+  "oneliner": "X-Frame 防点击、X-XSS 防注入、DNT 拒追踪、P3P 护隐私。"
+}

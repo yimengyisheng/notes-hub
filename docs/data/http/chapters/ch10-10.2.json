@@ -1,0 +1,29 @@
+{
+  "num": "10-10.2",
+  "topic": "动态 HTML",
+  "date": "2026-08-12",
+  "questions": [
+    "动态 HTML 是什么？",
+    "DOM 是什么？怎么用它控制页面？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "让页面动起来的动态 HTML",
+     "bullets": [
+       "动态 HTML（Dynamic HTML）指用客户端脚本语言把静态 HTML 变成动态技术的总称",
+       "鼠标单击点开的新闻、Google Maps 可滚动的地图都用到了动态 HTML",
+       "通过调用客户端脚本语言 JavaScript，实现对 HTML 页面的动态改造",
+       "利用 DOM 可指定欲发生动态变化的 HTML 元素"
+     ]},
+    {"icon": "🔧", "color": "green", "title": "更易控制 HTML 的 DOM",
+     "bullets": [
+       "DOM 全称 Document Object Model，文档对象模型",
+       "是用以操作 HTML 文档和 XML 文档的 API",
+       "可将 HTML 内元素当作对象操作：取出元素字符串、改变 CSS 属性等",
+       "调用 JavaScript 操作 DOM，可更简单地控制 HTML 的改变"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "代码示例",
+     "callout": {"text": "var content = document.getElementsByTagName('P'); content[2].style.color = '#FF0000'; ——取出文档中所有 P 元素，把第 3 个的文字颜色改为红色。"}}
+  ],
+  "summary": "动态 HTML 指用 JavaScript 等客户端脚本把静态 HTML 变成动态技术的总称，如可点击的新闻和可滚动的地图。核心是 DOM——操作 HTML 和 XML 文档的 API，可把元素当作对象，取出内容或改变样式。通过 getElementsByTagName 等函数即可查阅和修改页面元素。",
+  "oneliner": "动态 HTML = JavaScript + DOM：把页面元素当对象，想改哪里改哪里。"
+}

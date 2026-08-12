@@ -1,0 +1,27 @@
+{
+  "num": "04-4.2",
+  "topic": "2XX 成功",
+  "date": "2026-08-12",
+  "questions": [
+    "200 OK 表示什么？GET 和 HEAD 返回有何不同？",
+    "204 No Content 什么时候用？",
+    "206 Partial Content 表示什么？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "2XX 状态码一览",
+     "table": {"head": ["状态码", "含义", "要点"], "rows": [
+       ["200 OK", "请求在服务器端被正常处理", "GET 返回对应资源实体；HEAD 只返回首部，不含主体"],
+       ["204 No Content", "请求已成功处理但无实体主体", "不允许返回任何实体主体，浏览器页面不更新"],
+       ["206 Partial Content", "范围请求成功执行", "响应包含由 Content-Range 指定范围的实体内容"]
+     ]}},
+    {"icon": "💡", "color": "green", "title": "记忆要点",
+     "bullets": [
+       "204 一般用于只需客户端往服务器发送信息、不需要返回新内容的情况",
+       "206 对应第 3 章的范围请求：只取部分内容时成功返回"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "一句话",
+     "callout": {"text": "2XX 全家都表示'处理好了'：200 带内容、204 不带内容、206 给部分内容。"}}
+  ],
+  "summary": "2XX 表示请求被正常处理：200 OK 正常返回（GET 返回实体、HEAD 只返回首部）；204 No Content 处理成功但不含实体主体；206 Partial Content 是范围请求成功，包含 Content-Range 指定范围的实体内容。",
+  "oneliner": "2XX 都是成功：200 带内容、204 无内容、206 给部分。"
+}

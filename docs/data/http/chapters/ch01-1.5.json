@@ -1,0 +1,22 @@
+{
+  "num": "01-1.5",
+  "topic": "负责域名解析的 DNS 服务",
+  "date": "2026-08-12",
+  "questions": [
+    "为什么需要 DNS 服务？",
+    "DNS 提供什么样的解析服务？"
+  ],
+  "modules": [
+    {"icon": "🔍", "color": "blue", "title": "DNS 的职责",
+     "bullets": [
+       "DNS 与 HTTP 一样位于应用层",
+       "用户习惯用主机名或域名（如 www.hackr.jp）访问，而不是纯数字 IP",
+       "计算机更擅长处理一长串数字，理解名称相对困难",
+       "DNS 提供域名到 IP 地址的解析，也可逆向从 IP 地址反查域名"
+     ]},
+    {"icon": "💡", "color": "green", "title": "一句话",
+     "callout": {"text": "DNS 把好记的域名翻译成计算机懂的 IP 地址，是 Web 访问的第一站。"}}
+  ],
+  "summary": "DNS 是与 HTTP 同层的应用层协议，解决人记域名、计算机记数字的矛盾，提供域名与 IP 地址之间的双向解析服务。",
+  "oneliner": "DNS 就是把 www.hackr.jp 翻译成 IP 地址的翻译官。"
+}

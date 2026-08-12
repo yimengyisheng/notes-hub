@@ -1,0 +1,40 @@
+{
+  "num": "10-10.4",
+  "topic": "数据发布的格式及语言",
+  "date": "2026-08-12",
+  "questions": [
+    "XML 和 HTML 有什么区别？为什么适合记录数据？",
+    "RSS 有哪些版本？Atom 有哪两种标准？",
+    "JSON 有什么特点？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "可扩展标记语言 XML",
+     "bullets": [
+       "XML 全称 eXtensible Markup Language，可按应用目标扩展的通用标记语言",
+       "XML 和 HTML 都从标准通用标记语言 SGML 简化而来",
+       "HTML 样式改变后按布局特征取文本会变困难，不适合记录数据结构",
+       "XML 用标签构成树形结构，可自定义扩展标签，记录方式更适合数据",
+       "通过语法分析器（Parser）解析 XML 结构，更容易读取数据",
+       "数据易复用，可用于两个不同应用之间交换数据格式化"
+     ]},
+    {"icon": "📊", "color": "green", "title": "RSS 版本",
+     "table": {"head": ["版本", "全称与特点"], "rows": [
+       ["RSS 0.9", "RDF Site Summary，最初版本，1999 年 3 月网景开发，基于早期 RDF 规格"],
+       ["RSS 0.91", "Rich Site Summary，1999 年 7 月扩展元素，非 RDF 规格，用 XML 编写"],
+       ["RSS 1.0", "RDF Site Summary，2000 年 12 月 RSS-DEV 工作组再次采用 RDF 规格"],
+       ["RSS 2.0", "Really Simple Syndication，2000 年 12 月 UserLand 开发，兼容 RSS 0.91"]
+     ]}},
+    {"icon": "💡", "color": "orange", "title": "Atom 与 JSON",
+     "bullets": [
+       "RSS 和 Atom 都是发布新闻、博客日志等更新信息的文档格式总称，都用 XML",
+       "Atom 供稿格式：为发布内容制定的网站消息来源格式",
+       "Atom 出版协定：为 Web 上内容新增或修改制定的协议",
+       "RSS 阅读器几乎支持 RSS 所有版本以及 Atom",
+       "JSON 以 JavaScript 对象表示法为基础，是轻量级数据标记语言",
+       "JSON 可处理 false、null、true、对象、数组、数字、字符串 7 种类型",
+       "JSON 更轻更纯粹，字符串形式可被 JavaScript 轻易读入，配合 Ajax 应用广泛，规范见 RFC4627"
+     ]}
+  ],
+  "summary": "XML 是从 SGML 简化而来的通用标记语言，用可扩展的树形标签记录数据，比 HTML 更适合数据结构化和跨应用交换。RSS 有 0.9、0.91、1.0、2.0 四个版本，Atom 分供稿格式和出版协定两种标准，都用于发布更新信息。JSON 以 JavaScript 对象表示法为基础，轻量、易被 JavaScript 读入，配合 Ajax 广泛使用。",
+  "oneliner": "数据交换三兄弟：XML 记结构、RSS/Atom 发更新、JSON 最轻快。"
+}

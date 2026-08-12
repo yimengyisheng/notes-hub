@@ -1,0 +1,33 @@
+{
+  "num": "03-3.5",
+  "topic": "获取部分内容的范围请求",
+  "date": "2026-08-12",
+  "questions": [
+    "范围请求解决什么问题？",
+    "怎么用 Range 首部指定范围？",
+    "范围请求会返回什么状态码？"
+  ],
+  "modules": [
+    {"icon": "🔧", "color": "blue", "title": "范围请求",
+     "bullets": [
+       "下载大文件遇网络中断需从头开始，需要能从断点恢复的机制",
+       "指定范围发送的请求叫范围请求，能从之前中断处恢复下载",
+       "对 10000 字节的资源，可以只请求 5001~10000 字节的部分",
+       "执行范围请求时用首部字段 Range 指定资源的 byte 范围"
+     ]},
+    {"icon": "📊", "color": "green", "title": "Range 指定方式",
+     "table": {"head": ["范围", "写法"], "rows": [
+       ["5001~10000 字节", "Range: bytes=5001-10000"],
+       ["5001 字节之后全部", "Range: bytes=5001-"],
+       ["多重范围", "Range: bytes=-3000, 5000-7000"]
+     ]}},
+    {"icon": "💡", "color": "orange", "title": "响应要点",
+     "bullets": [
+       "范围请求返回状态码 206 Partial Content",
+       "多重范围请求在 Content-Type 标明 multipart/byteranges",
+       "服务器端无法响应范围请求时，返回 200 OK 和完整的实体内容"
+     ]}
+  ],
+  "summary": "范围请求用于断点续传：用 Range 首部指定 byte 范围，可以只请求资源的一部分或多个范围。响应返回 206 Partial Content，多重范围用 multipart/byteranges 标记；服务器无法响应时返回 200 OK 和完整内容。",
+  "oneliner": "Range 首部指定范围，206 Partial Content 应答，断点续传就靠它。"
+}

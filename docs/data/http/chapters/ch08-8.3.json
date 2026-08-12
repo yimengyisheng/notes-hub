@@ -1,0 +1,32 @@
+{
+  "num": "08-8.3",
+  "topic": "DIGEST 认证",
+  "date": "2026-08-12",
+  "questions": [
+    "DIGEST 认证和 BASIC 有什么区别？",
+    "质询响应方式是什么？",
+    "DIGEST 认证有什么不足？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "DIGEST 认证的特点",
+     "bullets": [
+       "为弥补 BASIC 认证的弱点，从 HTTP/1.1 起出现",
+       "同样使用质询响应方式，但不会像 BASIC 那样直接发送明文密码",
+       "发送给对方的只是响应摘要和由质询码产生的计算结果，密码泄露可能性降低",
+       "提供了防止密码被窃听的保护机制，但不存在防止用户伪装的保护机制",
+       "安全等级高于 BASIC，但与 HTTPS 客户端认证相比仍很弱",
+       "使用不够便捷灵活，适用范围受限"
+     ]},
+    {"icon": "🔄", "color": "green", "title": "质询响应步骤",
+     "flow": {"color": "green", "steps": ["服务器返回<br>401+nonce", "客户端计算<br>response", "Authorization<br>回传", "验证通过返回<br>Authentication-Info"]},
+     "bullets": [
+       "WWW-Authenticate 必须包含 realm 和 nonce 两个字段信息",
+       "nonce 是每次随 401 响应生成的任意随机字符串，通常为 Base64 编码的十六进制数",
+       "Authorization 必须包含 username、realm、nonce、uri 和 response",
+       "uri 保存 Request-URI 的副本，防止经代理转发后被修改",
+       "response 也叫 Request-Digest，存放经 MD5 运算后的密码字符串"
+     ]}
+  ],
+  "summary": "DIGEST 认证用质询响应方式弥补 BASIC 弱点：服务器返回 401 和带 nonce 的 WWW-Authenticate，客户端计算响应码放入 Authorization（含 username、realm、nonce、uri、response）回传。不直接发送明文密码，但只防窃听不防伪装，安全等级仍弱于 HTTPS 客户端认证。",
+  "oneliner": "DIGEST 不传明文密码：nonce 质询 + MD5 响应码，防窃听但防不了伪装。"
+}

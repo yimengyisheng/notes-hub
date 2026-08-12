@@ -1,0 +1,36 @@
+{
+  "num": "06-6.6",
+  "topic": "实体首部字段",
+  "date": "2026-08-12",
+  "questions": [
+    "Allow、Content-Encoding、Content-Language、Content-Length 各是什么？",
+    "Content-MD5 能防篡改吗？",
+    "Content-Range、Content-Type、Expires、Last-Modified 各是什么？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "实体首部一览",
+     "table": {"head": ["首部", "作用"], "rows": [
+       ["Allow", "资源支持的 HTTP 方法，不支持的返回 405 并列出可支持方法"],
+       ["Content-Encoding", "实体主体选用的内容编码方式（gzip 等），不丢失实体信息的压缩"],
+       ["Content-Language", "实体主体使用的自然语言，如 zh-CN"],
+       ["Content-Length", "实体主体大小（字节），内容编码传输时不能再用"],
+       ["Content-Location", "与报文主体对应的 URI，与 Location 不同"],
+       ["Content-MD5", "MD5 算法生成的报文摘要，检查传输是否完整"],
+       ["Content-Range", "范围请求返回的实体部分及整个实体大小"],
+       ["Content-Type", "实体主体的媒体类型，type/subtype 形式"],
+       ["Expires", "资源失效的日期，缓存到该时间前有效"],
+       ["Last-Modified", "资源最终修改的时间"]
+     ]}},
+    {"icon": "📦", "color": "green", "title": "要点",
+     "bullets": [
+       "Content-MD5 无法检测恶意篡改：内容被篡改时 MD5 可被重新计算",
+       "Content-MD5 的值是 MD5 算法的 128 位结果经 Base64 编码后写入",
+       "缓存服务器遇到 Expires 与 max-age 并存时，优先处理 max-age",
+       "源服务器不希望缓存时，可在 Expires 写入与 Date 相同的时间值"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "一句话",
+     "callout": {"text": "实体首部描述实体本身：多大、什么类型、什么语言、什么时候失效。"}}
+  ],
+  "summary": "实体首部字段针对请求和响应的实体部分：Allow 列出支持的方法，Content-Encoding/Language/Length/Location/MD5/Range/Type 描述实体的编码、语言、大小、位置、摘要、范围和类型，Expires 与 Last-Modified 记录过期时间和最后修改时间。Content-MD5 只能查偶发改变，防不了恶意篡改。",
+  "oneliner": "Content- 系列描述实体，Expires 管过期，Last-Modified 记修改。"
+}

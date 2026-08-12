@@ -1,0 +1,28 @@
+{
+  "num": "09-9.1",
+  "topic": "基于 HTTP 的协议",
+  "date": "2026-08-12",
+  "questions": [
+    "HTTP 当初主要是为传输什么而设计的？",
+    "HTTP 有哪些功能上的不足？",
+    "为什么新协议要基于 HTTP 而不是另起炉灶？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "HTTP 的诞生与演变",
+     "bullets": [
+       "制定 HTTP 标准规范时，主要想把 HTTP 当作传输 HTML 文档的协议",
+       "随着时代发展，Web 演化成购物网站、SNS、企业内部管理工具等",
+       "这些功能可通过 Web 应用和脚本程序实现",
+       "功能虽能满足需求，性能上却未必最优：受 HTTP 协议限制且自身性能有限"
+     ]},
+    {"icon": "🌐", "color": "green", "title": "弥补不足的方式",
+     "bullets": [
+       "HTTP 功能上的不足可通过创建一套全新协议来弥补",
+       "但基于 HTTP 的 Web 浏览器使用环境已遍布全球，无法完全抛弃 HTTP",
+       "有些新协议的规则基于 HTTP，并在此基础上添加新功能",
+       "第 9 章介绍的 SPDY、WebSocket、HTTP/2.0、WebDAV 都属于这一类"
+     ]}
+  ],
+  "summary": "HTTP 最初是为传输 HTML 文档而设计的，如今 Web 已演变成购物、SNS、企业管理等复杂用途，功能上能满足需求但性能受协议限制。由于 HTTP 生态已遍布全球无法抛弃，新协议大都基于 HTTP 并在其基础上添加新功能，如 SPDY、WebSocket、HTTP/2.0 和 WebDAV。",
+  "oneliner": "HTTP 够用但不够快：新协议不抛弃 HTTP，只在它之上加功能。"
+}

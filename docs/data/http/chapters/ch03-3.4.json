@@ -1,0 +1,30 @@
+{
+  "num": "03-3.4",
+  "topic": "发送多种数据的多部分对象集合",
+  "date": "2026-08-12",
+  "questions": [
+    "什么是 MIME 和多部分对象集合？",
+    "multipart/form-data 和 multipart/byteranges 各用于什么场景？",
+    "boundary 字符串怎么用？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "多部分的两种类型",
+     "table": {"head": ["类型", "用途"], "rows": [
+       ["multipart/form-data", "Web 表单文件上传时使用"],
+       ["multipart/byteranges", "状态码 206 响应报文包含多个范围内容时使用"]
+     ]}},
+    {"icon": "📦", "color": "green", "title": "原理要点",
+     "bullets": [
+       "MIME 机制允许邮件处理文本、图片、视频等多个不同类型的数据",
+       "HTTP 也采纳多部分对象集合，一份报文主体内可含多类型实体",
+       "通常在图片或文本文件上传时使用",
+       "使用多部分对象集合时，需要在首部字段里加上 Content-Type",
+       "用 boundary 字符串划分各类实体：各部分起始行前插入 --，集合末尾也插入 -- 作结束",
+       "每个部分类型中都可以含有首部字段，还可在某部分中嵌套多部分对象集合"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "规范参考",
+     "callout": {"text": "多部分对象集合的详细解释见 RFC2046。"}}
+  ],
+  "summary": "MIME 机制允许一个报文容纳文本、图片、视频等多种类型数据，HTTP 采纳了多部分对象集合：multipart/form-data 用于表单文件上传，multipart/byteranges 用于 206 多范围响应。用 Content-Type 首部声明，用 boundary 字符串划分各部分，前后插入 -- 标记。",
+  "oneliner": "一个报文装多种数据：boundary 当分界线，-- 开头 -- 结尾。"
+}

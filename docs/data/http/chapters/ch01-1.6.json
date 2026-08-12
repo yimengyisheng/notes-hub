@@ -1,0 +1,20 @@
+{
+  "num": "01-1.6",
+  "topic": "各种协议与 HTTP 协议的关系",
+  "date": "2026-08-12",
+  "questions": [
+    "IP、TCP、DNS 在 HTTP 通信中各自发挥什么作用？"
+  ],
+  "modules": [
+    {"icon": "🌐", "color": "blue", "title": "协议分工一览",
+     "table": {"head": ["协议", "作用"], "rows": [
+       ["IP", "负责把数据包传送到对方"],
+       ["TCP", "分割数据并确认可靠送达"],
+       ["DNS", "把域名解析成 IP 地址"]
+     ]}},
+    {"icon": "💡", "color": "green", "title": "一句话串联",
+     "callout": {"text": "一次 HTTP 通信 = DNS 找地址 + TCP 可靠传输 + IP 送达数据包。"}}
+  ],
+  "summary": "本节用一张图总结 IP、TCP、DNS 在 HTTP 通信中的分工：DNS 负责解析域名，TCP 保证可靠传输，IP 负责把数据包送达对方。",
+  "oneliner": "DNS 找地址，TCP 保传输，IP 送数据包——三者撑起一次 HTTP 通信。"
+}

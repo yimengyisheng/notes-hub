@@ -1,0 +1,35 @@
+{
+  "num": "06-6.5",
+  "topic": "响应首部字段",
+  "date": "2026-08-12",
+  "questions": [
+    "Accept-Ranges、Age、ETag 各表示什么？",
+    "强 ETag 和弱 ETag 有什么区别？",
+    "Location、Retry-After、Server、Vary、WWW-Authenticate 各是什么？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "常用响应首部",
+     "table": {"head": ["首部", "作用"], "rows": [
+       ["Accept-Ranges", "告知客户端服务器能否处理范围请求：bytes 或 none"],
+       ["Age", "源服务器在多久前创建了响应，单位秒"],
+       ["ETag", "资源的唯一性标识，资源更新时也要更新"],
+       ["Location", "把响应接收方引导至另一个 URI，配合 3XX 重定向"],
+       ["Proxy-Authenticate", "代理服务器要求的认证信息，认证在客户端与代理之间"],
+       ["Retry-After", "告知客户端多久之后再次发送请求，配合 503 或 3XX"],
+       ["Server", "服务器上安装的 HTTP 服务器应用信息及版本"],
+       ["Vary", "控制缓存：仅对请求中含有相同 Vary 指定首部的请求返回缓存"],
+       ["WWW-Authenticate", "告知客户端认证方案（Basic 或 Digest），401 响应必定带"]
+     ]}},
+    {"icon": "⚖️", "color": "green", "title": "强 ETag vs 弱 ETag",
+     "vs": {"a": {"h": "强 ETag", "t": "实体发生多么细微的变化都会改变其值，如 ETag: \"usagi-1234\"。"}, "b": {"h": "弱 ETag", "t": "只在资源发生根本改变时变值，用于提示资源是否相同，字段值开头附加 W/，如 ETag: W/\"usagi-1234\"。"}}},
+    {"icon": "💡", "color": "orange", "title": "要点",
+     "bullets": [
+       "ETag 由服务器为每份资源分配，没有统一的生成算法",
+       "同一 URI 的中英文版本资源可用 ETag 区分，断点续传也按 ETag 指定资源",
+       "几乎所有的浏览器收到带 Location 的响应后都会强制访问重定向资源",
+       "Age 由代理创建响应时必须加上"
+     ]}
+  ],
+  "summary": "响应首部字段补充响应附加信息：Accept-Ranges 说明能否范围请求，Age 记录响应创建时间，ETag 唯一标识资源（分强弱两种），Location 配合重定向，Proxy-Authenticate 处理代理认证，Retry-After 配合 503，Server 说明服务器，Vary 控制缓存，WWW-Authenticate 用于 HTTP 认证。",
+  "oneliner": "ETag 给资源发身份证，Location 指路，Vary 管缓存，401 必带 WWW-Authenticate。"
+}

@@ -74,8 +74,19 @@ def build_markdown(book, src, out_dir):
     ]
 
 
+def _num_key(num):
+    """章节号自然排序：'01' → [1]；子章节 '01-1.2' → [1, 1, 2]。"""
+    try:
+        if "-" in str(num):
+            a, b = str(num).split("-", 1)
+            return [int(a)] + [int(x) for x in str(b).split(".")]
+        return [int(num)]
+    except (ValueError, TypeError):
+        return [str(num)]
+
+
 def build_cornell(book, src, out_dir):
-    """cornell 型：ch*.json → docs/data/<id>/chapters/。
+    """cornell 型：ch*.json（或 NN-x.y.json 子章节）→ docs/data/<id>/chapters/。
 
     A4 打印版 PNG 体积较大，不重复打包进中心站，
     前端通过 book.homeUrl + 'images/chNN.png' 跨站引用原站资源。
@@ -83,14 +94,16 @@ def build_cornell(book, src, out_dir):
     src_data = os.path.join(src, book.get("dataDir", "data"))
     chapters_dir = os.path.join(out_dir, "chapters")
     os.makedirs(chapters_dir, exist_ok=True)
+    files = sorted(glob.glob(os.path.join(src_data, "ch*.json"))) + \
+            sorted(glob.glob(os.path.join(src_data, "[0-9]*-[0-9]*.json")))
     chapters = []
-    for p in sorted(glob.glob(os.path.join(src_data, "ch*.json"))):
+    for p in sorted(set(files)):
         with open(p, encoding="utf-8") as f:
             d = json.load(f)
         chapters.append({"num": d["num"], "title": d["topic"],
                          "oneliner": d.get("oneliner", "")})
-        shutil.copy2(p, os.path.join(chapters_dir, os.path.basename(p)))
-    chapters.sort(key=lambda c: int(c["num"]))
+        shutil.copy2(p, os.path.join(chapters_dir, "ch" + d["num"] + ".json"))
+    chapters.sort(key=lambda c: _num_key(c["num"]))
     return chapters
 
 
@@ -134,9 +147,10 @@ def main():
             sys.exit(f"未知书籍类型: {book['type']} ({book['id']})")
         write_manifest(book, chapters, out_dir)
         total += len(chapters)
-        print(f"OK {book['id']}: {len(chapters)} 章（数据源: {how}）")
+        unit = book.get("unit", "章" if book["type"] == CORNELL else "篇")
+        print(f"OK {book['id']}: {len(chapters)} {unit}（数据源: {how}）")
 
-    print(f"完成 → docs/（共 {len(cfg.get('books', []))} 本 / {total} 章）")
+    print(f"完成 → docs/（共 {len(cfg.get('books', []))} 本 / {total} 条目）")
 
 
 if __name__ == "__main__":

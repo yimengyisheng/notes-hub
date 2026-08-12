@@ -7,7 +7,7 @@
 - 📘 《从零开始学架构》康奈尔笔记（56 章）
 - 🐬 《MySQL实战45讲》康奈尔笔记（42 章）
 - 🌐 《趣谈网络协议》康奈尔笔记（40 章）
-- 📗 《图解HTTP》康奈尔笔记（11 章）
+- 📗 《图解HTTP》康奈尔笔记（11 章 · 58 小节）
 
 > 说明：A4 打印版 PNG 体积较大（约 65MB），中心站不重复打包，阅读页的打印按钮直接引用原站图片。
 
@@ -53,8 +53,10 @@ python3 -m http.server 8000 --directory docs
 支持的 `type`：
 
 - `markdown`：源仓库需含 `data/index.json`（`articles[].num/title/slug`）+ `data/articles/<slug>.md`。
-- `cornell`：源仓库需含 `data/chNN.json`（康奈尔章节数据；若数据在别的目录，可用 `dataDir` 指定，如 `"work"`），并可在配置里带 `sections` 分组
-  （`[{ "name": "...", "nums": [1,2,3] }]`）。A4 打印版 PNG 体积较大，中心站不重复打包，
+- `cornell`：源仓库需含 `data/chNN.json`（康奈尔章节数据；若数据在别的目录，可用 `dataDir` 指定，如 `"work"`）。
+  也支持小节粒度的 `NN-x.y.json` 子章节文件（如 `01-1.1.json`，`num` 为 `"01-1.1"`），
+  并可在配置里带 `sections` 分组（`[{ "name": "...", "nums": ["01-1.1", ...] }]`，nums 用字符串小节号）。
+  可选 `unit` 字段定制卡片数量单位（如 `"节"`，默认 cornell 为 `"章"`）。A4 打印版 PNG 体积较大，中心站不重复打包，
   阅读页的「🖨️ A4 打印版」按钮通过 `homeUrl + 'images/chNN.png'` 跨站引用原站图片，
   因此 cornell 型书籍需保证原站 `homeUrl` 已发布且该路径可访问。
 - 其它格式（如问答型）可仿照 `generator/build_site.py` 增加新的构建分支，并在前端

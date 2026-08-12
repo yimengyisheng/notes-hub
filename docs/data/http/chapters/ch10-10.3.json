@@ -1,0 +1,31 @@
+{
+  "num": "10-10.3",
+  "topic": "Web 应用",
+  "date": "2026-08-12",
+  "questions": [
+    "Web 应用是什么？动态内容和静态内容有什么区别？",
+    "CGI 是什么？有什么性能问题？",
+    "Servlet 如何解决 CGI 的问题？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "Web 应用与动态内容",
+     "bullets": [
+       "Web 应用指通过 Web 功能提供的应用程序：购物网站、网上银行、SNS、BBS、搜索引擎、e-learning 等",
+       "互联网或企业内网上遍布各式各样 Web 应用",
+       "原本 Web 机制是对请求返回事前准备好的内容",
+       "Web 普及后，需要由程序创建 HTML 内容：程序创建的内容叫动态内容，事先准备好的叫静态内容",
+       "Web 应用作用于动态内容之上"
+     ]},
+    {"icon": "⚖️", "color": "green", "title": "CGI vs Servlet",
+     "vs": {"a": {"h": "CGI", "t": "Web 服务器收到请求后转发给程序的一组机制；CGI 程序用 Perl、PHP、Ruby、C 等编写。每次接到请求程序都要启动一次，访问量过大时服务器负载很大。"}, "b": {"h": "Servlet", "t": "用 Java 实现的接口，属于 JavaEE 一部分。运行在与 Web 服务器相同的进程中，常驻内存，每次请求启动相对轻量，负载较小，随 Java 普及。"}}},
+    {"icon": "🧩", "color": "orange", "title": "补充要点",
+     "bullets": [
+       "Servlet 名称取自 Server＋Applet，表示轻量服务程序",
+       "Servlet 的运行环境叫 Web 容器或 Servlet 容器",
+       "CGI 运行机制逐渐成为性能瓶颈，之后 Servlet 和 mod_perl 等直接运行在 Web 服务器上的程序得以开发普及",
+       "Apache 上内置 mod_php 可运行 PHP，微软主导 ASP 等也是同类方向"
+     ]}
+  ],
+  "summary": "Web 应用是通过 Web 提供功能的应用程序，作用于由程序创建的动态内容之上。CGI 把请求转发给程序，但每次请求都要启动新程序，访问量大时负载高；Servlet 用 Java 实现，与 Web 服务器同进程常驻内存，负载小，随 Java 普及成为解决 CGI 瓶颈的对抗技术。",
+  "oneliner": "CGI 每次请求启进程，Servlet 常驻内存同进程：轻量所以快。"
+}

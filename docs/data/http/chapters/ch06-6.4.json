@@ -1,0 +1,44 @@
+{
+  "num": "06-6.4",
+  "topic": "请求首部字段",
+  "date": "2026-08-12",
+  "questions": [
+    "Accept 系列首部各表示什么？",
+    "Host 为什么是 HTTP/1.1 唯一必须的请求首部？",
+    "If-xxx 条件请求有哪些？各有什么作用？",
+    "Range、Referer、User-Agent 各是什么？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "常用请求首部",
+     "table": {"head": ["首部", "作用"], "rows": [
+       ["Accept", "用户代理能处理的媒体类型及相对优先级（q= 权重，0~1）"],
+       ["Accept-Charset", "支持的字符集及优先级"],
+       ["Accept-Encoding", "支持的内容编码及优先级：gzip、compress、deflate、identity"],
+       ["Accept-Language", "能处理的自然语言及优先级，如 zh-cn"],
+       ["Authorization", "用户代理的认证信息，通常收到 401 后加入请求"],
+       ["Host", "请求资源所在服务器的主机名和端口，HTTP/1.1 唯一必须的请求首部"],
+       ["Range", "实体的字节范围请求，返回 206 或 200 全部资源"],
+       ["Referer", "请求原始资源的 URI，查询字符串可能含保密信息需注意"],
+       ["User-Agent", "创建请求的浏览器和用户代理名称等信息"]
+     ]}},
+    {"icon": "🧩", "color": "green", "title": "If-xxx 条件请求",
+     "bullets": [
+       "形如 If-xxx 的请求首部都是条件请求，条件为真才执行",
+       "If-Match：与 ETag 值一致才执行，否则返回 412 Precondition Failed",
+       "If-Modified-Since：指定时间后无更新则返回 304 Not Modified",
+       "If-None-Match：与 If-Match 相反，GET/HEAD 用它获取最新资源",
+       "If-Range：ETag 或时间一致则按范围请求处理，否则返回全体资源",
+       "If-Unmodified-Since：指定时间后未更新才处理，否则返回 412",
+       "Max-Forwards：指定可经过的服务器最大数目，每转发减 1，为 0 时直接返回响应"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "其他请求首部",
+     "bullets": [
+       "Expect：期待服务器的特定行为，如 100-continue，无法理解返回 417",
+       "From：用户代理使用者的电子邮箱地址",
+       "TE：能处理的传输编码及优先级，可指定 trailers",
+       "Proxy-Authorization：代理服务器要求的认证信息，认证发生在客户端与代理之间"
+     ]}
+  ],
+  "summary": "请求首部字段补充请求附加信息和客户端信息：Accept 系列声明可处理的媒体类型、字符集、编码、语言；Host 是 HTTP/1.1 唯一必须的请求首部，用于区分虚拟主机；If-xxx 条件请求在条件为真时才执行；Range 做范围请求，Referer 记录来源，User-Agent 说明浏览器。",
+  "oneliner": "Accept 系列谈条件，Host 必带分域名，If-xxx 按条件才执行。"
+}

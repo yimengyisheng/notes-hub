@@ -1,0 +1,29 @@
+{
+  "num": "02-2.8",
+  "topic": "使用 Cookie 的状态管理",
+  "date": "2026-08-12",
+  "questions": [
+    "无状态协议有什么优缺点？",
+    "Cookie 是怎么工作的？",
+    "Set-Cookie 和 Cookie 首部各起什么作用？"
+  ],
+  "modules": [
+    {"icon": "⚖️", "color": "blue", "title": "无状态 vs Cookie",
+     "vs": {"a": {"h": "无状态", "t": "不保存状态可减少服务器 CPU 及内存消耗；HTTP 本身简单，因此被应用在各种场景。但登录认证页面每次跳转都要再次登录或附加参数。"}, "b": {"h": "Cookie 管理", "t": "在请求和响应报文中写入 Cookie 信息来控制客户端状态，如购物网站保持登录状态。"}}},
+    {"icon": "🔄", "color": "green", "title": "Cookie 的工作流程",
+     "flow": {"color": "green", "steps": ["服务器 Set-Cookie<br>通知保存", "下次请求自动<br>带上 Cookie", "服务器对比记录<br>恢复状态"]},
+     "bullets": [
+       "服务器端在响应报文用 Set-Cookie 首部字段通知客户端保存 Cookie",
+       "下次客户端再向该服务器发请求时，自动在请求报文加入 Cookie 值",
+       "服务器检查 Cookie 判断是哪个客户端，对比服务器记录得到之前的状态信息"
+     ]},
+    {"icon": "📦", "color": "orange", "title": "交互示例",
+     "bullets": [
+       "第一次请求报文首部没有 Cookie 相关信息",
+       "响应报文返回 Set-Cookie: sid=1342077140226724; path=/; expires=…",
+       "后续请求报文自动带上 Cookie: sid=1342077140226724"
+     ]}
+  ],
+  "summary": "无状态协议不保存请求响应状态，可减少服务器 CPU 和内存消耗，但无法保持登录等状态。Cookie 技术通过在请求和响应报文中写入 Cookie 信息来控制状态：服务器用 Set-Cookie 通知保存，客户端下次请求自动带上 Cookie，服务器对比记录恢复状态。",
+  "oneliner": "服务器 Set-Cookie 发证，客户端下次自动亮证，登录状态就记住了。"
+}

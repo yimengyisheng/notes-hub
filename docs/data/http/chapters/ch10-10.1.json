@@ -1,0 +1,38 @@
+{
+  "num": "10-10.1",
+  "topic": "HTML",
+  "date": "2026-08-12",
+  "questions": [
+    "HTML 是什么？标签起什么作用？",
+    "HTML 版本经历了怎样的发展？",
+    "CSS 的设计理念是什么？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "HTML 基础",
+     "bullets": [
+       "HTML 全称 HyperText Markup Language，超文本标记语言",
+       "超文本：把文档中任意位置信息与其他信息建立关联的文档系统",
+       "标记语言：在文档中穿插特别字符串（标签）来修饰文档的语言",
+       "HTML 文档经浏览器解析、渲染后呈现为 Web 页面",
+       "被 ＜＞ 包围的文字就是标签，可改变样式、插入图片和链接"
+     ]},
+    {"icon": "🕐", "color": "green", "title": "版本演变",
+     "flow": {"color": "green", "steps": ["Tim Berners-Lee<br>提出 HTML 原型", "1993 年 NCSA 发布<br>Mosaic 浏览器", "HTML 1.0<br>统一标准", "1999 年 12 月<br>HTML 4.01（当时最新）", "2014 年左右<br>HTML5 标准"]},
+     "bullets": [
+       "Tim Berners-Lee 提出 HTTP 概念的同时提出 HTML 原型",
+       "Mosaic 是首个图形界面浏览器，能解析的 HTML 统一后作为 HTML 1.0",
+       "HTML5 解决浏览器兼容性问题，文本可作数据复用，动画更生动",
+       "仍有浏览器未遵循标准或扩展自用标签，HTML 标准尚未完全统一"
+     ]},
+    {"icon": "🎨", "color": "orange", "title": "设计应用 CSS",
+     "bullets": [
+       "CSS 全称 Cascading Style Sheets，层叠样式表，指定如何展现 HTML 元素",
+       "相同 HTML 文档改变应用的 CSS，页面外观随之改变",
+       "理念：让文档的结构和设计分离，达到解耦目的",
+       "用选择器（如 .logo）限定范围，在 {} 声明块中写 padding、text-align 等声明",
+       "可通过 HTML 元素或特定 class、ID 作为选择器"
+     ]}
+  ],
+  "summary": "HTML 是用标签修饰的超文本标记语言，浏览器解析渲染后呈现为 Web 页面。它由 Tim Berners-Lee 提出原型，经 Mosaic 浏览器统一为 HTML 1.0，发展至 HTML 4.01，2014 年左右推出 HTML5。CSS 负责样式，让文档结构与设计分离，通过选择器和声明块指定页面外观。",
+  "oneliner": "HTML 用标签搭结构，CSS 用选择器定样式，结构设计两分离。"
+}

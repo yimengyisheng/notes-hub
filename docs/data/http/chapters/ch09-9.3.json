@@ -1,0 +1,42 @@
+{
+  "num": "09-9.3",
+  "topic": "使用浏览器进行全双工通信的 WebSocket",
+  "date": "2026-08-12",
+  "questions": [
+    "WebSocket 解决什么问题？由谁制定标准？",
+    "握手请求和响应是怎么完成的？",
+    "WebSocket 的主要特点有哪些？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "WebSocket 是什么",
+     "bullets": [
+       "Web 浏览器与 Web 服务器之间的全双工通信标准",
+       "协议由 IETF 定为标准（RFC 6455，2011 年 12 月），API 由 W3C 定为标准",
+       "原本计划作为 HTML5 标准的一部分，后逐渐成为独立协议标准",
+       "主要解决 Ajax 和 Comet 里 XMLHttpRequest 附带的缺陷",
+       "通信中可互相发送 JSON、XML、HTML、图片等任意格式数据",
+       "基于 HTTP 建立，发起方仍是客户端；连接确立后任意一方都可直接发送报文"
+     ]},
+    {"icon": "🔄", "color": "green", "title": "握手流程",
+     "flow": {"color": "green", "steps": ["客户端发<br>Upgrade: websocket<br>Sec-WebSocket-Key", "服务器返回<br>101 Switching Protocols<br>Sec-WebSocket-Accept", "改用 WebSocket<br>独立数据帧<br>全双工通信"]},
+     "bullets": [
+       "用 HTTP 的 Upgrade 首部字段告知服务器通信协议改变，达成握手",
+       "Sec-WebSocket-Key 记录握手必需的键值，Sec-WebSocket-Protocol 记录子协议",
+       "Sec-WebSocket-Accept 由请求中的 Sec-WebSocket-Key 生成",
+       "握手成功后不再使用 HTTP 数据帧"
+     ]},
+    {"icon": "📊", "color": "orange", "title": "两大特点",
+     "table": {"head": ["特点", "说明"], "rows": [
+       ["推送功能", "服务器可直接推送数据，不必等待客户端请求"],
+       ["减少通信量", "连接建立后一直保持，总开销减少；首部信息很小，通信量相应减少"]
+     ]}},
+    {"icon": "💡", "color": "blue", "title": "WebSocket API 示例",
+     "bullets": [
+       "JavaScript 可调用 W3C 制定的 WebSocket 程序接口实现全双工通信",
+       "示例：每 50ms 发送一次数据，用 bufferedAmount 判断发送缓冲区是否为空"
+     ],
+     "callout": {"text": "var socket = new WebSocket('ws://game.example.com:12010/updates'); 连接建立后通过 send() 发送数据。"}}
+  ],
+  "summary": "WebSocket 是浏览器与服务器之间的全双工通信标准，协议由 IETF、API 由 W3C 制定。它基于 HTTP 发起，用 Upgrade 首部握手，服务器返回 101 Switching Protocols 后改用独立数据帧，此后双方可随时互发 JSON、XML、HTML、图片等数据。主要特点是服务器推送和减少通信量。",
+  "oneliner": "WebSocket 握一次手（Upgrade → 101）后全双工：两边都能随时发，首部小流量省。"
+}

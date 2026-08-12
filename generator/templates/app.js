@@ -112,7 +112,8 @@
         var stats = '<span>📚 ' + BOOKS.length + ' 本笔记</span><span>📖 共 ' + total + ' 篇/章</span>';
         var cards = BOOKS.map(function (b, i) {
           var m = ms[i];
-          var count = m ? m.count + (b.type === 'cornell' ? ' 章' : ' 篇') : '…';
+          var unit = b.unit || (b.type === 'cornell' ? '章' : '篇');
+          var count = m ? m.count + ' ' + unit : '…';
           return '<a class="book-card" href="#/book/' + b.id + '">' +
             '<div class="bc-emoji">' + (b.emoji || '📖') + '</div>' +
             '<h2>' + esc(b.title) + '</h2>' +
@@ -144,7 +145,7 @@
         '<div class="bh-emoji">' + (book.emoji || '📖') + '</div>' +
         '<div><h1>' + esc(book.title) + '</h1>' +
         '<div class="bh-desc">' + esc(book.desc || '') + '</div>' +
-        '<div class="bh-meta"><span>' + m.count + (book.type === 'cornell' ? ' 章' : ' 篇') + '</span>' +
+        '<div class="bh-meta"><span>' + m.count + ' ' + (book.unit || (book.type === 'cornell' ? '章' : '篇')) + '</span>' +
         (book.homeUrl ? '<span>原站：' + esc(book.homeUrl.replace(/^https?:\/\//, '')) + '</span>' : '') +
         '</div></div>' +
         '<div class="bh-actions">' +
@@ -227,6 +228,13 @@
       '<div class="summary">' + summary + '</div></div>';
   }
 
+  /* ---------- 阅读页导航标签 ---------- */
+  function navLabel(book, c) {
+    if (book.type !== 'cornell') return esc(c.title);
+    if (String(c.num).indexOf('-') !== -1) return esc(c.num) + ' ' + esc(c.title);
+    return '第 ' + parseInt(c.num, 10) + ' 章';
+  }
+
   /* ---------- 渲染：阅读页 ---------- */
   function renderChapter(id, num) {
     var book = getBook(id);
@@ -244,7 +252,7 @@
 
       var crumb = '<div class="crumb"><a href="#/">🏠 首页</a><span class="sep">/</span>' +
         '<a href="#/book/' + book.id + '">' + esc(book.title) + '</a><span class="sep">/</span>' +
-        '<span>' + (book.type === 'cornell' ? 'CH ' : '') + esc(ch.title) + '</span></div>';
+        '<span>' + (book.type === 'cornell' ? 'CH ' + esc(ch.num) + ' · ' : '') + esc(ch.title) + '</span></div>';
 
       var actions = '<div class="ch-actions">' +
         (book.homeUrl ? '<a href="' + esc(book.homeUrl) + '" target="_blank" rel="noopener">原站查看 ↗</a>' : '') +
@@ -253,9 +261,9 @@
         '</div>';
 
       var nav = '<div class="nav">' +
-        (prev ? '<a href="#/book/' + book.id + '/' + prev.num + '">← ' + (book.type === 'cornell' ? '第 ' + parseInt(prev.num, 10) + ' 章' : esc(prev.title)) + '</a>' : '<span class="disabled"></span>') +
+        (prev ? '<a href="#/book/' + book.id + '/' + prev.num + '">← ' + navLabel(book, prev) + '</a>' : '<span class="disabled"></span>') +
         '<div class="actions"><a href="#/">🏠 首页</a></div>' +
-        (next ? '<a href="#/book/' + book.id + '/' + next.num + '">' + (book.type === 'cornell' ? '第 ' + parseInt(next.num, 10) + ' 章' : esc(next.title)) + ' →</a>' : '<span class="disabled"></span>') +
+        (next ? '<a href="#/book/' + book.id + '/' + next.num + '">' + navLabel(book, next) + ' →</a>' : '<span class="disabled"></span>') +
         '</div>';
 
       var body;

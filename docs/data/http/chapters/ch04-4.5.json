@@ -1,0 +1,27 @@
+{
+  "num": "04-4.5",
+  "topic": "5XX 服务器错误",
+  "date": "2026-08-12",
+  "questions": [
+    "500 表示什么？",
+    "503 表示什么？应带什么首部？",
+    "状态码和实际状况可能不一致吗？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "5XX 状态码一览",
+     "table": {"head": ["状态码", "含义", "要点"], "rows": [
+       ["500 Internal Server Error", "服务器端执行请求时发生错误", "可能是 Web 应用 bug 或某些临时故障"],
+       ["503 Service Unavailable", "服务器暂时超负载或停机维护", "若事先得知恢复时间，应写入 Retry-After 首部返回"]
+     ]}},
+    {"icon": "📦", "color": "green", "title": "要点",
+     "bullets": [
+       "5XX 表明服务器本身发生错误",
+       "不少返回的状态码响应是错误的，但用户可能察觉不到",
+       "Web 应用内部发生错误、状态码依然返回 200 OK 的情况也经常遇到"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "一句话",
+     "callout": {"text": "5XX 是服务器的锅：500 内部出错、503 太忙或维护中，记得带上 Retry-After。"}}
+  ],
+  "summary": "5XX 表示服务器本身出错：500 Internal Server Error 是执行请求时出错（可能为应用 bug），503 Service Unavailable 是超负载或停机维护，应带 Retry-After 告知恢复时间。实际中状态码可能与真实状况不一致。",
+  "oneliner": "5XX 错在服务器：500 出错、503 忙碌，Retry-After 告诉你要等多久。"
+}

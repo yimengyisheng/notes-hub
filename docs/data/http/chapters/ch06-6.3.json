@@ -1,0 +1,44 @@
+{
+  "num": "06-6.3",
+  "topic": "HTTP/1.1 通用首部字段",
+  "date": "2026-08-12",
+  "questions": [
+    "Cache-Control 有哪些常用指令？no-cache 和 no-store 有什么区别？",
+    "Connection 首部有什么作用？",
+    "Date、Pragma、Trailer、Transfer-Encoding、Upgrade 各是什么？",
+    "Via 和 Warning 有什么用？"
+  ],
+  "modules": [
+    {"icon": "📊", "color": "blue", "title": "Cache-Control 常用指令",
+     "table": {"head": ["指令", "说明"], "rows": [
+       ["no-cache", "强制向源服务器再次验证（缓存前先确认有效性，并非不缓存）"],
+       ["no-store", "真正不缓存请求或响应的任何内容"],
+       ["public", "其他用户也可利用缓存"],
+       ["private", "只以特定用户为对象返回缓存"],
+       ["max-age", "响应的最大 Age 值，为 0 时通常转发给源服务器"],
+       ["s-maxage", "只适用于公共缓存服务器，且忽略 Expires 和 max-age"],
+       ["min-fresh", "要求返回至少还未过指定时间的缓存资源"],
+       ["max-stale", "即使过期也照常接收，可指定时间范围"],
+       ["only-if-cached", "仅从本地缓存返回，无缓存则返回 504"],
+       ["must-revalidate", "代理向源服务器再次验证，无法连通则 504"],
+       ["proxy-revalidate", "要求所有缓存服务器再次验证有效性"],
+       ["no-transform", "缓存不能改变实体主体的媒体类型"]
+     ]}},
+    {"icon": "📦", "color": "green", "title": "各通用首部",
+     "bullets": [
+       "Connection 两个作用：控制不再转发给代理的首部 + 管理持久连接",
+       "Connection: close 明确断开；Keep-Alive 用于旧版本维持持久连接",
+       "Date 表明创建报文的时间，HTTP/1.1 用 RFC1123 的 GMT 格式",
+       "Pragma 是历史遗留字段，Pragma: no-cache 常与 Cache-Control: no-cache 同时发送",
+       "Trailer 事先说明报文主体后记录哪些首部，用于分块传输编码",
+       "Transfer-Encoding 规定传输编码方式，HTTP/1.1 只对分块传输有效",
+       "Upgrade 检测能否用更高版本通信，需配合 Connection: Upgrade，响应 101 Switching Protocols",
+       "Via 追踪传输路径并附加代理信息，可避免请求回环，常与 TRACE 一起用",
+       "Warning 告知缓存相关问题，如 110 响应已过期、113 试探性过期"
+     ]},
+    {"icon": "💡", "color": "orange", "title": "一句话",
+     "callout": {"text": "Cache-Control 管缓存，Connection 管连接，Via 追踪路径——通用首部请求响应都能用。"}}
+  ],
+  "summary": "通用首部字段请求和响应都用：Cache-Control 用指令控制缓存（no-cache 先验证、no-store 真不缓存、max-age 定期限等）；Connection 管理持久连接和逐跳首部；Date 记时间；Pragma 是历史遗留；Trailer、Transfer-Encoding 服务分块传输；Upgrade 升级协议；Via 追踪传输路径；Warning 发缓存警告。",
+  "oneliner": "Cache-Control 控缓存，Connection 管连接，Via 追路径，Transfer-Encoding 管分块。"
+}

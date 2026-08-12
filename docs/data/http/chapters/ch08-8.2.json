@@ -1,0 +1,30 @@
+{
+  "num": "08-8.2",
+  "topic": "BASIC 认证",
+  "date": "2026-08-12",
+  "questions": [
+    "BASIC 认证的步骤是怎样的？",
+    "Base64 是加密吗？有什么风险？",
+    "BASIC 认证有什么缺点？"
+  ],
+  "modules": [
+    {"icon": "🔄", "color": "blue", "title": "认证步骤",
+     "flow": {"color": "blue", "steps": ["服务器返回<br>401 质询", "ID:密码<br>Base64 编码", "写入<br>Authorization", "服务器验证<br>返回资源"]},
+     "bullets": [
+       "BASIC 认证从 HTTP/1.0 就定义，现在仍有一部分网站使用",
+       "请求资源需认证时，服务器返回 401 和带 WWW-Authenticate 的响应",
+       "WWW-Authenticate 包含认证方式（BASIC）及安全域字符串 realm",
+       "用户 ID 和密码以冒号连接后做 Base64 编码，如 guest:guest → Z3Vlc3Q6Z3Vlc3Q=",
+       "浏览器自动完成编码转换，用户只需输入 ID 和密码"
+     ]},
+    {"icon": "⚠️", "color": "orange", "title": "风险与缺点",
+     "bullets": [
+       "Base64 不是加密处理，不需要附加信息即可解码",
+       "解码后就是明文 ID 和密码，非加密线路上被窃听则极易被盗",
+       "一般浏览器无法实现认证注销操作",
+       "使用上不够便捷灵活，达不到多数网站期望的安全等级，因此并不常用"
+     ]}
+  ],
+  "summary": "BASIC 认证是 HTTP/1.0 定义的认证方式：服务器返回 401 和 WWW-Authenticate 质询，客户端把 ID 与密码用冒号连接后做 Base64 编码放入 Authorization 首部，服务器验证。Base64 不是加密，明文可解，非加密线路上极易被窃听，且无法注销，因此不常用。",
+  "oneliner": "BASIC 认证把 ID:密码 用 Base64 编码发过去——Base64 不是加密，一解就露馅。"
+}

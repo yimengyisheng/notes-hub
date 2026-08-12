@@ -1,0 +1,41 @@
+{
+  "num": "06-6.7",
+  "topic": "为 Cookie 服务的首部字段",
+  "date": "2026-08-12",
+  "questions": [
+    "Cookie 有哪些规格标准？",
+    "Set-Cookie 有哪些属性？",
+    "HttpOnly 和 Secure 属性有什么用？"
+  ],
+  "modules": [
+    {"icon": "📦", "color": "blue", "title": "Cookie 机制与规格",
+     "bullets": [
+       "Cookie 管理服务器与客户端之间的状态，未被编入 RFC2616 但广泛应用",
+       "机制：Web 网站把数据临时写入用户计算机，再次访问时取回之前发放的 Cookie",
+       "调用时可校验有效期以及发送方的域、路径、协议等信息",
+       "网景标准：1994 年前后应用，目前最普及的 Cookie 方式以此为准",
+       "RFC2109：尝试标准化但发生微妙差异，已淡出视线",
+       "RFC2965：定义 Set-Cookie2 和 Cookie2，几乎没投入使用",
+       "RFC6265：以网景标准为事实标准重新定义"
+     ]},
+    {"icon": "📊", "color": "green", "title": "Set-Cookie 属性",
+     "table": {"head": ["属性", "说明"], "rows": [
+       ["NAME=VALUE", "Cookie 的名称和值（必需项）"],
+       ["expires", "有效期，不指定则默认到浏览器关闭前"],
+       ["path", "Cookie 适用对象的文件目录，不指定默认文档所在目录"],
+       ["domain", "适用域名，可结尾匹配，如 example.com 可发给 www.example.com"],
+       ["Secure", "仅在 HTTPS 安全通信时才发送 Cookie"],
+       ["HttpOnly", "限制 Cookie 不能被 JavaScript 脚本访问"]
+     ]}},
+    {"icon": "💡", "color": "orange", "title": "要点",
+     "bullets": [
+       "expires 省略时有效期仅限浏览器会话期间，关闭前有效",
+       "服务器端无法显式删除 Cookie，可覆盖已过期的 Cookie 实现实质删除",
+       "domain 不指定更安全；Secure 省略时不论 HTTP 还是 HTTPS 都会回收 Cookie",
+       "HttpOnly 让 document.cookie 无法读取，防止 XSS 劫持 Cookie，主流浏览器已支持",
+       "请求时用 Cookie 首部告知服务器，多个 Cookie 可同时发送"
+     ]}
+  ],
+  "summary": "Cookie 用于用户识别和状态管理，主流标准基于网景 1994 年规范（RFC6265 重新定义）。Set-Cookie 响应首部通过 NAME=VALUE、expires、path、domain、Secure、HttpOnly 等属性发放 Cookie；Secure 限定 HTTPS，HttpOnly 防止 JavaScript 读取以抗 XSS。客户端用 Cookie 请求首部带回服务器。",
+  "oneliner": "Set-Cookie 发证、Cookie 亮证，Secure 只走 HTTPS，HttpOnly 防脚本偷。"
+}
