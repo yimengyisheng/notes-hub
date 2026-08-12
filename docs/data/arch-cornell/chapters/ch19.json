@@ -1,0 +1,68 @@
+{
+  "num": "19",
+  "topic": "单服务器高性能模式：Reactor与Proactor",
+  "date": "2026-08-03",
+  "questions": [
+    "PPC/TPC 为什么撑不住高并发？",
+    "资源池化后引入了什么新问题？",
+    "I/O 多路复用的两个关键实现点是什么？",
+    "Reactor 名字的由来和含义？",
+    "Reactor 模式的两个核心组成部分？",
+    "为什么没有“多 Reactor 单进程”方案？",
+    "单 Reactor 单进程/线程的优缺点？谁在用？",
+    "单 Reactor 多线程解决了什么、又引入什么？",
+    "为什么没有“单 Reactor 多进程”方案？",
+    "多 Reactor 多进程为何实现反而更简单？",
+    "Nginx 的多 Reactor 方案和标准方案有何差异？",
+    "Proactor 和 Reactor 的本质区别？Linux 为何以 Reactor 为主？"
+  ],
+  "modules": [
+    {
+      "icon": "🔄", "color": "blue", "title": "从资源池到 I/O 多路复用", "tag": "演进逻辑",
+      "intro": "PPC 每连接建进程浪费大 → 自然想法是<b>资源复用</b>（进程池），但一个进程处理多连接时阻塞在某个 read 上，其他连接有数据也处理不了。",
+      "bullets": [
+        "非阻塞 read + 轮询能解决阻塞，但轮询耗 CPU，几千上万连接时效率很低",
+        "<b>I/O 多路复用</b>：多条连接共用一个阻塞对象（select、epoll、kqueue），进程只在一个对象上等待",
+        "某连接有数据时操作系统<b>通知</b>进程，进程从阻塞返回开始业务处理——“只有当连接上有数据时才去处理”"
+      ],
+      "callout": {"text": "I/O 多路复用 + 线程池 = <b>Reactor</b>（反应堆）：不是核反应，是“事件反应”——来了一个事件我就有相应的反应。也叫 Dispatcher 模式。", "star": true}
+    },
+    {
+      "icon": "⚙️", "color": "green", "title": "Reactor 核心与三种典型方案",
+      "intro": "核心组成：<b>Reactor</b>（监听和分配事件）+ <b>处理资源池</b>（进程池/线程池，处理事件）。Reactor 数量 × 资源池数量排列组合，实际有意义的三种：",
+      "table": {
+        "head": ["方案", "要点", "优缺点与代表"],
+        "rows": [
+          ["单 Reactor 单进程/线程", "Reactor 监控→dispatch；Acceptor 接受连接建 Handler；Handler 完成 read→业务→send", "✅ 最简单、无进程间通信竞争　❌ 无法发挥多核、Handler 阻塞全流程。代表：<b>Redis</b>"],
+          ["单 Reactor 多线程", "Handler 只响应事件，read 后交 Processor 子线程业务处理，结果回 Handler 再 send", "✅ 利用多核　❌ 多线程共享数据复杂；Reactor 主线程高并发时成瓶颈"],
+          ["多 Reactor 多进程/线程", "mainReactor 接受连接分配给子进程；subReactor 监听并完成全部业务", "✅ 职责明确、父子交互简单、子进程互相独立。代表：<b>Nginx、Memcache、Netty</b>"]
+        ]
+      },
+      "bullets": [
+        "没有“多 Reactor 单进程”：比单 Reactor 单进程复杂却无性能优势，仅理论存在",
+        "没有“单 Reactor 多进程”：子进程把结果还给父进程发送，要模拟成连接让 Reactor 监听，太复杂",
+        "进程还是线程与语言相关：Java 多用线程（Netty）；C 进程线程皆可——Nginx 用进程，Memcache 用线程"
+      ]
+    },
+    {
+      "icon": "🌊", "color": "orange", "title": "Nginx 的变体方案",
+      "bullets": [
+        "标准多 Reactor 多进程：父进程 mainReactor accept 后分配连接给子进程",
+        "Nginx 变体：主进程只创建监听端口，<b>由子进程的 Reactor 自己 accept</b>",
+        "通过<b>锁</b>控制同一时刻只有一个子进程 accept；子进程 accept 后放进自己的 Reactor 处理，不再分配"
+      ]
+    },
+    {
+      "icon": "🚀", "title": "Proactor：异步网络模型",
+      "intro": "Reactor 是非阻塞<b>同步</b>模型（read/send 仍需用户进程同步执行）；把 I/O 操作改为异步就是 <b>Proactor</b>。",
+      "bullets": [
+        "Reactor：“来了事件我通知你，<b>你来处理</b>”；Proactor：“来了事件我来处理，<b>处理完了我通知你</b>”——“我”是操作系统内核",
+        "流程：Proactor 和 Handler 注册到内核 → 内核完成 I/O 操作 → 通知 Proactor → 按事件类型回调 Handler",
+        "理论上效率更高：异步 I/O 充分利用 DMA，让 I/O 与计算重叠"
+      ],
+      "callout": {"text": "Windows 通过 <b>IOCP</b> 实现真正异步 I/O；<b>Linux 的 AIO 不完善</b>，所以 Linux 高并发网络编程以 Reactor 为主——Boost.Asio 号称 Proactor，在 Linux 下也是用 epoll（Reactor）模拟的。", "star": true}
+    }
+  ],
+  "summary": "Reactor 模式 = I/O 多路复用（统一监听事件）+ 资源池（处理事件），解决了 PPC/TPC 无法支撑高并发的问题。三种典型实现：单 Reactor 单进程/线程（Redis，简单但用不了多核）、单 Reactor 多线程（利用多核但共享数据复杂、Reactor 成瓶颈）、多 Reactor 多进程/线程（Nginx/Memcache/Netty，职责清晰反而简单）。Proactor 是异步模型（内核完成 I/O 再通知），理论更高效，但 Linux AIO 不完善，实际以 Reactor 为主。",
+  "oneliner": "Reactor：有事件通知你处理；Proactor：内核处理完再通知你——Linux 世界 Reactor 称王。"
+}

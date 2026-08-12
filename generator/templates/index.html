@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📚 我的读书笔记</title>
+<meta name="description" content="后端技术面试38讲 · 架构康奈尔笔记 统一在线阅读站">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="侧边栏">
+    <div class="side-head">
+      <a href="#/" class="brand">
+        <span class="brand-emoji" id="siteEmoji">📚</span>
+        <span class="brand-text">
+          <b id="siteTitle">我的读书笔记</b>
+          <small id="siteSub">…</small>
+        </span>
+      </a>
+      <button class="side-close" id="sideClose" aria-label="关闭侧边栏">✕</button>
+    </div>
+    <div class="side-block">
+      <div class="side-label">📖 笔记列表</div>
+      <nav class="book-switch" id="bookSwitch"></nav>
+    </div>
+    <div class="side-block" id="sideChaptersWrap" style="display:none">
+      <div class="side-label">📑 目录</div>
+      <div id="sideChapters"></div>
+    </div>
+    <div class="side-foot">数据来自 GitHub 各笔记仓库 · 构建时聚合</div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <main class="main" id="main"></main>
+</div>
+<button class="menu-btn" id="menuBtn" aria-label="打开侧边栏">☰</button>
+<script src="assets/vendor/marked.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

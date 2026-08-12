@@ -1,0 +1,135 @@
+{
+  "site": {
+    "title": "📚 我的读书笔记",
+    "subtitle": "后端面试38讲 · 架构康奈尔笔记 · 持续收录中",
+    "emoji": "📚"
+  },
+  "books": [
+    {
+      "id": "backend38",
+      "title": "101-后端技术面试38讲",
+      "emoji": "📝",
+      "desc": "后端技术面试核心知识：程序运行原理、数据结构、网络编程、数据库、设计模式、分布式架构、高可用高并发、缓存、微服务、大数据、AI、区块链。",
+      "type": "markdown",
+      "srcRepo": "yimengyisheng/backend38-interview-qa",
+      "homeUrl": "https://yimengyisheng.github.io/backend38-interview-qa/"
+    },
+    {
+      "id": "arch-cornell",
+      "title": "架构康奈尔笔记",
+      "emoji": "📘",
+      "desc": "《从零开始学架构》读书笔记 · 康奈尔笔记法：线索提问 + 图文模块 + 总结回顾 + A4 打印版。",
+      "type": "cornell",
+      "srcRepo": "yimengyisheng/arch-cornell-notes",
+      "homeUrl": "https://yimengyisheng.github.io/arch-cornell-notes/",
+      "sections": [
+        {
+          "name": "🧱 概念与基础",
+          "nums": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "name": "🔥 复杂度来源",
+          "nums": [
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        {
+          "name": "📐 设计原则与流程",
+          "nums": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ]
+        },
+        {
+          "name": "⚡ 高性能架构",
+          "nums": [
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21
+          ]
+        },
+        {
+          "name": "🧮 高可用理论：CAP 与 FMEA",
+          "nums": [
+            22,
+            23,
+            24
+          ]
+        },
+        {
+          "name": "🛡️ 高可用架构",
+          "nums": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ]
+        },
+        {
+          "name": "📈 可扩展架构",
+          "nums": [
+            32,
+            33,
+            34,
+            35,
+            36,
+            37
+          ]
+        },
+        {
+          "name": "🌐 技术演进与架构模板",
+          "nums": [
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44
+          ]
+        },
+        {
+          "name": "🔧 架构重构",
+          "nums": [
+            45,
+            46,
+            47
+          ]
+        },
+        {
+          "name": "🎓 架构师成长",
+          "nums": [
+            48,
+            49,
+            50,
+            51,
+            53,
+            54,
+            55,
+            56,
+            58
+          ]
+        }
+      ]
+    }
+  ]
+}
