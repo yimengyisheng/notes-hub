@@ -1,0 +1,116 @@
+{
+  "num": "31",
+  "topic": "辅助界面元素的架构设计",
+  "date": "2026-08-12",
+  "questions": [
+    "辅助界面元素统一的使用接口有哪些？onchange 在什么时候触发？",
+    "辅助界面元素框架是怎么工作的？",
+    "构建一个控件（如 BaseColorPicker）分哪三步？",
+    "引入 jQuery 组件时两种态度是什么？怎么包装？",
+    "为什么辅助界面元素不用 MVC？什么情况下要重新考虑？",
+    "把画图程序改造成控件要修正哪些“唯一性”假设？",
+    "多实例下 Controller 注册和当前样式怎么处理？"
+  ],
+  "modules": [
+    {
+      "icon": "🧩",
+      "color": "blue",
+      "title": "辅助界面元素的统一接口",
+      "table": {
+        "head": [
+          "接口",
+          "说明"
+        ],
+        "rows": [
+          [
+            "id",
+            "控件 id，用于获取顶层结点"
+          ],
+          [
+            "value",
+            "界面元素的值，即控件的 Model 数据（线型是 number，颜色是 Color）"
+          ],
+          [
+            "palette",
+            "颜色选择器的调色板，指示可选颜色"
+          ],
+          [
+            "blur()",
+            "主动让元素失去焦点"
+          ],
+          [
+            "onchange",
+            "用户交互改变 value 时触发；直接赋值 element.value=xxx 不触发"
+          ]
+        ]
+      }
+    },
+    {
+      "icon": "🔧",
+      "color": "green",
+      "title": "控件框架：qcontrols",
+      "flow": {
+        "color": "green",
+        "steps": [
+          "使用处写 <div type=\"xxx\" …> 占位",
+          "qcontrols.register(type, control)<br>建立类型与构建函数关联",
+          "init() 遍历所有 div，<br>有 type 就查表",
+          "查到的 control(div)<br>构建实际控件"
+        ]
+      },
+      "bullets": [
+        "构建函数三步：从占位 div 读输入参数（id/onchange/palette）→ div.outerHTML 替换为实际界面 → 安装 onchange 响应"
+      ]
+    },
+    {
+      "icon": "⚖️",
+      "color": "orange",
+      "title": "对待 jQuery 的两种态度",
+      "vs": {
+        "a": {
+          "h": "作为基础框架",
+          "t": "喜欢 jQuery 设计，允许 $ 风格代码到处蔓延；风险是换框架时大量模块要调整。"
+        },
+        "b": {
+          "h": "仅限少量场景",
+          "t": "只因为要用 spectrum 等社区组件才引入，尽量限制使用范围，把 jQuery 组件包装起来（ColorPicker）——本讲采用后者。"
+        }
+      }
+    },
+    {
+      "icon": "🔒",
+      "color": "blue",
+      "title": "包装 jQuery 组件的细节",
+      "bullets": [
+        "ColorPicker 用 jQuery spectrum：outerHTML 换成按钮，elem.spectrum 初始化，elem.change(onchange)",
+        "改写 value 属性的 get/set：因为 element.value=xxx 不会触发 onchange，只能从 set 函数感知",
+        "死循环问题：spectrum 内部 set 又会改 value，用 busy 标志解决——set 函数执行中直接返回"
+      ]
+    },
+    {
+      "icon": "📦",
+      "color": "green",
+      "title": "控件与 MVC：规模决定形态",
+      "bullets": [
+        "辅助界面元素不用 MVC 不是因为不合适，而是规模太小：DOM 只是一个 value 不是树，Model/View/Control 代码都过于短小",
+        "把画图程序改造成标准控件可行，但要修正“唯一性”假设",
+        "唯一性问题：全局唯一的 qview（多实例时要有多个 View）、辅助界面元素单例（id 固定）",
+        "选择保持单例：qview 从“单例”变为“当前实例”，需要焦点切换相关事件"
+      ]
+    },
+    {
+      "icon": "🔄",
+      "color": "orange",
+      "title": "多实例改造",
+      "bullets": [
+        "引入 onViewAdded、onCurrentViewChanged 事件：新 View 实例创建时发 onViewAdded，Controller 响应它完成 registerController",
+        "原先当前图形样式 qview.style 在多实例下会混淆，挪到全局改名为 defaultStyle",
+        "PaintView 控件：读 div 的 width/height 等参数，替换为 canvas，注册为 qcontrols.register(\"PaintView\", PaintView)",
+        "遗留问题：URL 显示哪个文档 ID？谁都不合适，可能要在 PaintView 实例附近放辅助元素显示",
+        "不良习惯（全局变量满天飞、靠全局变量传信息）会导致代码极难控件化；思考控件化有助于形成更好的架构设计规范"
+      ]
+    }
+  ],
+  "summary": "辅助界面元素（控件）通过统一的 <div type> 占位＋qcontrols 注册表机制构建，接口含 id、value、palette、blur、onchange。控件规模小所以不必用 MVC，但要支持多实例就得修正唯一性假设：qview 变成“当前实例”、样式挪到全局 defaultStyle、引入 onViewAdded/onCurrentViewChanged 事件。把应用控件化能帮助形成更好的架构设计规范。",
+  "oneliner": "控件 = 类型注册表 + 占位 div；多实例改造最考验的是告别全局变量。"
+}

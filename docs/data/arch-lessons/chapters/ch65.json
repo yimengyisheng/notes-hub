@@ -1,0 +1,87 @@
+{
+ "num": "65",
+ "topic": "架构范式：文本处理",
+ "date": "2026-08-12",
+ "questions": [
+  "ExcelViewer/DocViewer 为什么重要？有什么好处？",
+  "KSDN 是什么？第一次引入了什么？",
+  "TPL（文本处理语言）相比 LEX+YACC 有什么特点？",
+  "文本内容处理的标准方式是什么？词法分析与语法分析各做什么？",
+  "为什么通常倾向于用 DOM 模型而不是 SAX？",
+  "BPL 是什么？它和 TPL 有什么关系？"
+ ],
+ "modules": [
+  {
+   "icon": "👁️",
+   "color": "blue",
+   "title": "文本处理技术栈演进",
+   "bullets": [
+    "2000 年初：金山电子表格文件格式设计与 Excel 文件读写；参与多版本 Word 文件读写",
+    "实现 ExcelViewer 和 DocViewer：第一次让文件格式理解过程用程序固化，利于知识传承",
+    "Reader 模块两大问题：大量业务逻辑干扰对格式本身的理解；不支持的功能没有对应解析代码",
+    "Viewer 可把对格式的理解记录成稳定可传承知识，无需关心是否已支持；时间上应先有 Viewer 理解格式，再设计 Reader",
+    "Viewer 抽象的是界面呈现部分，代码不需要一行涉及界面；同时生成纯文本结果到磁盘，可用 diff 工具对比加速理解",
+    "2004 年推 KSDN：自动从源代码提取的全局文档系统，每天日构建后更新；第一次引入通用脚本表达要抽取什么（脚本→XML→XSLT→HTML）"
+   ]
+  },
+  {
+   "icon": "⚙️",
+   "color": "orange",
+   "title": "从 KSDN 2.0 到 TPL",
+   "bullets": [
+    "2006 年实现 C++ 版 TPL（Text Processing Language）：类似 Boost Spirit 但功能强大很多；表达能力不弱于 LEX+YACC，使用却轻量",
+    "KSDN 2.0：TPL 将 C++/Delphi 转 json，再用 JSPT（json 输入＋PHP formatter）转 HTML",
+    "过程非常通用：可实现任意文件格式之间的变换（mk 程序本质是类 ini 到 Makefile 的变换）",
+    "2009 年 CERL 网络库（协程高并发）：定义 SDL 描述服务器网络协议，用 TPL+JSPT 解析",
+    "2011 年七牛成立选 Go；2015 年网络爬虫抽取网页结构化信息促成 Go 版 TPL（github.com/qiniu/text）",
+    "为验证 Go 版 TPL 实现 qlang 语言；2017 年为理解 rtmp 协议创建 BPL（Binary Processing Language）"
+   ]
+  },
+  {
+   "icon": "📖",
+   "color": "green",
+   "title": "文本内容处理的标准范式",
+   "flow": {
+    "color": "green",
+    "steps": [
+     "词法分析（Lex）<br>Scanner/Tokenizer 把字节流<br>转为 Token 流",
+     "语法分析（Parser）<br>把 Token 流按文法<br>转为 AST（DOM）或事件（SAX）"
+    ]
+   },
+   "bullets": [
+    "UNIX 提供 lex 和 yacc 两个经典程序协助文本分析",
+    "Go scanner.Scanner：Scan() (pos, tok, lit)；HTML Tokenizer：Next()/Token()",
+    "大部分情况下不直接和词法分析打交道，打交道的基本是 Parser",
+    "Parser 分 SAX（事件机制）与 DOM（结构化数据访问接口）两种模型，通常倾向 DOM",
+    "Go 文法 Parser 输出统一抽象语法树（AST），基于 DOM 模型；HTML Parse(r io.Reader) (*Node, error) 超级简单"
+   ]
+  },
+  {
+   "icon": "🧬",
+   "color": "blue",
+   "title": "TPL 的文法设计",
+   "bullets": [
+    "TPL 实现通用 Scanner＋Parser 机制：词法上抽象 Tokenizer 接口（内置类似 Go 词法的 Scanner，增加 ?、~、@ 操作符）",
+    "Parser 用类 EBNF 文法：*G/+G 表示重复、?G 表示可选、G1 G2 表示串接、G1 % G2 表示列表（%= 可为空）、G/action 表示匹配成功后执行动作",
+    "与 yacc 不同：TPL 中文法脚本与执行代码尽可能分离，增加业务语义可读性",
+    "TPL 属于 SAX 模型，但 extractor 模式下 G/action 视为 G/marker，TPL 变成 DOM 模型（action 只是标记，用于形成输出 DOM 树）",
+    "正则表达式在简单场景方便，但可伸缩性和可读性不强"
+   ]
+  },
+  {
+   "icon": "🔢",
+   "color": "orange",
+   "title": "BPL：二进制处理语言",
+   "bullets": [
+    "BPL 主要用于处理二进制文档：格式描述常含条件判断逻辑，背后依赖一门语言（qlang 诞生后条件满足，BPL 才得以诞生）",
+    "可处理任意二进制文件、任意 TCP 网络协议数据流；有了 BPL，ExcelViewer/DocViewer 可轻松实现",
+    "核心思想：不破坏 TPL 的 EBNF 文法任何语义，作为 TPL 的扩展（TPL 像 C，BPL 像 C++）",
+    "用类 EBNF 文法描述协议结构（如 MongoDB wire protocol：MsgHeader/OP_UPDATE/OP_QUERY 等），几乎与官方伪代码一致",
+    "用 {…} 表示 Go 结构体文法，{/C …} 表示 C 结构体文法；当前 BPL 只支持解释执行，以后可像 TPL 一样生成 Go 代码静态编译",
+    "感悟：要有意识分析工作中的业务场景，提炼通用需求场景形成架构范式积累"
+   ]
+  }
+ ],
+ "summary": "作者用 20 年文本处理经历展示架构范式的形成：从 ExcelViewer/DocViewer 固化格式理解，到 KSDN 引入通用抽取脚本，再到 C++/Go 版 TPL（类 EBNF 文法、通用 Scanner＋Parser、可转 DOM 模型），最终因 qlang 诞生而创建 BPL 处理二进制与网络协议。文本处理标准范式是词法分析（字节流转 Token 流）＋语法分析（Token 流转 AST/DOM），通常倾向 DOM 而非 SAX。",
+ "oneliner": "文本处理范式：Lex 转 Token、Parser 转 AST；TPL/BPL 把格式变换变成通用文法。"
+}

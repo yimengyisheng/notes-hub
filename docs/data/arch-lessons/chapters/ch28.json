@@ -1,0 +1,82 @@
+{
+  "num": "28",
+  "topic": "实战（三）：怎么设计一个“画图”程序？",
+  "date": "2026-08-12",
+  "questions": [
+    "为什么 QPaintDoc 要引入 localID 和 displayID 两个 ID？",
+    "displayID 的 t 前缀表示什么？什么时候会变化？",
+    "localStorage 里为什么按 shape 粒度存储而不是整篇 JSON？",
+    "shapeChanged 和 documentChanged 分别在什么情况下发生？",
+    "多人同时编辑时，数据变更消息是怎么流转的？",
+    "localStorage 满时怎么处理？有什么安全隐患？"
+  ],
+  "modules": [
+    {
+      "icon": "📦",
+      "color": "blue",
+      "title": "对象 ID：localID 与 displayID",
+      "table": {
+        "head": [
+          "ID",
+          "含义"
+        ],
+        "rows": [
+          [
+            "displayID",
+            "用户可见：如 #t10001；t 开头表示从未与服务端同步的临时文档，同步后改用服务端返回的 ID"
+          ],
+          [
+            "localID",
+            "文档本地 ID：初始化后固定不变，只在同一浏览器下保证唯一"
+          ]
+        ]
+      },
+      "bullets": [
+        "localStorage 存 DOM 树是分层的：QPaintDoc 的 shapes 数组只保存 shapeID，真正数据存在 shapeID => shapeJsonData",
+        "shapeID 要全局唯一：实际存储为 QPaintDoc.localID + “:” + shape.id",
+        "只有一个可变 ID 的话，ID 变化时所有 shapeID 数据都要跟着变；引入 localID 让文档初始化后 ID 固定",
+        "第一次访问跳转 #t10001，第二次 #t10002——同一浏览器下不重复"
+      ]
+    },
+    {
+      "icon": "🔄",
+      "color": "orange",
+      "title": "数据变更：两级事件",
+      "table": {
+        "head": [
+          "事件",
+          "触发场景"
+        ],
+        "rows": [
+          [
+            "shapeChanged",
+            "增加图形、修改图形样式（setProp）、移动图形位置（move）"
+          ],
+          [
+            "documentChanged",
+            "增加图形（数量+1）、删除图形（数量-1）；未来改变 Z-Order 交换次序也算"
+          ]
+        ]
+      },
+      "bullets": [
+        "shapeChanged 时更新 shapeID => shapeJsonData；documentChanged 时更新 localID => documentJsonData",
+        "多人协作时变更来自其他浏览器：Client B 操作 → B 的 DOM 变更 → 服务端变更 → Client A 收到 → A 的 DOM 变更 → A 的 View 更新",
+        "之前 26/27 讲没引入数据变更事件，Controller 改完数据自己调 qview.invalidateRect——虽简单但不符合标准 MVC（界面更新应由 Model 的 DataChanged 事件触发）"
+      ]
+    },
+    {
+      "icon": "🔒",
+      "color": "green",
+      "title": "容量限制与安全",
+      "bullets": [
+        "localStorage 容量大部分在 5-10M 级别，同一浏览器会存多篇文档",
+        "统一接管 setItem：发生 QuotaExceededError 就淘汰最远创建的文档",
+        "及时联网同步文档，数据就不会丢",
+        "localStorage 数据可被打开浏览器的人查看：敏感数据有泄露风险",
+        "多租户场景更危险：多个账号的文档都在同一 localStorage，登出后别人仍能看到——最简单方案是登出时清空所有文档"
+      ]
+    }
+  ],
+  "summary": "画图程序开始做本地持久化：QPaintDoc 引入 localID（固定不变）与 displayID（用户可见、同步后变化），localStorage 按 shape 粒度分层存储避免整篇重复保存。数据变更分 shapeChanged 与 documentChanged 两级，为未来多人协作的消息流转打基础。localStorage 容量有限（5-10M），满时淘汰最远文档；同时存在隐私风险，多租户登出时应清空数据。",
+  "oneliner": "localID 固定、displayID 可见；存储按 shape 分粒度，数据变更分两级事件。"
+}

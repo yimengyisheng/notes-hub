@@ -1,0 +1,106 @@
+{
+  "num": "26",
+  "topic": "实战（上）：怎么设计一个“画图”程序？",
+  "date": "2026-08-12",
+  "questions": [
+    "画图程序的 Model 层（dom.js）由哪些类组成？",
+    "为什么让 Model 层自己绘制而不是暴露数据？",
+    "ViewModel 层（view.js）包含哪些内容？",
+    "为什么不用浏览器 Virtual View 时局部更新要自己处理？",
+    "View 层在 MVC 里承担哪些极其重要的责任？",
+    "Controller 层为什么通过 invokeController 激活而不是直接打交道？",
+    "从架构思维看，概要设计要关心哪些问题？"
+  ],
+  "modules": [
+    {
+      "icon": "📦",
+      "color": "blue",
+      "title": "Model 层：QPaintDoc 文档树",
+      "table": {
+        "head": [
+          "类",
+          "职责"
+        ],
+        "rows": [
+          [
+            "QLine／QRect／QEllipse／QPath",
+            "图形数据＋线型样式（width/color）＋onpaint 自绘"
+          ],
+          [
+            "QLineStyle",
+            "线的宽度与颜色"
+          ],
+          [
+            "Shape 接口",
+            "统一 onpaint(ctx) 绘制入口"
+          ],
+          [
+            "QPaintDoc",
+            "DOM 根：addShape 添加图形、onpaint 整体绘制"
+          ]
+        ]
+      },
+      "bullets": [
+        "Model 层使用接口直观体现业务：添加图形＋绘制",
+        "选择让 Model 层自己绘制，避免暴露 DOM 数据细节",
+        "依赖选择原则：倾向依赖接口更稳定的组件（GDI 比 DOM 数据细节稳定），接口也因此更稳定"
+      ]
+    },
+    {
+      "icon": "🖼️",
+      "color": "green",
+      "title": "ViewModel 层：QPaintView",
+      "bullets": [
+        "index.htm 是总控：界面布局（Layout）＋应用初始化（加载哪些 Controllers）",
+        "view.js 实现 QPaintView：doc（Model 指针）＋properties（lineWidth/lineColor 等 ViewModel 数据）＋drawing（浏览器 HTML 元素抽象）",
+        "绘制相关：onpaint 与 invalidateRect（重绘某区域，当前实现简单、总是全量重绘）",
+        "没用浏览器的 Virtual View、DOM 数据完全自己管理时，局部更新问题和传统桌面开发完全一致",
+        "Controller 相关：registerController 登记、invokeController 激活、stopController 停止；View 不关心具体 Controller，只定义行为规则并做事件委托"
+      ]
+    },
+    {
+      "icon": "🎯",
+      "color": "orange",
+      "title": "View 层是承上启下的桥梁",
+      "bullets": [
+        "绘制交给 Model 后，View 基本是胶水层，但仍承担极重要的责任",
+        "屏蔽平台差异：Model 平台无关；Controller 大部分代码跨平台，只要 View 对事件的抽象得当",
+        "定义界面布局：不同尺寸设备交互不同，在 View 层控制整体布局比较妥当"
+      ]
+    },
+    {
+      "icon": "🧩",
+      "color": "blue",
+      "title": "Controller 层",
+      "bullets": [
+        "menu.js：命令菜单与状态显示（创建图形、选 lineWidth/lineColor、显示鼠标位置）",
+        "菜单不直接和创建图形 Controller 打交道，而是调 qview.invokeController 激活，避免耦合",
+        "Model 只支持 4 种图形，界面却有 6 种（Line、Rect、Ellipse、Circle、Path、FreePath）——同一 DOM API 在 Controller 层往往有多条实现路径",
+        "lineWidth/lineColor 操作的是 ViewModel 数据（可看作某种 Selection），不是 Model",
+        "MousePosTracker 很特殊：不操作数据，只操作输入事件",
+        "QRectCreator 通过两个 points 构建图形，接管 mousedown/mousemove/mouseup/keydown；keydown 支持 ESC 放弃创建"
+      ]
+    },
+    {
+      "icon": "💡",
+      "color": "green",
+      "title": "架构思维：概要设计",
+      "callout": {
+        "star": true,
+        "text": "需求分析之后进入概要设计（系统设计），核心是分解子系统：每个子系统负责什么？依赖哪些子系统、能否少知道一些？通过什么接口耦合、是否自然体现业务关系、是否足够稳定？MVC 是桌面程序分解子系统的基本框架：Model 接口自然体现业务、View 只做桥梁不知道具体 Controller、Controller 彼此独立只响应事件并调 Model/ViewModel 改数据。"
+      }
+    },
+    {
+      "icon": "📝",
+      "color": "orange",
+      "title": "裸写 JS 的用意",
+      "bullets": [
+        "不鼓励裸写 JavaScript，只是消除不同人的喜好差异，避免因不熟悉某库而难理解逻辑",
+        "不要被框架绑架：框架不应增加代码耦合，否则就该丢掉",
+        "用一个好框架不等于用好了它，关键还是取决于你自己的思维"
+      ]
+    }
+  ],
+  "summary": "“画图”程序是 MVC 的实战解剖：Model 层是 QPaintDoc 文档树（QLine/QRect/QEllipse/QPath 自绘），ViewModel 层是 QPaintView（ViewModel 数据＋Controller 注册激活与事件委托），Controller 层彼此独立（菜单通过 invokeController 激活避免耦合）。View 是承上启下桥梁，负责屏蔽平台差异与定义布局。这演示了概要设计：分解子系统、明确职责与稳定接口。",
+  "oneliner": "画图程序解剖 MVC：Model 自绘、View 做胶水、Controller 彼此独立靠 invokeController 激活。"
+}

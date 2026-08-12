@@ -264,6 +264,16 @@
           ]
         }
       ]
+    },
+    {
+      "id": "arch-lessons",
+      "title": "《许式伟的架构课》康奈尔笔记",
+      "emoji": "🏛️",
+      "desc": "《许式伟的架构课》读书笔记 · 康奈尔笔记法：从架构师成长之路、编程语言与操作系统原理，到架构设计与项目实战，共 87 讲。",
+      "type": "cornell",
+      "unit": "讲",
+      "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-arch",
+      "dataDir": "work/cards"
     }
   ]
 }

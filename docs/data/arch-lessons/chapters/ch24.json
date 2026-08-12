@@ -1,0 +1,100 @@
+{
+  "num": "24",
+  "topic": "跨平台与 Web 开发的建议",
+  "date": "2026-08-12",
+  "questions": [
+    "为什么跨平台桌面开发是超级难题？",
+    "跨平台差异的两大来源是什么？",
+    "为什么说“每一次统一的努力，都最终变成新的分裂”？",
+    "Web 的 B/S 架构带来哪些新的复杂性？",
+    "胖前端和胖后端有什么区别？",
+    "为什么浏览器下的 MVC 变成了 MVMP？",
+    "Server 端的 Model 层和 Web 层各承担什么职责？"
+  ],
+  "modules": [
+    {
+      "icon": "🌐",
+      "color": "orange",
+      "title": "跨平台为什么这么难",
+      "bullets": [
+        "两个差异来源：操作系统（界面程序框架不一致）＋屏幕尺寸（大屏 PC/Pad、中屏手机、小屏手表）",
+        "放弃某个操作系统＝放弃流量入口和用户，所以不得不支持每个主流平台",
+        "终端类型繁多：PC 本地、PC Web、Mobile 本地、Mobile Web（小程序、PWA）",
+        "无数跨平台方案前仆后继，但至今没有真正深入人心的解决方案",
+        "一句话很深刻：“每一次统一的努力，都最终变成新的分裂”"
+      ]
+    },
+    {
+      "icon": "🖼️",
+      "color": "blue",
+      "title": "Web 开发的新复杂性",
+      "bullets": [
+        "多用户：数据不再保存在客户端，而是存在 Server 端",
+        "数据可靠性责任转移：数据在 Server 端，丢了就是软件厂商的责任，用户会跳起来",
+        "分工安排更多：胖前端（业务逻辑尽量放前端，极致是单页应用，体验接近 Native）vs 胖后端（主要逻辑在后端，交互事件响应也通过网络调后端实现）"
+      ]
+    },
+    {
+      "icon": "🧩",
+      "color": "green",
+      "title": "浏览器下的 MVC → MVMP",
+      "flow": {
+        "color": "green",
+        "steps": [
+          "浏览器 View 收到交互事件，<br>通过 HTML DOM 的 onXXX 委托出去",
+          "Model 的 DataChanged 事件<br>无法通知浏览器实现的 View",
+          "改由 Presenter（Controller）监听<br>并更新界面",
+          "更新界面不操作 View 而是<br>操作 ViewModel → MVMP"
+        ]
+      },
+      "bullets": [
+        "HTML DOM 从数据角度完整描述界面，所以 HTML+CSS 是 ViewModel 层，View 已由浏览器实现",
+        "MVMP 全称 Model-ViewModel-Presenter"
+      ]
+    },
+    {
+      "icon": "📦",
+      "color": "blue",
+      "title": "Server 端的架构",
+      "table": {
+        "head": [
+          "层",
+          "职责"
+        ],
+        "rows": [
+          [
+            "Multi-User Model",
+            "最底层多租户 Model，实现自动化（Automation）所需的 API"
+          ],
+          [
+            "Web 层",
+            "基于会话（Session-based），负责用户接入，登录后形成会话"
+          ],
+          [
+            "Session-based Model",
+            "把多租户 API 转译成单租户场景，代码量少甚至可自动实现"
+          ],
+          [
+            "Session-based ViewModel",
+            "HTML+JS+CSS 文件，是真正的 Web 业务入口，把数据返回浏览器渲染 View"
+          ]
+        ]
+      },
+      "bullets": [
+        "Server 端的二次开发接口（API）支持自动化需求",
+        "Session-based Model 与 ViewModel 不直接关联，通过网络遥控浏览器侧的 Model 与 ViewModel"
+      ]
+    },
+    {
+      "icon": "🎯",
+      "color": "orange",
+      "title": "给大前端的建议",
+      "callout": {
+        "star": false,
+        "text": "跨平台是“大前端”程序员永远的痛：计划赶不上变化，一个方案还没搞熟，新的又出现了。Web 开发上 MVC 变成 MVMP，但与单机桌面软件一样的建议：认真对待 Model 层，认真思考它的使用接口，把 Model 层做厚。"
+      }
+    }
+  ],
+  "summary": "跨平台桌面开发难在操作系统与屏幕尺寸两大差异来源，无数统一努力最终变成新的分裂。Web 的 B/S 架构带来多用户、数据可靠性责任转移、胖前端/胖后端等新复杂性。浏览器下 View 被浏览器实现，HTML+CSS 即 ViewModel 层，MVC 演化为 MVMP（Model-ViewModel-Presenter）。Server 端分 Multi-User Model（自动化 API）、Web 层（会话）、Session-based Model/ViewModel。",
+  "oneliner": "每一次统一都变成新的分裂；浏览器把 MVC 变成 MVMP，Model 还是越厚越好。"
+}

@@ -1,0 +1,109 @@
+{
+  "num": "30",
+  "topic": "实战（五）：怎么设计一个“画图”程序？",
+  "date": "2026-08-12",
+  "questions": [
+    "paintweb 与 paintdom 是如何协作的？paintweb 服务端有多“平庸”？",
+    "现实中 paintweb 服务端还要承担哪些职责？",
+    "怎么知道断网后离线编辑过哪些内容？三种思路的取舍是什么？",
+    "为什么同步变更要新增同步协议而不是还原为编辑操作？",
+    "加载文档分哪三类场景？",
+    "为什么统一 localStorage 与网络协议的图形表示？",
+    "几轮迭代后 Model 层胖了多少？它的职责有哪些？"
+  ],
+  "modules": [
+    {
+      "icon": "🌐",
+      "color": "blue",
+      "title": "paintweb 与 paintdom 对接",
+      "bullets": [
+        "paintdom 监听 9999，paintweb 监听 8888；实际业务是两个软件，DEMO 中同属一个进程（paintdom 作为 goroutine）",
+        "网络协议有两层含义：载体（协议栈，这里用 HTTP）＋承载的业务逻辑；谈架构也分基础架构维度与应用架构维度",
+        "paintweb 服务端很“平庸”：静态文件服务器（托管 HTML+CSS+JS）＋反向代理（把 /api/xxx 转发到 localhost:9999/xxx）",
+        "现实中还要支持帐号服务器（Account Service）：基础架构类服务、与业务无关、必须共享同一套账号体系",
+        "paintdom 是 Multi-User Model 层；paintweb 实现 Session-based Model 层的转译（当前例子转译就是简单转发）",
+        "胖前端模式（JS 业务逻辑）vs 胖后端模式（PHP 等胶水语言，代码安全但无法离线）"
+      ]
+    },
+    {
+      "icon": "🔄",
+      "color": "orange",
+      "title": "计算变更：版本号方案",
+      "table": {
+        "head": [
+          "思路",
+          "问题"
+        ],
+        "rows": [
+          [
+            "完整保存整篇文档",
+            "很浪费：每次编辑都自动保存，恢复联网也要保存"
+          ],
+          [
+            "记录完整编辑操作历史",
+            "一个对象编辑多次会有很多指令；断网久了存储可能超过文档大小，缺乏鲁棒性"
+          ],
+          [
+            "给对象加版本号",
+            "对比基版本 baseVer 与对象版本 ver，ver＞baseVer 说明同步后发生过变更——采用此方案"
+          ]
+        ]
+      }
+    },
+    {
+      "icon": "📦",
+      "color": "green",
+      "title": "同步变更：新增同步协议",
+      "bullets": [
+        "把变更还原为一条条编辑操作发给服务端，会有部分成功部分失败的中间态，很烧脑",
+        "作者准则：不要烧脑——非性能敏感业务，简单易于实施为第一原则",
+        "于是修改网络协议，增加同步接口；最初定义的编辑操作统统不管用",
+        "复盘：最初协议逻辑没错，只是没预见离线编辑需求——需求的预见性非常重要，缺乏市场洞察就要买单",
+        "及早推出 Mock 让前端快速迭代，及早发现协议不足；越晚调整协议越难越低效"
+      ]
+    },
+    {
+      "icon": "🖼️",
+      "color": "blue",
+      "title": "加载文档：三类场景",
+      "table": {
+        "head": [
+          "场景",
+          "行为"
+        ],
+        "rows": [
+          [
+            "_loadBlank 新文档",
+            "联网在服务端创建新 drawing；断网本地建临时文档（displayID 以 t 开头）"
+          ],
+          [
+            "_loadTempDoc 临时文档",
+            "一直离线编辑的文档：联网则服务端建 drawing 并同步离线数据；断网继续离线编辑"
+          ],
+          [
+            "_loadRemote 远程文档",
+            "先加载本地缓存离线数据，联网则异步加载远程文档，成功后放弃本地离线内容"
+          ]
+        ]
+      },
+      "bullets": [
+        "统一 localStorage 与网络协议的图形表示：重构引入 qshapes（QSerializer）注册表，每种图形注册 creator，加载时 qshapes.create(json)",
+        "每个图形实现 constructor(json) 与 toJSON() 两个方法",
+        "加载完成后发 onload 消息由 View 响应刷新界面，避免 Model 层理解 View 业务"
+      ]
+    },
+    {
+      "icon": "📊",
+      "color": "orange",
+      "title": "Model 层越厚越好",
+      "bullets": [
+        "dom.js 从 v26 的约 120 行增长到 v30 的约 860 行——翻了 7.x 倍",
+        "多轮迭代基本以变更 Model 层为主；v29 看似没改 dom.js，实则是新增服务端 Model（Multi-User Model）",
+        "推论：Model 代码若散落各处，变更质量会非常不受控；Model 环境依赖最小、最容易测试",
+        "Model 职责总结：业务逻辑对外接口；实现 View 委托的 onpaint 绘制；实现 Controller 的 hitTest（selection 支持）；与服务端通讯（View/Controller 无需感知服务端）；离线编辑 localStorage 存取"
+      ]
+    }
+  ],
+  "summary": "画图程序完成前后端对接：paintweb 是“平庸”的静态文件托管＋反向代理，现实中还要接账号服务与协议转译（Session-based Model → Multi-User Model）。为支持离线编辑，计算变更采用对象版本号对比基版本，并新增同步协议而非还原编辑操作（避免部分成功中间态）。加载文档分新文档、临时文档、远程文档三类场景，并统一图形表示。Model 层从 120 行长到 860 行，验证“Model 越厚越好”。",
+  "oneliner": "对接服务端要离线：版本号算变更、同步协议避免烧脑、Model 越厚越好。"
+}

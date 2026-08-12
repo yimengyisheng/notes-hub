@@ -1,0 +1,78 @@
+{
+ "num": "60",
+ "topic": "架构分解：边界，不断重新审视边界",
+ "date": "2026-08-12",
+ "questions": [
+  "办公软件 IO 子系统的需求有哪些？初始架构设计有什么问题？",
+  "Visitor 模式解决读盘存盘的思路是什么？它有什么问题？",
+  "IO DOM 模式相比 Visitor 模式好在哪里？",
+  "为什么 IO DOM 与核心 DOM 之间用 Io() 函数体现超集关系？",
+  "PDF/PS 这类分页文档的存盘暴露了哪些需求关联性？",
+  "如何发现接口中“多余的约束”？以剪贴板为例说明。"
+ ],
+ "modules": [
+  {
+   "icon": "📋",
+   "color": "blue",
+   "title": "IO 子系统的需求与初始架构",
+   "bullets": [
+    "需求：读盘存盘＋剪贴板拷贝（存盘）、粘贴（读盘）",
+    "读盘：自定义格式＋主流格式（Word、RTF、HTML、纯文本）",
+    "存盘：流式文档＋基于分页显示的文档格式（PDF、PS）",
+    "初始设计：SaveWord/SaveRTF/LoadWord/LoadRTF 散落在 Span、Paragraph、TextPool、Document 每个类里——无法称为独立子系统，完全是核心系统的一部分",
+    "这是受 OOP 思想影响、以为一切以对象为中心；MFC 的 Serialization 机制进一步加剧",
+    "良好设计：核心功能要少、要收敛；但文件格式层出不穷，读盘存盘需求开放、难以收敛"
+   ]
+  },
+  {
+   "icon": "👥",
+   "color": "orange",
+   "title": "Visitor 模式：第一版迭代",
+   "bullets": [
+    "Visitor 模式：为核心系统 Model 层提供一套遍历数据的接口，数据通过事件方式接收（StartDocument/StartParagraph/StartSpan/Characters/EndSpan/EndParagraph/EndDocument）",
+    "好处：核心系统为 IO 提供统一数据访问接口，IO 子系统从核心抽离；Word/RTF 模块彼此独立又融洽配合（如 ConvRTF2Word）",
+    "问题：Visitor 本质上就是 SAX 模式，只是数据源换成核心系统 Model 层",
+    "SAX 缺点它都有：预设数据访问逻辑，客户未必期望相同逻辑访问；缓存数据等待的冗余代码多，心智负担大；事件次序难理解需长文档说明",
+    "作者当年 WPS IO 子系统第一版就采用此架构，实践后认为是失败的设计",
+    "KISS 的简单不是接口外观简洁，而是业务语义表达准确无歧义"
+   ]
+  },
+  {
+   "icon": "🌳",
+   "color": "green",
+   "title": "IO DOM 模式：第二版迭代",
+   "bullets": [
+    "两套 DOM：IO DOM（IoDocument 接口族）与核心系统自己的 DOM（Document 类），两套接口几乎雷同，Document 只是 IoDocument 的超集",
+    "语法上难以直接体现接口族超集关系，所以用 Document 的 Io() 函数转成 IoDocument 接口",
+    "好处：存盘读盘模块代码工程量变低、接口理解一致性更好、更自然避免惊异（IO DOM 只是子集关系，客户理解成本最低）",
+    "Visitor 模式是核心系统为 IO 子系统提供的专用插件机制，对核心系统是额外成本；在 DOM 模式基础上提供 Visitor 有点多余，DOM 已极度灵活"
+   ]
+  },
+  {
+   "icon": "📄",
+   "color": "blue",
+   "title": "回到最初需求：分页文档",
+   "bullets": [
+    "流式文档解决后，还有分页显示的 PDF/PS 文档没解决：核心 DOM 或 IO DOM 都没有分页信息",
+    "若 SavePDF(doc IoDocument) 意味着存盘模块要实现者自行对 IO DOM 排版（Render）得到分页结构",
+    "这暴露了需求关联性：IO 子系统在特定场景与排版/绘制子系统相关（屏幕绘制 onPaint、打印 onPrint）",
+    "核心 DOM → Render 渲染 → View DOM：不只可屏幕绘制和打印，也可支持 PDF/PS 存盘（SavePDF(f, doc ViewDocument)）",
+    "需求分析没找到这些关联性，就不是一次合格的需求分析"
+   ]
+  },
+  {
+   "icon": "🔍",
+   "color": "orange",
+   "title": "不断重新审视边界",
+   "bullets": [
+    "理需求时最初提了剪贴板，但整理用户故事时漏了：它意味着数据流不能用 *os.File，而要用更抽象的 io.Reader/io.Writer",
+    "这就是发现“多余的约束”的典型：把模块提高到足够通用普适场景看，不需要剪贴板这个具体场景也能发现过度约束",
+    "入口级接口边界也要探讨：LoadFile 应返回 format；输入源不一定是文件，可能是 io.Reader、IStorage（Windows 用 STGMEDIUM，跨平台可用 Go 任意类型 interface{}）",
+    "用 interface{} 需在文档层面补充清楚支持什么不支持什么，避免团队共识麻烦",
+    "核心原则：职责——不同业务模块分别做什么、如何耦合、需求适应性如何、心智负担如何；认真做需求分析并过一遍所有用户故事"
+   ]
+  }
+ ],
+ "summary": "以办公软件 IO 子系统为例剖析模块边界：初始把存盘读盘散落在每个类（OOP 思维毒害），第一版用 Visitor 模式（本质 SAX，缓存冗余、心智负担大、事件次序难理解）是失败设计；第二版引入 IO DOM（核心 DOM 的子集，Document.Io() 体现超集关系），让 IO 子系统从核心抽离、各格式模块独立配合。回到最初需求发现 PDF/PS 分页文档需要 Render 出 View DOM；剪贴板需求要求 io.Reader/Writer 而非 *os.File。不断用用户故事审视边界、发现多余约束。",
+ "oneliner": "边界靠需求分析不断审视：IO DOM 子集抽离全局功能，io.Reader/Writer 取代具体文件。"
+}

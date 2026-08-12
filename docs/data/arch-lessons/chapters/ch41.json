@@ -1,0 +1,94 @@
+{
+ "num": "41",
+ "topic": "实战（一）：“画图”程序后端实战",
+ "date": "2026-08-12",
+ "questions": [
+  "引入 restrpc 框架后，Service 代码量减少了多少？少写了哪些代码？",
+  "restrpc 的 Env 机制是什么？为什么 ResponseWriter 以指针方式传入？",
+  "restrpc 的两种路由方式是什么？方法名有什么要求？",
+  "为什么业务逻辑要分成实现层与 RESTful API 层两层？",
+  "用 httptest 写单元测试相比传统方式好在哪里？",
+  "引入第三方依赖后，用什么做版本管理？"
+ ],
+ "modules": [
+  {
+   "icon": "🧰",
+   "color": "blue",
+   "title": "引入 RPC 框架：restrpc",
+   "bullets": [
+    "mock 服务端 Service 约 280 行；改为 restrpc 后约 163 行，不到原来的 60%",
+    "省掉的代码：URL 参数从 args 变为 env.Args；请求体解析自动完成（参数中指定类型）；返回值序列化与 HTTP 回复自动完成",
+    "核心：http://github.com/qiniu/http（restrpc）",
+    "RPC 框架只规定 Env 满足接口：OpenEnv（初始化）、CloseEnv（清理）"
+   ]
+  },
+  {
+   "icon": "🔌",
+   "color": "green",
+   "title": "Env 与 ResponseWriter",
+   "bullets": [
+    "OpenEnv 中做 Env 初始化，CloseEnv 反之",
+    "ResponseWriter 以指针方式传入：客户可能希望改写它的实现",
+    "典型场景：扩展 API 审计日志——需要接管并记录用户返回的 HTTP 包，就得改写 ResponseWriter",
+    "restrpc 的 HTTP 处理函数看起来像普通函数：Service 类可当普通类来测试，不用再包装 Client SDK，大大降低单元测试成本",
+    "不足：不走 HTTP 协议，担心覆盖不了编码上的小意外，心里不踏实"
+   ]
+  },
+  {
+   "icon": "🧭",
+   "color": "orange",
+   "title": "路由：自动 vs 手工",
+   "table": {
+    "head": [
+     "方式",
+     "规则"
+    ],
+    "rows": [
+     [
+      "自动路由",
+      "POST /drawings/<DrawingID>/shapes → 方法名 PostDrawings_Shapes；路径中 / 用单词首字母大写分隔，URL 参数替换为 _"
+     ],
+     [
+      "手工路由",
+      "传 routeTable，如 {POST /drawings, PostDrawings}；方法名仍要求 Get/Put/Post/Delete 开头"
+     ]
+    ]
+   },
+   "bullets": [
+    "自动路由方法名看起来丑，但省代码",
+    "手工路由更美观、可读，但有方法名限制"
+   ]
+  },
+  {
+   "icon": "🏗️",
+   "color": "blue",
+   "title": "业务逻辑的两层分层",
+   "flow": {
+    "color": "blue",
+    "steps": [
+     "业务逻辑实现层<br>组织为一颗 DOM 树<br>（drawing.go / shape.go）",
+     "RESTful API 层<br>接收网络请求，转为对底层<br>DOM 树的方法调用"
+    ]
+   },
+   "bullets": [
+    "分层原因一：可能根本不需要网络调用——像 mysql 底层先实现类似 sqlite 的嵌入式库，再提供 TCP 网络接口",
+    "分层原因二：可能需要支持多种网络协议——未来像 Github 一样改用 GraphQL，底层实现层不用变，只加一个薄的 GraphQL 层",
+    "多协议并存时共享同一份 DOM 树实例，既多协议并存又完美解耦"
+   ]
+  },
+  {
+   "icon": "🧪",
+   "color": "orange",
+   "title": "单元测试：qiniutest DSL",
+   "bullets": [
+    "旧测试只创建 drawing 并校验 id，力度不足",
+    "httptest/qiniutest 用 DSL 脚本写测试：post http://qpaint.com/drawings → ret 200 → json 校验，支持 $(id1) 变量引用与 match 匹配",
+    "演示了 DSL 脚本与 Go 代码互操作：用 Go 代码取变量并断言",
+    "配套开源组件：github.com/qiniu/httptest、github.com/qiniu/qiniutest、github.com/qiniu/x（mockhttp，并不真去监听端口）",
+    "首次引入第三方依赖后，用 go mod 做版本管理"
+   ]
+  }
+ ],
+ "summary": "实战第一步把 mock 服务端改造成真实服务端：引入 restrpc 框架后 Service 从约 280 行降到约 163 行，URL 参数、参数解析、返回值序列化全自动；Env 机制支持扩展（如通过改写 ResponseWriter 做审计日志）。业务逻辑分为 DOM 树实现层与 RESTful API 层，未来换 GraphQL 底层不用动。单元测试改用 qiniutest DSL 脚本，不需要 Client SDK 也能业务友好地写测试。",
+ "oneliner": "restrpc 让 Service 瘦身六成，分层解耦 + DSL 测试是服务端实战的起点。"
+}

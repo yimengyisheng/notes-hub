@@ -1,0 +1,65 @@
+{
+ "num": "63",
+ "topic": "接口设计的准则",
+ "date": "2026-08-12",
+ "questions": [
+  "模块的使用界面最重要的准则是什么？mockhttp v1 犯了哪些错？",
+  "mockhttp v2 的接口设计好在哪里？",
+  "模块的环境依赖分哪两种？遵循什么原则？",
+  "使用界面依赖上为什么不能盲目泛化？",
+  "实现依赖什么情况下应该抽象成接口？",
+  "为什么说抽象数据库依赖以切换 MySQL/MongoDB 多半是过度设计？"
+ ],
+ "modules": [
+  {
+   "icon": "📐",
+   "color": "blue",
+   "title": "模块的使用界面：KISS",
+   "bullets": [
+    "使用界面最重要是 KISS：让人一眼就明白模块在做什么业务；简单自然、符合惯例",
+    "mockhttp 用途：启动 HTTP 服务做测试；Go 标准库 httptest.NewServer 分配空闲 TCP 端口并关联 HTTP 服务器，得到 ts.URL",
+    "mockhttp 不同：不真启动 HTTP 服务、没有端口占用",
+    "mockhttp.v1 问题一：不符合单一职责——干了启动测试服务＋请求路由分派两件事",
+    "mockhttp.v1 问题二：不符合 KISS——Bind 不符合 Go 惯例语义；Client 变量按惯例应叫 DefaultClient，且类型是 rpc.Client 而非 http.Client，产生多余依赖",
+    "v1 的随意是因为测试用途“怎么简单怎么来”，但所有偷懒总会还回来"
+   ]
+  },
+  {
+   "icon": "🔄",
+   "color": "orange",
+   "title": "mockhttp.v2 的改进",
+   "bullets": [
+    "新接口：var DefaultTransport *Transport; var DefaultClient *http.Client; func ListenAndServe(host string, service http.Handler)",
+    "好处：Go 程序员一看即明其义，语义上与 Go 标准库 HTTP package 自然融合",
+    "接口要 KISS 的关键：符合语言和社区惯例；某类业务在语言中已有约定俗成接口，就尽可能沿用相同接口语义",
+    "v1 的 func Bind(host string, service interface{}) 看似 interface{} 更泛化，实际内部通过反射实现路由分派，有更强假设；v2 的 service http.Handler 是更恰如其分的描述"
+   ]
+  },
+  {
+   "icon": "🔗",
+   "color": "green",
+   "title": "模块的环境依赖",
+   "bullets": [
+    "接口另一种含义：模块对依赖环境的抽象，即模块与模块之间的契约——大部分情况下说的接口指这一点",
+    "使用界面依赖：用户使用使用界面时自然涉及的；实现依赖：当前实现方案中涉及的组件（换实现方案可能不存在或变成别的依赖）",
+    "遵循“最小依赖原则”/“最少知识原则（LKP）”：尽可能发现模块中多余的依赖",
+    "使用界面依赖：更多考虑参数泛化与抽象以适配更广场景（如存盘读盘从 *os.File 换成 io.Reader/io.Writer 支持剪贴板）",
+    "但泛化不能过度：如果某种泛化不会发生，就是过度设计；保持简单又不失扩展性的平衡依赖对业务的理解，是难点"
+   ]
+  },
+  {
+   "icon": "⚖️",
+   "color": "blue",
+   "title": "实现依赖：直接依赖 vs 抽象",
+   "bullets": [
+    "大部分情况应直接依赖组件，不必抽象：如无必要，勿增实体",
+    "大量抽象基础组件→系统可配置性更好，但学习成本更高",
+    "何时抽象：其一需要提供多种选择时（典型如日志 Logger，业务模块不愿绑定 Logger 选择）；其二需要解除庞大外部系统依赖时（测试 mock 外部依赖）；其三依赖的外部系统是可选组件时（初始化将接口设为 mock 组件，降低学习门槛）",
+    "对实现依赖做接口抽象本质是对模块配置化，需谨慎、适可而止",
+    "抽象数据库依赖以便在 MySQL 和 MongoDB 间自由切换，绝大部分情况是过度设计——选择数据库应是谨慎严谨的行为"
+   ]
+  }
+ ],
+ "summary": "接口设计分使用界面与环境依赖两种理解。使用界面推崇 KISS：简单自然、符合语言社区惯例（mockhttp v1 的 Bind＋rpc.Client 违背惯例与单一职责，v2 的 ListenAndServe＋http.Client 一看即明）。环境依赖遵循最小依赖原则（LKP）：使用界面依赖上对参数泛化抽象（io.Reader/Writer），但不过度；实现依赖大部分直接依赖组件即可，只有多种选择、解除庞大外部依赖、可选组件三种情况才抽象成接口。",
+ "oneliner": "接口 KISS 符合惯例；环境依赖最小化，如无必要勿增实体。"
+}

@@ -1,0 +1,110 @@
+{
+ "num": "43",
+ "topic": "实战（三）：“画图”程序后端实战",
+ "date": "2026-08-12",
+ "questions": [
+  "什么是帐号？互联网帐号有哪些常见表征方式？",
+  "授权和帐号是什么关系？为什么网络 API 不用“用户名＋密码”授权？",
+  "Session 授权和 Token 授权有什么异同？",
+  "OAuth 2.0 的三种角色分别是什么？",
+  "OAuth 2.0 的核心流程是怎样的？",
+  "授权码模式（Authorization Code）为什么是第三方开放接口最常用的场景？"
+ ],
+ "modules": [
+  {
+   "icon": "👤",
+   "color": "blue",
+   "title": "帐号（Account）",
+   "bullets": [
+    "帐号＝表征用户身份的实体，代表一个“用户”；同一自然人可开多个帐号，业务上视为不同用户",
+    "常见表征：电子邮件、手机号、用户自定义网络 ID、自动分配的唯一 ID（UUID）",
+    "典型：银行帐号是预先分配好的卡号，不是自己定义；政府公共服务类业务可能用身份证号",
+    "授权是帐号对服务的访问方式；同一帐号可以有多种授权"
+   ]
+  },
+  {
+   "icon": "🔐",
+   "color": "orange",
+   "title": "授权：用户名＋密码",
+   "bullets": [
+    "除 Token、AK/SK 外，最常见的是“用户名＋密码”（用户名即帐号）",
+    "业界基本不用它做网络 API 授权：每次请求都带密码，泄漏概率大增；安全性要求减少密码在网络中的传输次数",
+    "两个使用场景：其一登录（login）——登录后生成 Session 用 Cookie，此后基于 Session 直到过期；其二作为 Token 授权的入口",
+    "Session 授权与浏览器 Session 不是一回事：登录后生效、不随窗口关闭消失、有效期几天且自动顺延（从最后活动算起）"
+   ]
+  },
+  {
+   "icon": "⚖️",
+   "color": "green",
+   "title": "Session 授权 vs Token 授权",
+   "table": {
+    "head": [
+     "维度",
+     "Session",
+     "Token"
+    ],
+    "rows": [
+     [
+      "应用场景",
+      "Web 应用",
+      "RESTful API 层"
+     ],
+     [
+      "承载机制",
+      "Cookie",
+      "HTTP Authorization 头"
+     ],
+     [
+      "过期",
+      "有过期时间",
+      "有过期时间"
+     ],
+     [
+      "顺延",
+      "自动顺延",
+      "Refresh Token 续期"
+     ],
+     [
+      "入口",
+      "登录（login）",
+      "登录（用户名＋密码）等"
+     ]
+    ]
+   }
+  },
+  {
+   "icon": "🤝",
+   "color": "blue",
+   "title": "OAuth 2.0 的两种场景与三角色",
+   "bullets": [
+    "QPaint 是 To C 应用，API 层自然选 Token 授权，当前标准是 OAuth 2.0",
+    "场景一（核心）：提供开放接口，让更多第三方 App 接入服务",
+    "场景二：作为 OpenID 提供方——第三方接入只为复用你的用户；国内典型：微信和 QQ、支付宝、新浪微博；配套 OpenID Connect 规范",
+    "三角色：服务提供商（授权服务 Authorization Server＋资源服务 Resource Server）、终端用户（资源拥有方 Resource Owner）、第三方应用（客户端 Client）",
+    "官方应用与第三方应用在 OAuth 视角无大区别，都叫客户端"
+   ]
+  },
+  {
+   "icon": "🔄",
+   "color": "orange",
+   "title": "OAuth 2.0 核心流程与模式",
+   "flow": {
+    "color": "orange",
+    "steps": [
+     "客户端向服务商提出接入申请（类似注册 App，只需一次）",
+     "客户端向资源拥有方申请访问权限（发生在服务商环境中）",
+     "客户端向授权服务发授权请求，获得 Token",
+     "客户端用 Token 向资源服务发起资源访问"
+    ]
+   },
+   "bullets": [
+    "访问令牌（Access Token）是最核心的模式、请求频率最大；Refresh Token 次之，用于 Access Token 失效后续期",
+    "其他模式是不同场景的授权入口，通过任一入口可同时拿到 Access Token 与 Refresh Token",
+    "常见模式：授权码、简化（Implicit）、用户名＋密码（Resource Owner Password Credentials）、客户端（Client Credentials）",
+    "授权码模式是第三方开放接口最常用的：重定向到认证服务→用户授权→认证服务器回传授权码到重定向 URI→网站后端用授权码换令牌（对用户不可见）"
+   ]
+  }
+ ],
+ "summary": "帐号是表征用户身份的实体，常见表征有邮箱、手机号、自定义 ID、自动分配的 UUID；授权是帐号对服务的访问方式。网络 API 不用“用户名＋密码”授权是因为不安全，它只用于登录与作为 Token 入口；Session 授权与 Token 授权只是场景不同（Web 用 Cookie、API 用 Authorization 头）。QPaint 作为 To C 应用选用 OAuth 2.0：核心场景是开放接口，涉及服务提供商、资源拥有方、客户端三角色，访问令牌＋刷新令牌是核心，授权码模式是第三方开放接口最常用的流程。",
+ "oneliner": "帐号与授权分离：API 用 OAuth 2.0 令牌，授权码模式是开放接口的标准玩法。"
+}

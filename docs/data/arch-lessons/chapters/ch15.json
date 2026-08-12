@@ -1,0 +1,89 @@
+{
+  "num": "15",
+  "topic": "可编程的互联网世界",
+  "date": "2026-08-12",
+  "questions": [
+    "互联网“操作系统”由哪几层构成？分别解决什么问题？",
+    "为什么说 IP 网络层是可编程的开始？",
+    "HTTP 协议为什么能成为应用层协议的模板？",
+    "NAT 网关和应用层网关有什么区别？",
+    "TCP/UDP 的服务端编程有什么不同？",
+    "基于 HTTP 编程比基于 TCP/IP 编程简单在哪里？"
+  ],
+  "modules": [
+    {
+      "icon": "🌐",
+      "color": "blue",
+      "title": "网络应用程序的全视图",
+      "table": {
+        "head": [
+          "层",
+          "职责"
+        ],
+        "rows": [
+          [
+            "物理层",
+            "网络设备的原生能力，硬件层次的基础协议"
+          ],
+          [
+            "数据链路层",
+            "局部网络的数据传输：固网、WiFi、3G/4G、5G 各有链路层协议"
+          ],
+          [
+            "IP 网络层",
+            "互联网一体化：类似单机体系中的操作系统，是互联网可编程的开始"
+          ],
+          [
+            "TCP/UDP 传输层",
+            "让通讯可信赖，与 IP 一起构成互联网“操作系统”的内核"
+          ],
+          [
+            "应用层",
+            "HTTP、SMTP/POP3 等业务协议百花齐放"
+          ]
+        ]
+      }
+    },
+    {
+      "icon": "📦",
+      "color": "green",
+      "title": "HTTP：应用层协议的模板",
+      "bullets": [
+        "请求＝命令行＋字段＋空行＋正文：GET /abc/example?id=123 HTTP/1.1，字段如 Host、Authorization、Content-Type",
+        "响应第一行＝协议版本＋状态码＋状态文本：200 成功、4xx 请求不合法、5xx 服务器异常",
+        "协议头极其开放：可加 X- 开头的自定义字段（如七牛的 X-Reqid）",
+        "规范业务表达：资源路径表达资源，PUT-POST-GET-DELETE 表达创建-修改-读取-删除",
+        "规范应用层路由：Host 域名＋资源路径，方便业务切分",
+        "HTTP 已成通用传输协议：HTTP DNS、RESTful API、gRPC 都基于它；SMTP/POP3 连接人与人、企业与企业，是开放的力量"
+      ]
+    },
+    {
+      "icon": "⚖️",
+      "color": "orange",
+      "title": "HTTP 编程 vs TCP/IP 编程",
+      "vs": {
+        "a": {
+          "h": "基于 HTTP",
+          "t": "客户端 Get/Post 一把梭；服务端 NewServeMux＋HandleFunc＋ListenAndServe，按资源路径路由，程序架子已呈现，主要填业务逻辑。"
+        },
+        "b": {
+          "h": "基于 TCP/IP",
+          "t": "客户端 net.Dial 像操作文件；服务端要 Listen→Accept 循环；UDP 还要手工按来源 ip:port 分派，复杂程度完全不同。"
+        }
+      }
+    },
+    {
+      "icon": "📝",
+      "color": "blue",
+      "title": "服务端编程骨架",
+      "bullets": [
+        "TCP 服务端：net.Listen → for { c := l.Accept(); go handleConnection(c) }，每个连接一个执行体",
+        "UDP 服务端：ListenUDP → ReadFromUDP，根据来源 IP＋port 手工分派",
+        "应用层网关（七层网关）＝Nginx、Apache，基于 HTTP/HTTPS；NAT 网关是四层透明代理",
+        "架构师决策点：自定义协议、gRPC 还是 HTTP RESTful？网络世界的依赖平台比单机庞大得多"
+      ]
+    }
+  ],
+  "summary": "互联网像一台超级计算机：IP 网络层是“操作系统”核心，TCP/UDP 传输层与它构成内核，应用层则是繁荣的业务生态。HTTP 靠极其开放的协议头、资源路径＋PUT/POST/GET/DELETE 的业务范式与域名路由，成为应用层协议模板，Nginx/Apache 是它的七层网关。编程上基于 HTTP 比基于 TCP/IP 裸写简单得多：一个 ServeMux 就搭好程序架子。",
+  "oneliner": "IP 让网络可编程，HTTP 让业务可表达——选协议是架构师的决策点。"
+}

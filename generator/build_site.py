@@ -95,7 +95,8 @@ def build_cornell(book, src, out_dir):
     chapters_dir = os.path.join(out_dir, "chapters")
     os.makedirs(chapters_dir, exist_ok=True)
     files = sorted(glob.glob(os.path.join(src_data, "ch*.json"))) + \
-            sorted(glob.glob(os.path.join(src_data, "[0-9]*-[0-9]*.json")))
+            sorted(glob.glob(os.path.join(src_data, "[0-9]*-[0-9]*.json"))) + \
+            sorted(glob.glob(os.path.join(src_data, "[0-9]*.json")))
     chapters = []
     for p in sorted(set(files)):
         with open(p, encoding="utf-8") as f:

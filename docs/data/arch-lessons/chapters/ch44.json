@@ -1,0 +1,63 @@
+{
+ "num": "44",
+ "topic": "实战（四）：“画图”程序后端实战",
+ "date": "2026-08-12",
+ "questions": [
+  "dex 的联邦 OpenID 是怎么支持不同 OpenID Provider 的？",
+  "dex 对国内主流 OpenID（微信、支付宝）支持如何？",
+  "OpenID Connect 相比 OAuth 2.0 引入了什么关键概念？为什么需要它？",
+  "ID Token 是什么格式？有什么作用？",
+  "dex 是包还是可执行程序？怎么运行？",
+  "QPaint 对接 dex 用了哪些现成 SDK？核心思路是什么？"
+ ],
+ "modules": [
+  {
+   "icon": "🤝",
+   "color": "blue",
+   "title": "联邦 OpenID：dex 的插件机制",
+   "bullets": [
+    "dex 支持 Pluggable Connector：支持 OpenID Connect 协议的（Google、Salesforce、Azure 等）统一用一个 Connector；Github 等其他实现独立 Connector",
+    "相关协议：单点登录 SAML 2.0、LDAP 也有链接参考，但不是重点",
+    "不同 OpenID Provider 有细节差异：有的不支持 Refresh Token，有的 ID Token 不支持 groups 字段",
+    "不幸的是国内主流 OpenID（微信、支付宝）不在支持之列，但可基于开放插件机制自己实现",
+    "国内类似项目（如 github.com/tiantour/union）想法不难，看架构设计差距巨大"
+   ]
+  },
+  {
+   "icon": "🎫",
+   "color": "green",
+   "title": "对外统一提供 OpenID＋OAuth 2.0",
+   "bullets": [
+    "底层 OpenID Provider 多种多样，dex 对外统一提供标准 OpenID Connect 协议与 OAuth 2.0 服务",
+    "OpenID Connect 是 OAuth 2.0 的扩展，最重要的改进是引入身份令牌（ID Token）",
+    "为什么需要扩展：OAuth 2.0 只关心授权，Access Token 和 Refresh Token 都不含身份（Identity）信息，没法当 OpenID Provider",
+    "ID Token 是 JSON Web Token（JWT），可 decode 并 verify 用户身份（参考 jwt.io）"
+   ]
+  },
+  {
+   "icon": "🚀",
+   "color": "orange",
+   "title": "使用 dex 与 SDK",
+   "bullets": [
+    "dex 不是包（package），而是可执行程序（application），提供帐号与授权服务：运行 dex config.yaml",
+    "config.yaml 样例：config-dev.yaml（开发用 mock 帐号授权）、config-ldap.yaml（基于 LDAP）",
+    "OAuth 2.0 客户端 SDK（Go 准官方）：golang.org/x/oauth2",
+    "OpenID Connect 客户端 SDK（CoreOS 开发）：github.com/coreos/go-oidc",
+    "对接文档：github.com/xushiwei/dex/blob/master/Documentation/using-dex.md；QPaint 代码见 github.com/qiniu/qpaint/tree/v44"
+   ]
+  },
+  {
+   "icon": "🧩",
+   "color": "blue",
+   "title": "核心思路：不重复造轮子",
+   "bullets": [
+    "业界已有非常成熟的实践，没必要自己造轮子",
+    "基于 OpenID Connect 协议提供帐号系统，基于 OAuth 2.0 协议实现 Open API 体系",
+    "背后的实现也基于开源项目：CoreOS 团队开发的 dex（github.com/dexidp/dex）",
+    "把关注重心放在 QPaint 业务本身上"
+   ]
+  }
+ ],
+ "summary": "QPaint 的帐号与授权改造基于成熟实践不造轮子：用 CoreOS 开源的 dex 作为帐号与授权服务，它通过 Pluggable Connector 支持联邦 OpenID（Google、Github 等，但微信支付宝需自己实现），对外统一提供 OpenID Connect 与 OAuth 2.0。OpenID Connect 是 OAuth 2.0 的扩展，引入 JWT 格式的 ID Token 承载身份信息；客户端侧用 golang.org/x/oauth2 与 go-oidc SDK 对接，把重心放回业务本身。",
+ "oneliner": "账号授权用成熟方案 dex：OpenID Connect 管身份、OAuth 2.0 管开放 API。"
+}

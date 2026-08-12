@@ -1,0 +1,80 @@
+{
+  "num": "29",
+  "topic": "实战（四）：怎么设计一个“画图”程序？",
+  "date": "2026-08-12",
+  "questions": [
+    "画图程序的服务端（drawing 文档）基本功能有哪些？",
+    "网络协议定义遵循什么范式？",
+    "什么是重试的友好性？创建 drawing 为什么重试不友好？",
+    "创建新 shape 为什么是重试友好的？",
+    "相对值操作（如 zorder front/back）怎么做到重试友好？",
+    "网络协议和 localStorage 的 Schema 设计为什么不同？",
+    "为什么要先做 Mock 版服务端？paintdom 分哪两层？"
+  ],
+  "modules": [
+    {
+      "icon": "🌐",
+      "color": "blue",
+      "title": "网络协议：对象操作范式",
+      "bullets": [
+        "服务端基本功能：创建/获取/删除 drawing，以及 drawing 内 shape 的增改删（含移动、改样式、改 zorder）",
+        "网络协议范式：创建对象 POST /objects；修改 POST /objects/＜ID＞；删除 DELETE /objects/＜ID＞；查询 GET /objects/＜ID＞；列表 GET /objects 或 GET /objects?key=value",
+        "Shape 的 JSON 分类型表示：path/line/rect/ellipse，样式统一为 ShapeStyle（lineWidth、lineColor、fillColor）",
+        "ZorderOperation：top 到最顶、bottom 到最底、front 往前一层、back 往后一层"
+      ]
+    },
+    {
+      "icon": "🔧",
+      "color": "orange",
+      "title": "重试的友好性",
+      "bullets": [
+        "网络不稳定，请求失败重试时可能是同一操作执行了两遍——重试友好指执行两遍和执行一遍结果一致",
+        "只读操作天然重试友好；创建对象（POST /objects）往往重试不友好，会创建出两个对象",
+        "创建新 shape 传入 ShapeID（由客户端分配）：服务端已执行过则返回 409 冲突",
+        "创建 drawing 不传参数，重复调用就创建两个——解决办法：客户端传 id、传 name 或传 uuid",
+        "相对值操作（zorder front/back）重复执行会移动两层：改用绝对值（Zorder=5），或用请求序列号 X-Req-Uuid（服务端记录已执行的请求序列号，重复则报冲突）"
+      ]
+    },
+    {
+      "icon": "📦",
+      "color": "green",
+      "title": "Schema 设计：网络 vs 本地",
+      "vs": {
+        "a": {
+          "h": "网络协议",
+          "t": "如 { id, path: { points, close, style } }，未来可能作为开放 API，要严谨对待。"
+        },
+        "b": {
+          "h": "localStorage",
+          "t": "如 { type, id, points, close, style } 无 Schema 模式，比较随意——因为只是本地自己的缓存，怎么方便怎么来。"
+        }
+      }
+    },
+    {
+      "icon": "🔢",
+      "color": "blue",
+      "title": "协议版本管理",
+      "bullets": [
+        "网络协议是一组开放 API，放出去就很难收回，需要考虑兼容",
+        "带上版本号：POST /v1/objects …；不兼容变更时升级为 /v2/objects",
+        "好处：可逐步下线旧版本流量，让两个版本并存一段时间",
+        "新旧版本业务服务器相互独立，前端由 nginx 或应用网关分派"
+      ]
+    },
+    {
+      "icon": "🎯",
+      "color": "orange",
+      "title": "为什么先做 Mock 版本",
+      "bullets": [
+        "憋大招模式要直接面对高可靠（硬盘坏了、机房地震数据也不能丢）与高可用（无单点故障、异地双活）等通用难题",
+        "Mock 版核心价值是串联业务：让团队并行，前端不用等后端，后端可针对协议做高覆盖单元测试",
+        "快速验证网络协议有效性，不满足业务需求可及时调整",
+        "Mock 版甚至不依赖数据库，业务逻辑基于内存数据结构即可",
+        "paintdom 分两层：Model 层（shape.go、drawing.go，纯业务核心逻辑，DOM 树为 Document → Drawing → Shape → ShapeStyle）与 Controller 层（service.go，实现网络协议）",
+        "网络协议层可看作 Controller：负责接受用户输入，只不过输入来自自动化（Automation）程序的 API 请求"
+      ]
+    }
+  ],
+  "summary": "画图程序网络协议遵循“创建 POST、修改 POST、删除 DELETE、查询 GET”的对象操作范式，服务端支持 drawing 与 shape 的增删改。设计关键点是重试友好：创建 shape 由客户端分配 ID 可避免重复创建，相对值操作（zorder front/back）要用绝对值或请求序列号。网络协议 Schema 严谨、localStorage 随意。第一版服务端用 Mock 实现（paintdom，Model+Controller 两层）以最快串联业务。",
+  "oneliner": "网络协议要重试友好：客户端给 ID、操作用绝对值、必要时带请求序列号。"
+}

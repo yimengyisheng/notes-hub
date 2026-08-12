@@ -1,0 +1,76 @@
+{
+  "num": "21",
+  "topic": "图形界面程序的框架",
+  "date": "2026-08-12",
+  "questions": [
+    "键盘鼠标事件是怎么进入进程的事件队列的？",
+    "窗口响应事件的常见机制有哪两种？",
+    "为什么会有 onPaint/onDraw 事件？",
+    "事件分派循环是怎么工作的？",
+    "鼠标、键盘事件分别如何确定目标窗口？",
+    "GDI 绘制有哪些跨平台方案？为什么 GDI 需要硬件加速？",
+    "为什么说交互子系统是差异性最大的子系统？"
+  ],
+  "modules": [
+    {
+      "icon": "🔧",
+      "color": "blue",
+      "title": "事件从硬件到队列",
+      "flow": {
+        "color": "blue",
+        "steps": [
+          "键盘、鼠标、触摸屏等<br>产生硬件中断",
+          "操作系统中断处理程序<br>收到对应事件",
+          "确定事件的目标进程",
+          "放入目标进程的<br>事件队列（Event Queue）"
+        ]
+      }
+    },
+    {
+      "icon": "📝",
+      "color": "green",
+      "title": "窗口如何响应事件",
+      "bullets": [
+        "窗口＝独立可复用的界面元素：响应事件、修改状态、调 GDI 更新界面",
+        "机制一：事件处理类（EventHandler／iOS Responder），窗口类继承它；Windows 用回调函数窗口过程（WindowProc）实现语言无关复用，形式不同本质相同",
+        "机制二：委托（delegate）——事件处理委托给别人，如 Web 编程的 onclick",
+        "onPaint/onDraw：OS 不保存被遮挡的窗口内容，移动窗口后发事件让窗口重绘",
+        "应用程序也能响应事件：进程将被杀死、低电量告警等不发给窗口的事件"
+      ]
+    },
+    {
+      "icon": "🔄",
+      "color": "orange",
+      "title": "事件分派",
+      "bullets": [
+        "事件分派循环：GetMessage 取消息 → TranslateMessage → DispatchMessage",
+        "TranslateMessage 负责把键盘按键事件（onKeyDown/onKeyUp）转化为字符事件（onChar）",
+        "鼠标/触摸事件：交给事件发生处所在窗口；拖放例外，需 Mouse Capture（移出窗口仍继续发）",
+        "键盘事件：焦点窗口先响应，不感兴趣则逐层上升直到顶层窗口",
+        "输入文本需要 Caret 光标指向焦点窗口；触发命令可用热键 HotKey，非活跃窗口也能响应（如截屏）"
+      ]
+    },
+    {
+      "icon": "🖼️",
+      "color": "blue",
+      "title": "GDI：窗口内容绘制",
+      "bullets": [
+        "先确定绘制内容是 2D 还是 3D；2D 各平台 GDI 支持较好但差异大，3D 主流用 OpenGL，Vulkan 号称 NextGL",
+        "各平台 GDI 概念大同小异，比整个桌面框架更容易抽象出跨平台编程接口",
+        "GDI 是性能要求最高、最耗电的子系统，优化靠硬件加速，关键角色在硬件厂商——由硬件厂商推跨平台 GDI 硬件加速可能是趋势",
+        "通用控件：Label、Button、RadioBox、CheckBox、Input（EditBox/EditText）、ProgressBar 等，跨平台细节差异常是坑"
+      ]
+    },
+    {
+      "icon": "🎯",
+      "color": "green",
+      "title": "桌面编程的特点",
+      "callout": {
+        "star": false,
+        "text": "桌面应用程序由用户交互所驱动，我们身处在操作系统约定的编程框架中——这是桌面编程的特点。交互子系统是操作系统所有子系统中差异性最大的，跨平台桌面应用要面对 PC、PC 浏览器、手机/平板/手表、小程序等众多平台；平台优先级、迭代规划、跨平台方案的选择极其考验架构师的决策能力。"
+      }
+    }
+  ],
+  "summary": "图形界面程序由事件驱动：硬件中断产生事件，操作系统放入目标进程的事件队列，事件分派循环（GetMessage→DispatchMessage）按事件处理链分发。窗口用事件处理类或委托响应事件，onPaint 让窗口在被遮挡后重绘；鼠标事件交给位置所在窗口（拖放靠 Mouse Capture），键盘事件沿焦点窗口链上升。GDI 负责绘制，2D 各平台大同小异、3D 靠 OpenGL/Vulkan，硬件加速是关键。",
+  "oneliner": "事件进队列、分派给窗口、onPaint 重绘——桌面程序活在操作系统约定的框架里。"
+}

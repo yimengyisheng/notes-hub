@@ -232,7 +232,7 @@
   function navLabel(book, c) {
     if (book.type !== 'cornell') return esc(c.title);
     if (String(c.num).indexOf('-') !== -1) return esc(c.num) + ' ' + esc(c.title);
-    return '第 ' + parseInt(c.num, 10) + ' 章';
+    return '第 ' + parseInt(c.num, 10) + ' ' + (book.unit || '章');
   }
 
   /* ---------- 渲染：阅读页 ---------- */

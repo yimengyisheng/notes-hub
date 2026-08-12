@@ -1,0 +1,75 @@
+{
+ "num": "42",
+ "topic": "实战（二）：“画图”程序后端实战",
+ "date": "2026-08-12",
+ "questions": [
+  "多租户（多用户）会不会改变 DOM 树的结构？正确做法是什么？",
+  "多租户如何影响接口方法？以 Document 类为例说明。",
+  "QPaint 为什么选择 mongodb 而不是关系型数据库？",
+  "drawing 表和 shape 表的索引分别怎么设计？为什么？",
+  "详细设计阶段的“算法”指什么？为什么删除 drawing 需要事务？",
+  "网络协议层如何支持多租户？"
+ ],
+ "modules": [
+  {
+   "icon": "👥",
+   "color": "blue",
+   "title": "多租户不影响 DOM 结构",
+   "bullets": [
+    "不加多租户时 DOM 三层：Document => Drawing => Shape",
+    "错误做法：变成 Document => User => Drawing => Shape 四层",
+    "正确做法：Drawing 隶属于某个 uid，DOM 层级不变；多租户只是额外的安全约定，避免访问无权限的资源",
+    "影响落在接口方法：Document 的 Add/Get/Delete 都增加 uid 参数，并检查 drawing 是否属于该用户，不属于则失败",
+    "Drawing 等其他类接口未变；但多租户影响接口有时不可避免"
+   ]
+  },
+  {
+   "icon": "📐",
+   "color": "orange",
+   "title": "接口的完整约束",
+   "bullets": [
+    "语言层面：Shape 是 Go interface，只要求 GetID() ShapeID",
+    "但接口约束不止语言层面：Drawing 的 List/Get 返回的 Shape 会直接作为 RESTful API 结果返回，所以 Shape 的 json.Marshal 结果必须符合 API 层预期",
+    "程序＝数据结构＋算法：实现总是从数据结构与算法两个维度描述"
+   ]
+  },
+  {
+   "icon": "🗄️",
+   "color": "green",
+   "title": "数据结构：选 mongodb",
+   "bullets": [
+    "存储即数据结构：服务端最重要的事是选择合适的存储中间件，再在其上组织数据",
+    "选择 mongodb 的理由：图形（Shape）对象的开放性——图形种类多，Schema 无法提前预期，文档型数据库更合适",
+    "定义两个集合（Collection）：drawing 表记录所有 drawing，shape 表记录所有 shape",
+    "索引一：drawing 表为 uid 建索引——未来迟早要提供列出某用户所有 drawing 的方法",
+    "索引二：shape 表为 (dgid, spid) 建联合唯一索引——spid 只在 drawing 内部唯一，需联合 dgid 才全局唯一"
+   ]
+  },
+  {
+   "icon": "⚙️",
+   "color": "blue",
+   "title": "算法：用户故事的实现机制",
+   "bullets": [
+    "架构延续性：需求分析阶段引入角色与用户故事；详细设计阶段角色和用户故事变成子系统、模块、类、函数的使用界面",
+    "算法＝用户故事背后的实现机制；数据结构＋算法是为了满足最初的角色与用户故事定义",
+    "典型用户故事：创建 drawing（insert drawing）、取 drawing 内容（查 drawing 再逐个查 shape）、删除 drawing（remove drawing 再 remove shapes）、创建/删除 shape（先校验 uid 所有权再操作）",
+    "伪代码基于 mongo shell 语法，每条数据库操作都真实有效",
+    "凡涉及多次修改操作的都应以事务形式做：删除 drawing 时若 drawing 已删而 shape 未删，会残留孤立的 shape 对象永远没机会清除"
+   ]
+  },
+  {
+   "icon": "🔐",
+   "color": "orange",
+   "title": "网络协议：mock 授权",
+   "bullets": [
+    "引入最简单的 mock 授权机制：Authorization: QPaintStub <uid>",
+    "不再用 restrpc.Env，自己实现 Env：内嵌 restrpc.Env 并增加 UID 字段",
+    "OpenEnv 中解析 Authorization 头：校验前缀 QPaintStub，解析 uid 并存入 p.UID",
+    "把 restrpc.Env 全部替换为自己的 Env，Document 调用增加 env.UID 参数，多租户改造完成",
+    "完整实现参考 github.com/qiniu/qpaint/blob/v42/paintdom/"
+   ]
+  }
+ ],
+ "summary": "多租户改造不改变 DOM 树结构（仍是 Document=>Drawing=>Shape），只是增加“Drawing 隶属于 uid”的安全约定，并让 Document 类接口增加 uid 参数做所有权校验。实现上选 mongodb 因为图形 Schema 开放不可预期，设计 drawing（uid 索引）与 shape（dgid+spid 联合唯一索引）两个集合；算法即用户故事的实现机制，多次修改操作必须以事务包裹避免孤儿数据。网络协议层引入 mock 授权（Authorization: QPaintStub <uid>），自定义 Env 解析 uid。",
+ "oneliner": "多租户不动 DOM 结构，只加 uid 约定；选 mongodb 因 Schema 开放，索引与事务要精心设计。"
+}

@@ -1,0 +1,100 @@
+{
+ "num": "40",
+ "topic": "服务端的业务架构建议",
+ "date": "2026-08-12",
+ "questions": [
+  "RESTful 里的“无状态”更严谨的说法是什么？为什么服务端是 Model 层？",
+  "REST 原则强调的第二点是什么？",
+  "除了 RESTful，还有哪些网络协议选择？为什么二进制协议取代不了 HTTP？",
+  "授权有哪两种主流方式？各自适用什么场景？",
+  "一个 RPC 服务器框架通常包含哪些能力？",
+  "httptest 框架的核心思想是什么？"
+ ],
+ "modules": [
+  {
+   "icon": "🌐",
+   "color": "blue",
+   "title": "网络协议：RESTful 的两大原则",
+   "bullets": [
+    "REST＝Representational State Transfer（表现层状态转移），RESTful 即符合 REST 原则",
+    "原则一：请求之间“无状态”，更严谨说是“无会话（Session）”——每个请求必须包含理解它所需的完整信息，服务器可在任意时间点重启",
+    "桌面程序状态转化有 Controller 层的“临时状态”（把多个用户交互事件组装成业务）；服务端状态转化没有临时状态，每个 API 请求都包含完整业务参数",
+    "所以服务端程序可以被看作 Model 层；若存在会话，服务端就得实现 Controllers，那就太糟糕了",
+    "原则二：统一表现规范——所有 API 统一抽象为对资源 URI 的 GET、PUT、POST、DELETE 操作"
+   ]
+  },
+  {
+   "icon": "⚖️",
+   "color": "orange",
+   "title": "协议选型：RESTful 还是别的",
+   "vs": {
+    "a": {
+     "h": "RESTful（推荐）",
+     "t": "简单明了、易于理解实施，已是事实上的网络 API 规范；有 nginx、apache 等专门应用层网关支持。"
+    },
+    "b": {
+     "h": "其他选择",
+     "t": "SOAP/WSDL（XML）；thrift（Facebook，已半死不活）；protobuf＋gRPC（Google）；GraphQL（理念先进但复杂，不温不火）。"
+    }
+   },
+   "bullets": [
+    "二进制协议理论效率高，但 HTTP 生态工具多、优化充分，实际效率并不低",
+    "gRPC 也是基于 HTTP 的（推荐 HTTP 2.0）；protobuf 取代的是 json/xml/form，而不是 HTTP 协议",
+    "规律：凡是想对 HTTP 协议取而代之的，都会挂掉；只有 HTTP 有被广泛采纳的专门应用层网关"
+   ]
+  },
+  {
+   "icon": "🔐",
+   "color": "green",
+   "title": "授权：Token vs AK/SK",
+   "table": {
+    "head": [
+     "方式",
+     "适用场景",
+     "要点"
+    ],
+    "rows": [
+     [
+      "AK/SK",
+      "面向企业用户的 To B 云服务",
+      "背后是数字签名；AK 是密钥提示（keyHint），SK 是签名密钥（key），并非公私钥"
+     ],
+     [
+      "Token（OAuth 2.0）",
+      "面向终端用户的 To C 应用",
+      "对外提供 Open API；客户不必向第三方应用暴露用户名密码等隐私"
+     ]
+    ]
+   },
+   "bullets": [
+    "选择相对简单；更要想清楚的是构建业务无关的用户账号体系和授权系统",
+    "账号与授权子系统应隶属于通用子系统，做到与业务无关"
+   ]
+  },
+  {
+   "icon": "🧰",
+   "color": "blue",
+   "title": "RPC 框架：restrpc",
+   "bullets": [
+    "业务 API 用 protobuf 可选 gRPC；RESTful 可用七牛开源的 restrpc（github.com/qiniu/http）",
+    "五大能力：URL 路由（手工或自动）、参数解析（json/form，其他格式可自定义）、返回值序列化（默认 json）、授权（开放框架式实现）、适度开放机制",
+    "mock 授权非常适合做业务系统单元测试",
+    "自动路由对 API 实现方法名有要求，不够美观；不喜欢可用手工路由"
+   ]
+  },
+  {
+   "icon": "🧪",
+   "color": "orange",
+   "title": "单元测试：httptest",
+   "bullets": [
+    "七牛开源 httptest 框架（github.com/qiniu/httptest）",
+    "核心思想：不用写业务 API 的 Client SDK，也能以业务友好的方式写测试案例",
+    "既支持单元测试也支持集成测试；非常通用，不内建公司特有的授权机制",
+    "qiniutest 是基于 httptest 的少量扩展；可以依葫芦画瓢做适合自己公司的 httptest 工具",
+    "服务端业务架构本质＝多租户的 Model 层：网络协议、授权、RPC 框架、单元测试是通用问题，存储选型则与具体业务特征更相关"
+   ]
+  }
+ ],
+ "summary": "服务端业务架构的本质是做一个多租户的 Model 层：服务端状态转化无临时状态，是“无会话”的，每个网络 API 请求都包含完整业务参数，这正是 REST 原则强调的。网络协议首选 RESTful，二进制协议取代不了 HTTP（gRPC 也基于 HTTP）；授权上 To B 用 AK/SK（数字签名）、To C 用 Token（OAuth 2.0）；实现层可用 restrpc 框架，测试用 httptest 做到不写 Client SDK 也能业务友好地写测试。",
+ "oneliner": "服务端=无会话的多租户 Model 层，协议首选 RESTful，授权 To B 用 AK/SK、To C 用 OAuth。"
+}

@@ -1,0 +1,96 @@
+{
+  "num": "22",
+  "topic": "桌面程序的架构建议",
+  "date": "2026-08-12",
+  "questions": [
+    "怎么准确理解 MVC 三层各自的职责？",
+    "Model 层为什么越厚越好？",
+    "为什么说直接用数据库或 ORM 当 Model 层接口是误区？",
+    "DataChanged 事件对 Model 层独立性的意义是什么？",
+    "View 层有哪些设计细节要面对？ViewModel 什么时候需要？",
+    "Controller 层为什么要正交分解？",
+    "应用 API 接口应该从哪一层提供？"
+  ],
+  "modules": [
+    {
+      "icon": "🧩",
+      "color": "blue",
+      "title": "MVC 的准确理解",
+      "table": {
+        "head": [
+          "层",
+          "职责"
+        ],
+        "rows": [
+          [
+            "Model",
+            "数据＋业务逻辑的 DOM：不仅数据结构，还有访问接口；是 View 的镜像数据源"
+          ],
+          [
+            "View",
+            "界面呈现＋用户交互事件入口；收到 DataChanged 后更新，把事件委托出去"
+          ],
+          [
+            "Controller",
+            "接受 Model＋View 转发的事件作为输入，处理后更新 Model"
+          ]
+        ]
+      },
+      "bullets": [
+        "MVC 与 Input-Process-Output 暗合但不严谨：View 接受的用户交互也是 Input 的一部分",
+        "MVP＝Model 更新后由 Controller（Presenter）监听并更新 View",
+        "架构判断标准：最低耦合原则（最少交互频率、最简洁自然的接口）＋单一职责原则（不干多件事，也不能不干事情）"
+      ]
+    },
+    {
+      "icon": "📦",
+      "color": "green",
+      "title": "Model 层：业务逻辑的 DOM",
+      "bullets": [
+        "Model 层是承载业务逻辑的 DOM，不只是数据，还有访问接口",
+        "两种误区：让 Controller 直接操作数据库，或用 ORM 实现 Model 层——都让 Model 层“不干事情”，违背单一职责",
+        "Model 接口最重要的是自然体现业务需求，边界稳定、与用什么数据库无关",
+        "Model 层越厚越好：它是与界面框架最无关、最容易测试、最跨平台的部分，Controller 因此简洁",
+        "一句话职责：负责业务需求的内核逻辑（DataCore）"
+      ]
+    },
+    {
+      "icon": "🔄",
+      "color": "orange",
+      "title": "DataChanged：Model 的变化点对策",
+      "callout": {
+        "star": true,
+        "text": "Model 层作为架构最底层，不需要知道其他层的存在。DataChanged 事件让上层能感知 Model 变化并自主反应——这正是 Model 层面对需求变化点的对策：业务接口是稳定点，用户交互多变。用事件回调解决变化点，CPU 干过、操作系统干过，业务架构也该这么干。"
+      }
+    },
+    {
+      "icon": "🖼️",
+      "color": "blue",
+      "title": "View 层与 ViewModel",
+      "bullets": [
+        "View 首要责任是界面呈现：要么自己调 GDI 画，要么创建子 View 让别人画",
+        "View 是用户交互事件的入口，理想情况把所有事件委托出去",
+        "Controller 逻辑中临时生成的 View 应属于 Controller，不是 MVC 的 View 层",
+        "局部更新优化复杂时，在 Model 与 View 之间引入 ViewModel：数据组织更贴近 View 呈现，与 View 一一对应（双向绑定）",
+        "Word 是典型：数据是流式文档，显示用分页的页面视图，需要排版引擎维持 Model 与 ViewModel 一致",
+        "作者倾向：ViewModel 是 View 层太复杂而再次拆分的结果，并非独立模式"
+      ]
+    },
+    {
+      "icon": "🎯",
+      "color": "orange",
+      "title": "Controller 层与应用装配",
+      "bullets": [
+        "Controller 负责用户交互，可以有很多个，应当正交分解、彼此完全无耦合",
+        "Controller 模块可能带辅助 View（菜单工具条等持续可见，或旋转控制点等临时性）",
+        "干掉一个交互很容易：只需注释掉创建该 Controller 的一行代码",
+        "分层：Model 最底、View 中间（持有 Model 的 DOM 指针）、Controller 最上（通过 DOM 接口操作 Model，不操作 View 改数据）",
+        "View 事件绑定接口抽象得当，Controller 大部分逻辑与操作系统界面框架无关、跨平台",
+        "Application 负责装配：创建 Model、View 与若干 Controller 并建立关联",
+        "应用 API（二次开发接口）最佳从 ViewModel 层提供——Model 层缺 Selection 这类东西"
+      ]
+    }
+  ],
+  "summary": "桌面程序的业务架构以 MVC 为范式：Model 是承载业务逻辑的 DOM，接口要自然体现业务需求、越厚越好，用 DataChanged 事件应对交互变化点；View 负责呈现与事件入口，局部更新复杂时拆出 ViewModel；Controller 负责用户交互、正交分解、彼此无耦合。分层上 Model 最底、View 中间、Controller 最上，Application 负责装配。应用 API 最佳从 ViewModel 层提供。",
+  "oneliner": "Model 厚、View 薄、Controller 正交——DataChanged 事件是变化点的解药。"
+}

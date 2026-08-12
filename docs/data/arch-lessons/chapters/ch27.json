@@ -1,0 +1,94 @@
+{
+  "num": "27",
+  "topic": "实战（二）：怎么设计一个“画图”程序？",
+  "date": "2026-08-12",
+  "questions": [
+    "MVP 版画图程序能做什么、不能做什么？",
+    "为什么把 QLineStyle 改名重构为 QShapeStyle？",
+    "QShapeStyle 未来的演进方向是什么？为什么 line/fill 用 any？",
+    "View 层这次真正引入了哪两个变化？",
+    "为什么事件机制不直接暴露 QEventManager？",
+    "Controller 层这次的主要变化是什么？",
+    "通过需求迭代能看出 MVC 分工的什么优点？"
+  ],
+  "modules": [
+    {
+      "icon": "📦",
+      "color": "blue",
+      "title": "MVP 版：只能增不能删改",
+      "bullets": [
+        "MVP 版只能增加新图形，没法删除、没法修改",
+        "DOM 树只有三级：Document → Shape → LineStyle",
+        "View 层对 Model 只有绘制需求（doc.onpaint）",
+        "各个 Controller 对 Model 的需求本质上只有一个：创建图形（addShape）"
+      ]
+    },
+    {
+      "icon": "🔧",
+      "color": "orange",
+      "title": "改进版：从 MVP 到可编辑",
+      "table": {
+        "head": [
+          "改进",
+          "说明"
+        ],
+        "rows": [
+          [
+            "选择图形",
+            "允许删除、移动、修改样式"
+          ],
+          [
+            "新增 fillColor",
+            "图形样式增加填充色"
+          ],
+          [
+            "现代交互范式",
+            "默认处于 ShapeSelector 状态，创建完自动回到此状态"
+          ],
+          [
+            "样式联动",
+            "选中图形后，界面当前样式自动更新为被选图形的样式"
+          ]
+        ]
+      }
+    },
+    {
+      "icon": "🧩",
+      "color": "green",
+      "title": "Model 的小重构",
+      "bullets": [
+        "QLineStyle 改名为 QShapeStyle，width/color 改名 lineWidth/lineColor——不兼容修改，相当于小重构",
+        "重构要及时、把控质量；JavaScript 弱类型重构心智负担大，要辅以足够多的单元测试",
+        "作者更喜欢静态类型语言：重构有遗漏编译器会告诉你，但单元测试依然不可省略",
+        "最初构造时最后一个参数传 QLineStyle 是设计失误，改成 QShapeStyle 后样式演进都会集中到这一个类",
+        "未来演进：QShapeStyle { line: any, fill: any }——因为填充可能是图片平铺、渐变等，QFillStyle 只是简单版，故用 any"
+      ]
+    },
+    {
+      "icon": "🖼️",
+      "color": "blue",
+      "title": "View 层：selection 与 onControllerReset",
+      "bullets": [
+        "properties 改名为 style，与 Model 的小重构呼应",
+        "引入 selection：当前只能单选一个 shape，变化时发 onSelectionChanged 事件",
+        "引入 onControllerReset 事件：创建图形的 Controller 完成或放弃创建时发出，由 Menu 接收",
+        "更通用方案是 QEventManager（fire/addListener/removeListener）支持任意事件、多播",
+        "但通用与可控要平衡：不直接在 View 接口暴露 QEventManager，而是定义具体的 fireControllerReset、onControllerReset/offControllerReset，让依赖直观化",
+        "代码即文档：能用代码约束的事情，最好不要在文档里约束"
+      ]
+    },
+    {
+      "icon": "🎯",
+      "color": "orange",
+      "title": "Controller 层与 MVC 的正交性",
+      "bullets": [
+        "新交互范式带来 onControllerReset 事件，以及 QLineStyle→QShapeStyle 的连带变化",
+        "PropSelectors 变复杂：改样式既作用于将要创建的图形，也作用于 selection（被选图形），selection 变化时自动更新界面",
+        "QShapSelector 是新 Controller：支持选择、删除、移动图形",
+        "需求迭代证明分工正交：Model 只考虑数据结构演进并抽象自然业务接口；View 稳定、起桥接作用；Controller 各司其职、互不干扰"
+      ]
+    }
+  ],
+  "summary": "画图程序从 MVP（只能增、不能删改）演进到可编辑版本：支持选择、删除、移动、改样式，新增 fillColor 与默认 ShapeSelector 状态。Model 层把 QLineStyle 重构为 QShapeStyle 并预留 line/fill 的 any 扩展；View 层引入 selection 与 onControllerReset，并选择暴露具体事件方法而非通用 QEventManager 以保持可控；Controller 层各司其职。这次需求迭代展示了 MVC 分工的正交性。",
+  "oneliner": "需求迭代考验 MVC：Model 重构样式类、View 加 selection、Controller 各司其职。"
+}
