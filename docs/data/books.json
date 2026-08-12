@@ -1,19 +1,10 @@
 {
   "site": {
     "title": "📚 我的读书笔记",
-    "subtitle": "后端面试38讲 · 架构康奈尔笔记 · 持续收录中",
+    "subtitle": "《从零开始学架构》康奈尔笔记 · 持续收录中",
     "emoji": "📚"
   },
   "books": [
-    {
-      "id": "backend38",
-      "title": "《后端技术面试38讲》康奈尔笔记",
-      "emoji": "📝",
-      "desc": "后端技术面试核心知识：程序运行原理、数据结构、网络编程、数据库、设计模式、分布式架构、高可用高并发、缓存、微服务、大数据、AI、区块链。",
-      "type": "markdown",
-      "srcRepo": "yimengyisheng/backend38-interview-qa",
-      "homeUrl": "https://yimengyisheng.github.io/backend38-interview-qa/"
-    },
     {
       "id": "arch-cornell",
       "title": "《从零开始学架构》康奈尔笔记",
