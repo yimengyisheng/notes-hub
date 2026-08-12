@@ -1,0 +1,83 @@
+{
+  "num": "23",
+  "topic": "MySQL是怎么保证数据不丢的？",
+  "date": "2026-08-12",
+  "questions": [
+    "binlog cache 为什么要按线程分配？",
+    "write 和 fsync 有什么区别？",
+    "sync_binlog=1 和 =N 各是什么？",
+    "redo log 有哪三种状态？",
+    "innodb_flush_log_at_trx_commit 三个取值？",
+    "没提交的事务 redo log 会写盘吗？",
+    "“双 1”配置指什么？",
+    "组提交怎么省 IOPS？",
+    "binlog 组提交的两个参数？",
+    "IO 瓶颈时怎么提升性能？各自风险？"
+  ],
+  "modules": [
+    {
+      "icon": "📝",
+      "color": "green",
+      "title": "binlog 的写入机制",
+      "flow": {"color": "blue", "steps": ["事务执行写 binlog cache", "超 binlog_cache_size 暂存磁盘", "提交时整个事务写入 binlog 文件", "write 到 page cache", "fsync 持久化到磁盘"]},
+      "bullets": [
+        "一个事务的 binlog 不能拆开，必须一次性写入",
+        "每个线程独立 binlog cache，共用同一份 binlog 文件",
+        "sync_binlog=0：只 write；=1：每次提交 fsync；=N：攒 N 个事务才 fsync",
+        "设 N 的风险：主机异常重启丢最近 N 个事务的 binlog"
+      ],
+      "callout": {"text": "常见把 sync_binlog 设为 100~1000，兼顾性能与可控丢失量。", "star": true}
+    },
+    {
+      "icon": "🔴",
+      "color": "orange",
+      "title": "redo log 的三种状态",
+      "flow": {"color": "blue", "steps": ["redo log buffer（内存）", "write 到 page cache", "fsync 持久化到磁盘"]},
+      "bullets": [
+        "innodb_flush_log_at_trx_commit=0：提交时留在 buffer",
+        "=1：每次提交都持久化；=2：只写到 page cache",
+        "后台线程每秒 write+fsync 一次",
+        "buffer 到一半时只 write 不 fsync；并行事务提交会顺带带上未提交事务的日志"
+      ],
+      "callout": {"text": "两阶段提交下，设 1 时 redo log 在 prepare 阶段就要持久化一次（崩溃恢复依赖它+binlog）。", "star": true}
+    },
+    {
+      "icon": "💾",
+      "color": "blue",
+      "title": "双 1 与组提交",
+      "bullets": [
+        "双 1 = sync_binlog=1 且 innodb_flush_log_at_trx_commit=1",
+        "一个事务完整提交前要等两次刷盘：redo prepare + binlog",
+        "LSN 单调递增，leader 写盘时带上所有 ≤ 当前 LSN 的 redo log",
+        "组员越多越省 IOPS；单线程压测只能一个事务一次持久化",
+        "把 redo log 的 fsync 拖到写 binlog 文件之后，binlog 也能组提交"
+      ],
+      "callout": {"text": "WAL 高效靠两点：redo/binlog 都是顺序写；组提交大幅降低磁盘 IOPS 消耗。", "star": true}
+    },
+    {
+      "icon": "🚀",
+      "color": "orange",
+      "title": "IO 瓶颈的三种优化",
+      "table": {"head": ["方法", "代价/风险"], "rows": [
+        ["binlog_group_commit_sync_delay / _no_delay_count", "故意等待增加响应时间，但不丢数据"],
+        ["sync_binlog 设 100~1000", "主机掉电时丢 binlog"],
+        ["innodb_flush_log_at_trx_commit=2", "主机掉电时丢数据"]
+      ]},
+      "callout": {"text": "不建议设成 0：MySQL 自身异常重启也会丢数据；2 和 0 性能差不多但更安全。", "star": true}
+    },
+    {
+      "icon": "❓",
+      "color": "green",
+      "title": "四个常见问题",
+      "bullets": [
+        "update 后 hexdump 看不到 ibd 变化：WAL 还没把数据刷盘",
+        "binlog cache 按线程、redo buffer 全局共用：binlog 不能被打断",
+        "提交前 crash：redo 和 binlog 都还在缓存，主备一致",
+        "binlog 写完但客户端没收到答复：事务已成功，不是 bug"
+      ],
+      "callout": {"text": "crash-safe 保证：收到成功则已持久化，收到失败则一定失败，收到异常就重连查状态。", "star": true}
+    }
+  ],
+  "summary": "数据不丢靠 redo log 和 binlog 持久化。binlog 每个事务整段写入文件，sync_binlog 控制 fsync 时机；redo log 从 buffer→page cache→磁盘三态，innodb_flush_log_at_trx_commit 控制提交策略。双 1（两参数都设 1）最安全但每次提交两次刷盘，靠组提交把多个事务合并成一次 fsync 省 IOPS。IO 瓶颈时可调 binlog 组提交参数、sync_binlog>1 或 redo 参数=2，各有丢失风险，不建议设 0。",
+  "oneliner": "双 1 保数据不丢，组提交用一次 fsync 带走一批事务；IO 瓶颈要放松，优先动 binlog 组提交参数，别把 redo 设成 0。"
+}

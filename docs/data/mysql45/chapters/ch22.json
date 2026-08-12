@@ -1,0 +1,93 @@
+{
+  "num": "22",
+  "topic": "MySQL有哪些“饮鸩止渴”提高性能的方法？",
+  "date": "2026-08-12",
+  "questions": [
+    "短连接模型有什么风险？",
+    "max_connections 调大会怎样？",
+    "连接数过多时优先断开哪些连接？",
+    "怎么判断 sleep 线程是否在事务中？",
+    "kill 连接后客户端会怎样？",
+    "skip-grant-tables 有什么风险？",
+    "慢查询的三种可能原因是什么？",
+    "索引没设计好怎么应急处理？",
+    "query_rewrite 能做什么？",
+    "QPS 突增的三种处理方式？"
+  ],
+  "modules": [
+    {
+      "icon": "🔌",
+      "color": "blue",
+      "title": "短连接风暴",
+      "flow": {"color": "blue", "steps": ["短连接建连成本高", "处理慢→连接数暴涨", "超过 max_connections", "拒绝新连接报 Too many connections", "业务端看就是不可用"]},
+      "bullets": [
+        "建连接除三次握手外还要做登录权限和数据读写权限判断",
+        "max_connections 控制同时存在的连接数上限",
+        "连接数只算“连着”，不看是否在 running"
+      ],
+      "callout": {"text": "调大 max_connections 可能适得其反：负载更大，大量资源耗在权限验证，老连接拿不到 CPU。", "star": true}
+    },
+    {
+      "icon": "🪓",
+      "color": "orange",
+      "title": "先断开空闲连接",
+      "bullets": [
+        "优先断开事务外空闲太久的连接，再考虑事务内空闲的",
+        "查 information_schema.innodb_trx 的 trx_mysql_thread_id 判断线程是否在事务中",
+        "断开命令：kill connection + id",
+        "被断开后客户端要到下次请求才报 ERROR 2013 Lost connection",
+        "有的应用不重连直接用旧句柄重试，看起来像“MySQL 一直没恢复”"
+      ],
+      "callout": {"text": "断开连接也可能有损：断开未提交事务会回滚，务必提前通知业务开发团队。", "star": true}
+    },
+    {
+      "icon": "🚫",
+      "color": "red",
+      "title": "跳过权限验证：饮鸩止渴",
+      "bullets": [
+        "重启并用 --skip-grant-tables 启动，跳过连接和语句执行的权限验证",
+        "风险极高，特别不建议，外网可访问更不能这么做",
+        "8.0 启用该参数会自动打开 --skip-networking，只允许本地连接",
+        "说明官方也很重视这个参数的安全问题"
+      ],
+      "callout": {"text": "这是全文里最典型的“饮鸩止渴”方案，优先级最低。", "star": true}
+    },
+    {
+      "icon": "🐢",
+      "color": "green",
+      "title": "慢查询的三种可能",
+      "table": {"head": ["原因", "应急方案"], "rows": [
+        ["索引没设计好", "紧急加索引：备库 sql_log_bin=off 先做，再主备切换，另一库同样处理"],
+        ["SQL 语句没写好", "MySQL 5.7 query_rewrite 改写，如 id+1=? → id=?-1"],
+        ["MySQL 选错索引", "给语句加 force index，也可用查询重写实现"]
+      ]},
+      "callout": {"text": "出现最多的是前两种，而且都完全可以在上线前避免。", "star": true}
+    },
+    {
+      "icon": "🧯",
+      "color": "orange",
+      "title": "QPS 突增处理",
+      "bullets": [
+        "最理想是让业务把出 bug 的功能下掉",
+        "规范环境可先去掉白名单，或删掉专用数据库用户并断开连接",
+        "功能与主体混在一起时，用查询重写把压力 SQL 改成 select 1",
+        "重写成 select 1 有两个副作用：误伤同模板语句、后续业务逻辑一起失败"
+      ],
+      "callout": {"text": "方案 1/2 依赖规范的运维体系（虚拟化、白名单、业务账号分离），准备越多系统越稳。", "star": false}
+    },
+    {
+      "icon": "🛡️",
+      "color": "blue",
+      "title": "上线前预防",
+      "bullets": [
+        "测试环境打开 slow log，long_query_time 设 0，确保每条语句都记录",
+        "插入模拟线上数据做回归测试",
+        "重点核对每类语句的 Rows_examined 是否与预期一致",
+        "新项目或改表结构要做全量回归，可用 pt-query-digest 检查"
+      ],
+      "callout": {"text": "别吝啬上线前的“额外”时间，能省下很多故障复盘时间。", "star": false}
+    }
+  ],
+  "summary": "业务高峰期救火手段都“有损”：短连接风暴时优先 kill 事务外空闲连接，其次才考虑事务内空闲的，调大 max_connections 和 skip-grant-tables 都风险极高。慢查询三类原因对应三种应急：紧急加索引（备库先做+主备切换）、query_rewrite 改写语句、force index。QPS 突增就下掉功能或去掉白名单/用户，最后才是重写成 select 1。最根本的是上线前用 slow log 做回归、避免大量短连接、应用写好重连重试。",
+  "oneliner": "高峰救火都是“饮鸩止渴”：先 kill 事务外空闲连接，慢查询按索引/SQL/选错三类对症，平时做好上线前回归最省事。"
+}

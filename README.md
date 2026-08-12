@@ -3,8 +3,9 @@
 统一在线阅读站：一个网址，选择不同的读书笔记并阅读。
 线上地址：<https://yimengyisheng.github.io/notes-hub/>
 
-v1 收录：
+当前收录：
 - 📘 《从零开始学架构》康奈尔笔记（56 章）
+- 🐬 《MySQL实战45讲》康奈尔笔记（42 章）
 
 > 说明：A4 打印版 PNG 体积较大（约 65MB），中心站不重复打包，阅读页的打印按钮直接引用原站图片。
 
@@ -16,8 +17,9 @@ v1 收录：
 python3 generator/build_site.py
 ```
 
-- 每本书优先读取同级目录下的源仓库（如 `../backend38-interview-qa`），
-  不存在时会自动 `git clone --depth 1` 到 `.cache/`（已 gitignore）。
+- 每本书的数据源：`srcRepo` 优先读同级目录下的源仓库（如 `../backend38-interview-qa`），
+  不存在时自动 `git clone --depth 1` 到 `.cache/`（已 gitignore）；也可用 `srcPath`
+  直接指向本地目录（如本机未发布的 MySQL 笔记）。
 - 生成结果写入 `docs/`，提交后由 GitHub Pages（main 分支 `/docs`）发布。
 - 笔记源仓库更新后，重跑一次本脚本并提交即可同步。
 
@@ -49,7 +51,7 @@ python3 -m http.server 8000 --directory docs
 支持的 `type`：
 
 - `markdown`：源仓库需含 `data/index.json`（`articles[].num/title/slug`）+ `data/articles/<slug>.md`。
-- `cornell`：源仓库需含 `data/chNN.json`（康奈尔章节数据），并可在配置里带 `sections` 分组
+- `cornell`：源仓库需含 `data/chNN.json`（康奈尔章节数据；若数据在别的目录，可用 `dataDir` 指定，如 `"work"`），并可在配置里带 `sections` 分组
   （`[{ "name": "...", "nums": [1,2,3] }]`）。A4 打印版 PNG 体积较大，中心站不重复打包，
   阅读页的「🖨️ A4 打印版」按钮通过 `homeUrl + 'images/chNN.png'` 跨站引用原站图片，
   因此 cornell 型书籍需保证原站 `homeUrl` 已发布且该路径可访问。

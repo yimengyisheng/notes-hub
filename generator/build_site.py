@@ -32,7 +32,16 @@ def load_books():
 
 
 def get_src(book):
-    """返回 (源码目录, 来源说明)。优先同级目录，否则浅克隆到 .cache/。"""
+    """返回 (源码目录, 来源说明)。
+
+    优先使用 book.srcPath 本地目录；否则用 book.srcRepo：
+    先找同级目录 ../<仓库名>，不存在则浅克隆到 .cache/。
+    """
+    if book.get("srcPath"):
+        p = book["srcPath"]
+        if not os.path.isdir(p):
+            sys.exit(f"srcPath 不存在: {p}（{book['id']}）")
+        return p, "本地路径"
     repo = book["srcRepo"]  # "owner/name"
     name = repo.split("/")[-1]
     sibling = os.path.join(os.path.dirname(ROOT), name)
@@ -51,7 +60,7 @@ def get_src(book):
 
 def build_markdown(book, src, out_dir):
     """markdown 型：index.json + articles/*.md → docs/data/<id>/"""
-    src_data = os.path.join(src, "data")
+    src_data = os.path.join(src, book.get("dataDir", "data"))
     shutil.copy2(os.path.join(src_data, "index.json"), os.path.join(out_dir, "index.json"))
     arts_dir = os.path.join(out_dir, "articles")
     os.makedirs(arts_dir, exist_ok=True)
@@ -71,7 +80,7 @@ def build_cornell(book, src, out_dir):
     A4 打印版 PNG 体积较大，不重复打包进中心站，
     前端通过 book.homeUrl + 'images/chNN.png' 跨站引用原站资源。
     """
-    src_data = os.path.join(src, "data")
+    src_data = os.path.join(src, book.get("dataDir", "data"))
     chapters_dir = os.path.join(out_dir, "chapters")
     os.makedirs(chapters_dir, exist_ok=True)
     chapters = []

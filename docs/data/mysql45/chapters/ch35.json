@@ -1,0 +1,94 @@
+{
+  "num": "35",
+  "topic": "join语句怎么优化？",
+  "date": "2026-08-12",
+  "questions": [
+    "MRR 优化的核心思路是什么？",
+    "MRR 是怎么工作的？",
+    "BKA 算法对 NLJ 做了什么优化？",
+    "BNL 在大表 join 时为什么差？",
+    "怎么把 BNL 转成 BKA？",
+    "临时表方案是怎么优化 join 的？",
+    "MySQL 为什么不支持 hash join？",
+    "各种优化手段怎么选？"
+  ],
+  "modules": [
+    {
+      "icon": "📚",
+      "color": "green",
+      "title": "MRR：把随机读变顺序读",
+      "flow": {"color": "blue", "steps": ["按索引 a 定位记录", "把 id 放入 read_rnd_buffer", "对 id 排序", "按递增顺序回表查主键"]},
+      "bullets": [
+        "回表本来是一行行搜主键索引，id 随机导致随机访问",
+        "按主键递增顺序查接近顺序读，提升性能",
+        "read_rnd_buffer_size 控制缓冲大小，放满先排序回表再清空",
+        "set optimizer_switch=“mrr_cost_based=off” 固定使用 MRR",
+        "explain Extra 出现 Using MRR 表示用上了"
+      ],
+      "callout": {"text": "MRR 生效的核心：范围查询（多值查询）能得到足够多 id，排序后才体现顺序读优势。", "star": true}
+    },
+    {
+      "icon": "🚀",
+      "color": "blue",
+      "title": "BKA：NLJ 的批量化优化",
+      "flow": {"color": "blue", "steps": ["把驱动表 join 字段放入 join_buffer", "批量传给被驱动表", "被驱动表配合 MRR 顺序回表", "返回匹配结果"]},
+      "bullets": [
+        "MySQL 5.6 引入 Batched Key Access",
+        "NLJ 每次只匹配一个值，MRR 优势用不上",
+        "BKA 让被驱动表一次处理一批主键 id",
+        "explain Extra 出现 Using join buffer (Batched Key Access)"
+      ],
+      "callout": {"text": "BKA 是 MySQL 内置支持、建议默认使用的优化。", "star": true}
+    },
+    {
+      "icon": "⚠️",
+      "color": "orange",
+      "title": "BNL 的两个大问题",
+      "bullets": [
+        "t1 1000 行、t2 100 万行 join，比较次数 1000×100 万 = 10 亿次",
+        "纯 CPU 密集型比较，非常耗资源",
+        "被驱动表大表被多次全表扫描，会把冷数据读进 Buffer Pool",
+        "上一个案例：优化前语句耗时 1 分 11 秒"
+      ],
+      "callout": {"text": "优化方向就一句话：给被驱动表的关联字段加索引，把 BNL 转成 BKA。", "star": true}
+    },
+    {
+      "icon": "📝",
+      "color": "green",
+      "title": "临时表方案",
+      "flow": {"color": "blue", "steps": ["t2 过滤出 2000 行建临时表", "临时表字段 b 加索引", "t1 与临时表 join", "触发 BKA 算法"]},
+      "bullets": [
+        "insert 构造临时表要全表扫 t2：100 万行",
+        "join 只扫 t1 1000 行，做 1000 次带索引查询",
+        "三个语句总耗时不到 1 秒，对比优化前 1 分 11 秒",
+        "思路不变：让 join 用上被驱动表索引触发 BKA"
+      ],
+      "callout": {"text": "适合能提前过滤出小数据的 join 语句，效果很好。", "star": true}
+    },
+    {
+      "icon": "🧩",
+      "color": "blue",
+      "title": "扩展：业务端模拟 hash join",
+      "flow": {"color": "blue", "steps": ["t1 全量读入业务端 hash 结构", "t2 过滤出 2000 行", "逐行到 hash 里匹配", "匹配行组成结果集"]},
+      "bullets": [
+        "MySQL 优化器和执行器一直不支持 hash join",
+        "10 亿次判断可变成 100 万次 hash 查找",
+        "理论上比临时表方案还快一些"
+      ],
+      "callout": {"text": "MySQL 官方 roadmap 迟迟没排 hash join，业务端可以自己用 set/数组模拟。", "star": true}
+    },
+    {
+      "icon": "🎯",
+      "color": "green",
+      "title": "优化手段怎么选",
+      "table": {"head": ["场景", "手段"], "rows": [
+        ["默认", "BKA，MySQL 内置建议默认使用"],
+        ["出现 BNL", "给被驱动表关联字段加索引转 BKA"],
+        ["能提前过滤小数据", "用带索引的临时表"],
+        ["追求极致", "业务端 hash join 模拟"]
+      ]}
+    }
+  ],
+  "summary": "join 优化从 MRR 说起：把回表的随机读改成按主键排序后的顺序读。BKA 是 MySQL 5.6 内置的对 NLJ 的批量化优化，默认建议使用；BNL 在大表 join 时比较次数是行数乘积（如 10 亿次），耗 CPU 且污染 Buffer Pool，优化方向是给被驱动表加索引转 BKA。过滤后数据量小时可用带索引的临时表方案（1 分 11 秒降到 1 秒内）；MySQL 不支持 hash join，但可在业务端模拟，理论上更快。",
+  "oneliner": "join 优化三板斧：MRR 排序回表、给被驱动表加索引把 BNL 变 BKA、过滤小数据用临时表，极致场景业务端模拟 hash join。"
+}

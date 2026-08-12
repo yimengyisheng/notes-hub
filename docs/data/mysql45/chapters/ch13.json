@@ -1,0 +1,86 @@
+{
+  "num": "13",
+  "topic": "为什么表数据删掉一半，表文件大小不变？",
+  "date": "2026-08-12",
+  "questions": [
+    "InnoDB 表包含哪两部分？",
+    "innodb_file_per_table 参数 ON/OFF 有什么区别？",
+    "为什么 delete 后表文件大小不变？",
+    "记录复用和数据页复用有什么不同？",
+    "除了删除，还有哪些操作会产生空洞？",
+    "5.5 及之前的重建表流程是怎样的？",
+    "Online DDL 为什么允许期间增删改？",
+    "Online 和 inplace 是一回事吗？",
+    "1TB 的表能做 inplace DDL 吗？",
+    "analyze table 是重建表吗？"
+  ],
+  "modules": [
+    {
+      "icon": "📦",
+      "color": "blue",
+      "title": "表空间的构成",
+      "bullets": [
+        "InnoDB 表 = 表结构定义 + 数据两部分",
+        "8.0 之前表结构存在 .frm 文件，8.0 可放进系统数据表",
+        "innodb_file_per_table=ON：每表一个 .ibd 文件（5.6.6 起默认）",
+        "=OFF：数据放共享表空间，删表也不回收空间"
+      ],
+      "callout": {"text": "建议一律设为 ON：单表独立文件好管理，drop table 直接删文件即可回收。", "star": true}
+    },
+    {
+      "icon": "🕳️",
+      "color": "orange",
+      "title": "空洞是怎么来的",
+      "flow": {"color": "blue", "steps": ["delete 标记记录/页为可复用", "插入数据触发页分裂留空洞", "更新=删旧值+插新值", "相邻低利用率页合并", "磁盘文件大小始终不变"]},
+      "bullets": [
+        "delete 只把记录或数据页标记为“可复用”，磁盘文件不缩小",
+        "记录复用受范围条件限制，整页复用可用到任何位置",
+        "随机插入导致页分裂，页末尾留空洞",
+        "更新索引上的值 = 删旧值+插新值，同样产生空洞"
+      ],
+      "callout": {"text": "即使 delete 全表数据，也只是所有页都标记可复用，文件照样不变。", "star": true}
+    },
+    {
+      "icon": "🔨",
+      "color": "green",
+      "title": "两种重建表方式",
+      "table": {"head": ["对比项", "5.5 及以前 拷贝表", "5.6+ Online DDL"], "rows": [
+        ["临时文件位置", "server 层 tmp_table", "InnoDB 内部 tmp_file"],
+        ["是否允许 DML", "阻塞增删改", "允许（row log 重放）"],
+        ["锁", "全程阻塞", "MDL 写锁很快退化成读锁"],
+        ["写法", "ALGORITHM=copy", "alter table t engine=InnoDB"]
+      ]}
+    },
+    {
+      "icon": "🧵",
+      "color": "blue",
+      "title": "Online DDL 流程",
+      "flow": {"color": "green", "steps": ["建临时文件 tmp_file", "扫描主键数据页生成 B+ 树", "期间把操作记入 row log", "重放 row log 到临时文件", "用临时文件替换数据文件"]},
+      "callout": {"text": "Online DDL 最耗时的是拷贝数据，期间可接受增删改，对业务几乎可视为在线。", "star": true}
+    },
+    {
+      "icon": "⚖️",
+      "color": "orange",
+      "title": "Online 与 inplace 的关系",
+      "vs": {"a": {"h": "Online", "t": "重建过程允许增删改；MDL 写锁退化为读锁；Online 一定也是 inplace。"}, "b": {"h": "inplace", "t": "数据在 InnoDB 内部原地完成，server 层无临时表；加全文/空间索引是 inplace 但非 Online。"}},
+      "bullets": [
+        "加 FULLTEXT 索引：inplace 但阻塞增删改，非 Online",
+        "1TB 表 + 1.2TB 磁盘：inplace DDL 也做不了，tmp_file 同样要占空间",
+        "线上大表重建推荐用 GitHub 开源的 gh-ost"
+      ]
+    },
+    {
+      "icon": "🧹",
+      "color": "green",
+      "title": "三种维护命令",
+      "table": {"head": ["命令", "作用", "说明"], "rows": [
+        ["alter table t engine=InnoDB", "重建表（recreate）", "5.6 起默认 Online inplace"],
+        ["analyze table t", "重新统计索引信息", "不修改数据，加 MDL 读锁"],
+        ["optimize table t", "recreate+analyze", "重建后又做统计"]
+      ]},
+      "callout": {"text": "重建后每页预留约 1/16 给后续更新，所以重建后的表并不是“最紧凑”的。", "star": false}
+    }
+  ],
+  "summary": "delete 只是把记录或数据页标记为可复用，产生空洞，表文件不会变小；插入的页分裂和更新同样会留空洞。要回收空间必须重建表：5.6+ 的 alter table t engine=InnoDB 是 Online 的 inplace 操作，靠 row log 允许期间增删改；Online 一定 inplace，反过来不一定。analyze 只统计不重建，optimize = recreate + analyze。",
+  "oneliner": "删数据不缩文件，因为只是留空洞；想回收空间就重建表，5.6+ 的 Online DDL 可以在线做。"
+}

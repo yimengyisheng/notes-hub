@@ -1,0 +1,78 @@
+{
+  "num": "27",
+  "topic": "主库出问题了，从库怎么办？",
+  "date": "2026-08-12",
+  "questions": [
+    "一主多从切换后从库要做什么？",
+    "change master 的 6 个参数？",
+    "为什么位点很难精确取到？",
+    "位点偏前会导致什么错误？",
+    "跳过错位的两种方法？",
+    "slave_skip_errors 常设哪两个错误码？",
+    "GTID 由哪两部分组成？",
+    "gtid_next=automatic 和指定 GTID 有何不同？",
+    "基于 GTID 的切换为什么简单？",
+    "GTID 模式下在线 DDL 怎么做？"
+  ],
+  "modules": [
+    {
+      "icon": "🏗️",
+      "color": "orange",
+      "title": "一主多从与切换",
+      "flow": {"color": "blue", "steps": ["A、A' 互为主备", "从库 B/C/D 指向主库 A", "主库故障后 A' 变新主库", "B/C/D 改指向 A'", "从库重定向是难点"]},
+      "callout": {"text": "一主多从用于读写分离：主库负责写和部分读，从库分担读。", "star": true}
+    },
+    {
+      "icon": "📍",
+      "color": "blue",
+      "title": "基于位点的切换",
+      "flow": {"color": "blue", "steps": ["等 A' 把 relay log 同步完", "show master status 拿 File/Position", "记下故障时刻 T", "mysqlbinlog 解析 T 时刻位点", "change master 指向该位点"]},
+      "bullets": [
+        "change master 六参数：IP/端口/用户/密码 + 日志文件 + 偏移量",
+        "相同日志在 A 和 A' 上的位点不同，必须重新找",
+        "位点只能取大概位置，要稍微往前再跳过已执行事务"
+      ],
+      "callout": {"text": "位点偏前会重复执行已同步事务：比如 R 已存在于 B，再同步就报 Duplicate entry 主键冲突。", "star": true}
+    },
+    {
+      "icon": "🛠️",
+      "color": "orange",
+      "title": "位点不准的补救",
+      "bullets": [
+        "方法一：set global sql_slave_skip_counter=1 跳过一个事务",
+        "反复观察，碰到错误就停、跳，直到不再报错",
+        "方法二：slave_skip_errors='1032,1062' 直接忽略这两类错误",
+        "1062=插入唯一键冲突，1032=删除找不到行",
+        "同步稳定后要把该参数清空，防止真不一致也被跳过"
+      ],
+      "callout": {"text": "只有明确切换场景下跳过 1032/1062 是无损的，才能这么设。", "star": true}
+    },
+    {
+      "icon": "🆔",
+      "color": "green",
+      "title": "GTID 是什么",
+      "bullets": [
+        "GTID=server_uuid:gno，事务提交时生成的全局唯一标识",
+        "server_uuid 实例首次启动生成；gno 从 1 递增，提交时才分配",
+        "开启：gtid_mode=on + enforce_gtid_consistency=on",
+        "gtid_next=automatic 自动分配；指定 GTID 时，已在集合内则直接忽略该事务",
+        "每个实例维护自己的 GTID 集合，记录执行过的所有事务"
+      ],
+      "callout": {"text": "gno 与事务 id 不同：事务 id 执行中分配、回滚也递增，gno 只在提交时分配。", "star": true}
+    },
+    {
+      "icon": "🔀",
+      "color": "blue",
+      "title": "基于 GTID 的切换",
+      "flow": {"color": "blue", "steps": ["从库直接 change master 指向 A'", "A' 内部自动完成找位点", "GTID 集合追加 A':1-M", "无重复执行，无主键冲突", "HA 系统开发非常省心"]},
+      "bullets": [
+        "在线 DDL：在备库执行 DDL（不用关 binlog），查出其 GTID",
+        "主库用 set gtid_next=该 GTID，提交空事务加入集合，再 start slave",
+        "既让备库更新有 binlog 记录，又确保不在主库重复执行"
+      ],
+      "callout": {"text": "支持 GTID 的版本，建议尽量用 GTID 模式做一主多从切换。", "star": true}
+    }
+  ],
+  "summary": "一主多从切换的难点是给从库找新主库的同步位点。基于位点的方案只能取近似值，偏前会重复执行已同步事务，要靠 sql_slave_skip_counter 逐个跳或 slave_skip_errors 忽略 1032/1062。MySQL 5.6 引入 GTID（server_uuid:gno）后，从库只要 change master 指向新主库，找位点由新主库自动完成；在线 DDL 也可用空事务补 GTID 的方式避免重复执行。",
+  "oneliner": "一主多从切换最怕找不准位点重复执行；上了 GTID，从库改指新主库即可，DDL 用空事务补 GTID 免重复。"
+}

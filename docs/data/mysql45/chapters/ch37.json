@@ -1,0 +1,86 @@
+{
+  "num": "37",
+  "topic": "什么时候会使用内部临时表？",
+  "date": "2026-08-12",
+  "questions": [
+    "union 为什么需要内部临时表？",
+    "union 和 union all 的区别是什么？",
+    "group by 的执行流程是怎么样的？",
+    "为什么需要二维表特性时就用临时表？",
+    "group by 不需要排序时怎么优化？",
+    "group by 怎么用上索引？",
+    "SQL_BIG_RESULT 是干什么的？",
+    "内部临时表的使用原则有哪些？"
+  ],
+  "modules": [
+    {
+      "icon": "🔗",
+      "color": "green",
+      "title": "union 的执行流程",
+      "flow": {"color": "blue", "steps": ["创建内存临时表字段 f 主键", "子查询1 存 1000", "子查询2 取 id=1000 插入冲突", "再取 id=999 插入成功", "取出行返回并删临时表"]},
+      "bullets": [
+        "语句：(select 1000 as f) union (select id from t1 order by id desc limit 2)",
+        "临时表用 f 主键的唯一性约束实现“去重”",
+        "结果只有 1000 和 999 两行",
+        "explain Extra 出现 Using temporary"
+      ],
+      "callout": {"text": "union 语义是并集去重：重复行只保留一行，正是靠临时表主键的唯一约束做到的。", "star": true}
+    },
+    {
+      "icon": "⚖️",
+      "color": "blue",
+      "title": "union vs union all",
+      "vs": {"a": {"h": "union", "t": "要去重，需要内存临时表靠唯一约束去重，explain 有 Using temporary。"}, "b": {"h": "union all", "t": "不去重，依次执行子查询直接返回，不需要临时表，explain 只有 Using index（覆盖索引）。"}}
+    },
+    {
+      "icon": "📊",
+      "color": "green",
+      "title": "group by 的执行流程",
+      "flow": {"color": "blue", "steps": ["建内存临时表 m/c，主键 m", "扫索引 a 算 id%10=x", "临时表无 x 则插入 (x,1)", "有 x 则计数 c+1", "最后按 m 排序返回"]},
+      "bullets": [
+        "explain Extra 三个信息：Using index（覆盖索引）+ Using temporary + Using filesort",
+        "不需要排序就在语句末尾加 order by null，跳过排序阶段"
+      ]
+    },
+    {
+      "icon": "🧠",
+      "color": "orange",
+      "title": "什么时候用内部临时表",
+      "bullets": [
+        "能边读边直接得到结果就不需要额外内存",
+        "需要额外内存保存中间结果时，才用临时表等结构",
+        "join_buffer 是无序数组、sort_buffer 是有序数组",
+        "临时表是二维表结构，能支持唯一约束、累积计数",
+        "union 需要唯一索引约束、group by 需要另一字段存计数，所以用临时表"
+      ]
+    },
+    {
+      "icon": "🛠️",
+      "color": "blue",
+      "title": "group by 优化方法",
+      "table": {"head": ["场景", "方法"], "rows": [
+        ["不需要排序", "语句末尾加 order by null"],
+        ["能用索引", "让 group by 走索引，explain 无 Using temporary/filesort"],
+        ["数据量不大", "用内存临时表，调大 tmp_table_size 避免转磁盘临时表"],
+        ["数据量很大", "加 SQL_BIG_RESULT 提示直接走排序算法"]
+      ]},
+      "bullets": [
+        "MySQL 5.7 支持 generated column：alter table t1 add column z int generated always as (id%100), add index(z)",
+        "5.6 及之前可建普通列加索引解决"
+      ]
+    },
+    {
+      "icon": "🚀",
+      "color": "green",
+      "title": "SQL_BIG_RESULT：直接排序",
+      "flow": {"color": "blue", "steps": ["初始化 sort_buffer 放字段 m", "扫索引 a 存 id%100 进缓冲", "对 m 排序（不够用磁盘文件）", "得到有序数组", "统计不同值及出现次数"]},
+      "bullets": [
+        "数据量很大时，避免“先内存临时表再转磁盘”的傻流程",
+        "磁盘临时表是 B+ 树，数组存储效率更高",
+        "explain Extra 不再有 Using temporary，直接走排序"
+      ]
+    }
+  ],
+  "summary": "内部临时表在需要保存中间结果、且要用到二维表特性时出现：union 用主键唯一约束去重，group by 用另一字段累积计数。union all 不去重所以不需要临时表。group by 优化四条：不需要排序加 order by null；尽量走索引（explain 无 Using temporary/filesort，可用 generated column 加索引）；数据量不大用内存临时表并调大 tmp_table_size；数据量很大用 SQL_BIG_RESULT 提示直接排序。",
+  "oneliner": "内部临时表服务于“要暂存中间结果且需要二维表特性”的场景；group by 优化看排序、索引、内存、SQL_BIG_RESULT 四招。"
+}

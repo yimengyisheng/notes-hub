@@ -1,0 +1,86 @@
+{
+  "num": "10",
+  "topic": "MySQL为什么有时候会选错索引？",
+  "date": "2026-08-12",
+  "questions": [
+    "选择索引是哪个组件的工作？",
+    "案例中 MySQL 为什么放弃索引 a？",
+    "什么是基数 cardinality？",
+    "采样统计是怎么算出来的？",
+    "innodb_stats_persistent on/off 的默认 N/M？",
+    "优化器除了扫描行数还考虑什么？",
+    "为什么选扫 10 万行而不是 37000 行的方案？",
+    "analyze table 有什么用？",
+    "force index 有什么缺点？",
+    "解决选错索引有哪几类方法？"
+  ],
+  "modules": [
+    {
+      "icon": "🎭",
+      "color": "blue",
+      "title": "选错索引案例",
+      "bullets": [
+        "表 t：id 主键 + a、b 各建索引",
+        "插入 10 万行 (1,1,1)~(100000,100000,100000)",
+        "session B 删光重插后，Q1 走全表扫描",
+        "Q1：扫 10 万行 40ms；force index(a)：扫 10001 行 21ms"
+      ],
+      "callout": {"text": "平常删历史数据+新增数据的场景，就可能触发选错索引。", "star": true}
+    },
+    {
+      "icon": "🧮",
+      "color": "green",
+      "title": "优化器与基数",
+      "bullets": [
+        "优化器目标：找最小代价执行方案",
+        "扫描行数是主要因素，还看临时表、排序",
+        "基数=索引不同值个数，越大区分度越好",
+        "show index 可看基数"
+      ],
+      "flow": {"color": "blue", "steps": ["采样 N 个<br>数据页", "统计不同值", "取平均值", "×索引页数<br>=基数"]}
+    },
+    {
+      "icon": "📊",
+      "color": "orange",
+      "title": "统计参数",
+      "table": {"head": ["innodb_stats_persistent", "存储", "默认 N/M"], "rows": [["on", "持久化", "20/10"], ["off", "仅内存", "8/16"]]},
+      "bullets": [
+        "变更行数超 1/M 自动重新统计",
+        "采样统计，基数很容易不准"
+      ]
+    },
+    {
+      "icon": "⚖️",
+      "color": "green",
+      "title": "为什么选全表扫",
+      "bullets": [
+        "用索引 a 每行要回表取整行，代价算进去",
+        "扫主键索引 10 万行无额外回表代价",
+        "explain rows 偏差：37116 误导了优化器",
+        "analyze table t 重新统计可修复"
+      ],
+      "callout": {"text": "explain 预估 rows 与实际差距大时，先用 analyze table。", "star": false}
+    },
+    {
+      "icon": "🛠️",
+      "color": "orange",
+      "title": "对策一：force index",
+      "bullets": [
+        "从候选索引里强制指定，不再评估代价",
+        "案例：2.23s → 0.05s，快 40 多倍",
+        "缺点：不优美、索引改名要改语句、跨库不兼容",
+        "最大问题：变更及时性差，线上出问题才改"
+      ],
+      "callout": {"text": "数据库的问题最好在数据库内部解决，而不是靠改 SQL 发布。", "star": true}
+    },
+    {
+      "icon": "🧰",
+      "color": "blue",
+      "title": "对策二三",
+      "vs": {"a": {"h": "改写语句引导", "t": "order by b limit 1 → order by b,a limit 1，语义等价，优化器改选扫 1000 行的索引 a"}, "b": {"h": "增删索引", "t": "新增更合适索引，或删掉误用索引（DBA 曾两次删掉 b 索引解决）"}},
+      "callout": {"text": "改写要利用 limit 1 等语义等价前提，不具通用性。", "star": false}
+    }
+  ],
+  "summary": "优化器靠采样统计的基数和扫描行数估算代价，采样不准或回表代价漏算时会选错索引。analyze table 修复统计；force index 强制指定；改语句或增删索引引导优化器。",
+  "oneliner": "选错索引多半是统计失真，analyze 修统计、force index 兜底。"
+}

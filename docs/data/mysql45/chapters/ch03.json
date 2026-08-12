@@ -1,0 +1,78 @@
+{
+  "num": "03",
+  "topic": "事务隔离：为什么你改了我还看不见？",
+  "date": "2026-08-12",
+  "questions": [
+    "什么是事务？MyISAM 为什么被 InnoDB 取代？",
+    "SQL 标准的四种隔离级别是什么？",
+    "读提交与可重复读的视图创建时机有何不同？",
+    "V1/V2/V3 在四种隔离级别下分别是多少？",
+    "Oracle 默认隔离级别是什么？迁移 MySQL 要注意什么？",
+    "回滚日志什么时候删除？",
+    "长事务有什么风险？",
+    "事务有哪几种启动方式？",
+    "如何避免意外的长事务？",
+    "如何用 innodb_trx 表查长事务？"
+  ],
+  "modules": [
+    {
+      "icon": "🔐",
+      "color": "blue",
+      "title": "事务与 ACID",
+      "bullets": [
+        "一组操作要么全成功，要么全失败",
+        "转账例子：查询余额、加减法、更新余额必须一体",
+        "ACID：原子性、一致性、隔离性、持久性",
+        "本文重点讲隔离性 I",
+        "MyISAM 不支持事务，是它被取代的重要原因"
+      ]
+    },
+    {
+      "icon": "🧭",
+      "color": "green",
+      "title": "四种隔离级别",
+      "table": {"head": ["级别", "现象", "视图时机"], "rows": [["读未提交", "未提交变更可见", "无视图"], ["读提交", "提交后才可见", "每条 SQL 开始"], ["可重复读", "启动时一致", "事务启动"], ["串行化", "读写加锁排队", "加锁实现"]]},
+      "callout": {"text": "隔离得越严实，效率就越低，要找平衡点。", "star": false}
+    },
+    {
+      "icon": "🧮",
+      "color": "orange",
+      "title": "V1/V2/V3 例子",
+      "intro": "表 T 只有一行 c=1，事务 B 把 1 改成 2，事务 A 依次读 V1/V2/V3。",
+      "table": {"head": ["级别", "V1", "V2", "V3"], "rows": [["读未提交", "2", "2", "2"], ["读提交", "1", "2", "2"], ["可重复读", "1", "1", "2"], ["串行化", "1", "1", "2"]]},
+      "callout": {"text": "Oracle 默认读提交，从 Oracle 迁移到 MySQL 记得设 READ-COMMITTED（transaction-isolation 参数）。", "star": true}
+    },
+    {
+      "icon": "🧩",
+      "color": "green",
+      "title": "MVCC 与回滚日志",
+      "flow": {"color": "blue", "steps": ["更新出<br>新版本", "旧版本保留", "回滚日志", "无用时删除"]},
+      "bullets": [
+        "同一行记录可有多个版本（MVCC 多版本并发控制）",
+        "系统判断：没有更早的 read-view 时删除回滚日志",
+        "5.5 及以前回滚日志与数据字典同在 ibdata，文件不变小",
+        "案例：数据 20GB、回滚段 200GB，被迫重建库"
+      ]
+    },
+    {
+      "icon": "🚫",
+      "color": "orange",
+      "title": "长事务风险",
+      "bullets": [
+        "老事务视图长期存在，回滚日志大量占用空间",
+        "占用锁资源，可能拖垮整个库",
+        "常因 set autocommit=0 被框架误用导致"
+      ],
+      "callout": {"text": "建议总用 autocommit=1，显式 begin/commit；省交互可用 commit work and chain 提交并自动开下个事务。", "star": true}
+    },
+    {
+      "icon": "🛠️",
+      "color": "blue",
+      "title": "事务启动方式",
+      "table": {"head": ["方式", "说明"], "rows": [["begin / start transaction", "显式启动，commit 提交 rollback 回滚"], ["set autocommit=0", "关闭自动提交，易出意外长事务"], ["commit work and chain", "提交并自动启动下一个事务"]]},
+      "callout": {"text": "查超 60s 长事务：select * from information_schema.innodb_trx where TIME_TO_SEC(timediff(now(),trx_started))>60", "star": false}
+    }
+  ],
+  "summary": "四种隔离级别从读未提交到串行化，隔离越强效率越低。可重复读靠事务启动时的一致性视图（MVCC）实现，读提交每语句重建视图。长事务让回滚日志无法清理且占锁，应避免；用显式事务和 innodb_trx 监控。",
+  "oneliner": "隔离级别越高越安全也越慢；长事务是回滚日志和锁的隐形杀手。"
+}

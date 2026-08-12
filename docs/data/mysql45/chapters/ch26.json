@@ -1,0 +1,77 @@
+{
+  "num": "26",
+  "topic": "备库为什么会延迟好几个小时？",
+  "date": "2026-08-12",
+  "questions": [
+    "单线程复制为什么追不上主库？",
+    "coordinator 分发事务要满足哪两条要求？",
+    "按表分发有什么局限？",
+    "按行分发需要什么条件？",
+    "按行分发的大事务有什么问题？",
+    "5.6 按库并行有什么优缺点？",
+    "MariaDB 组提交策略有什么问题？",
+    "5.7 LOGICAL_CLOCK 的核心思想？",
+    "WRITESET 相比按行分发有什么优势？",
+    "WRITESET 在什么场景会退化单线程？"
+  ],
+  "modules": [
+    {
+      "icon": "🧵",
+      "color": "orange",
+      "title": "为什么要并行复制",
+      "bullets": [
+        "主库靠行锁支持高并发，压测 32 线程吞吐明显高于单线程",
+        "备库 sql_thread 单线程应用日志，跟不上主库生产 binlog 速度",
+        "官方 5.6 之前只有单线程复制，主库 TPS 高时延迟严重",
+        "把 sql_thread 拆成 coordinator + 多个 worker"
+      ],
+      "callout": {"text": "slave_parallel_workers 设 8~16 比较合适（32 核机器），还要留 CPU 给备库读查询。", "star": true}
+    },
+    {
+      "icon": "📐",
+      "color": "blue",
+      "title": "分发的两条铁律",
+      "bullets": [
+        "不能造成更新覆盖：更新同一行的两个事务必须进同一 worker",
+        "同一个事务不能被拆开，必须整体进同一 worker",
+        "否则备库执行顺序可能与主库相反，或读到事务更新一半的状态"
+      ],
+      "callout": {"text": "所有版本的多线程复制都遵守这两条基本原则。", "star": true}
+    },
+    {
+      "icon": "🗂️",
+      "color": "green",
+      "title": "5.5 按表与按行分发",
+      "table": {"head": ["策略", "并行依据", "局限"], "rows": [
+        ["按表分发", "更新不同表可并行", "热点表所有事务挤到同一 worker，变回单线程"],
+        ["按行分发", "更新不同行可并行", "要求 row 格式、表有主键、无外键；大事务耗内存 CPU"]
+      ]},
+      "callout": {"text": "按行分发的 key 要含主键和所有唯一索引，否则会因唯一键冲突误判；超 10 万行阈值退化单线程。", "star": true}
+    },
+    {
+      "icon": "🏗️",
+      "color": "orange",
+      "title": "5.6 按库 与 MariaDB 组提交",
+      "table": {"head": ["策略", "做法", "问题"], "rows": [
+        ["5.6 按库", "key=库名，不同库可并行", "表都在一个库就没效果"],
+        ["MariaDB", "组提交的 commit_id 相同即可并行", "要等整组完成；大事务拖后腿，吞吐量不够"]
+      ]},
+      "callout": {"text": "MariaDB 思路是“模拟主库并行模式”，实现优雅但没真正达到主库并发度。", "star": true}
+    },
+    {
+      "icon": "🚀",
+      "color": "blue",
+      "title": "5.7 LOGICAL_CLOCK 与 WRITESET",
+      "bullets": [
+        "到达 redo log prepare 就说明已通过锁冲突检验，可并行",
+        "5.7：同时处于 prepare 的事务可并行，prepare 与 commit 之间也可并行",
+        "5.7.22 WRITESET：按行 hash（库名+表名+索引名+值）判断是否冲突",
+        "writeset 在主库生成直接写进 binlog，备库不解析 binlog，省内存，statement 也行",
+        "binlog-transaction-dependency-tracking 取值：COMMIT_ORDER / WRITESET / WRITESET_SESSION"
+      ],
+      "callout": {"text": "表没主键或有外键时 WRITESET 无法并行，会退化为单线程；5.7 新策略改 binlog 内容，协议不向上兼容。", "star": true}
+    }
+  ],
+  "summary": "备库追不上主库的根因是复制能力：官方 5.6 前只有单线程复制。多线程复制把 sql_thread 拆成 coordinator 和 worker，铁律是同一行事务同 worker、同事务不拆开。演进路线：5.5 按表/按行分发（受热点表、row 格式、大事务限制）→ 5.6 按库（单库无效）→ MariaDB 组提交（等整组、大事务拖后腿）→ 5.7 LOGICAL_CLOCK（prepare 即并行）→ 5.7.22 WRITESET（主库算好写进 binlog，通用性强）。平时开发要减少大事务。",
+  "oneliner": "备库延迟小时级多是单线程复制追不上，多线程复制从按表/按行到按库再到 LOGICAL_CLOCK/WRITESET，铁律是同行同 worker、同事务不拆。"
+}

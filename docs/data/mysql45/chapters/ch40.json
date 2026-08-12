@@ -1,0 +1,94 @@
+{
+  "num": "40",
+  "topic": "insert语句的锁为什么这么多？",
+  "date": "2026-08-12",
+  "questions": [
+    "insert…select 为什么给源表加读锁？",
+    "加锁范围有多大？",
+    "insert 循环写入为什么会慢？",
+    "怎么优化 insert 循环写入？",
+    "唯一键冲突会加什么锁？",
+    "唯一键冲突为什么会死锁？",
+    "on duplicate key update 加什么锁？",
+    "affected rows 返回 2 是怎么回事？"
+  ],
+  "modules": [
+    {
+      "icon": "🔒",
+      "color": "orange",
+      "title": "insert…select 为什么要加锁",
+      "flow": {"color": "blue", "steps": ["session B 先执行对 t 主键加锁", "锁范围 (-∞,1] next-key lock", "语句完成才允许 A 插入", "否则 B 先执行后写 binlog", "备库重放顺序错导致主备不一致"]},
+      "bullets": [
+        "可重复读 + binlog_format=statement 时才需要",
+        "不加锁时 binlog 可能记录：insert -1 在前、insert…select 在后",
+        "备库执行会把 id=-1 也写进 t2，出现主备不一致",
+        "本质是保证日志和数据一致"
+      ],
+      "callout": {"text": "insert…select 会给 select 的表里扫描到的记录和间隙加读锁（next-key lock）。", "star": true}
+    },
+    {
+      "icon": "📐",
+      "color": "green",
+      "title": "加锁范围有多大",
+      "bullets": [
+        "不是锁全表，只锁需要访问的资源",
+        "insert into t2 (select c+1,d from t force index(c) order by c desc limit 1)",
+        "加锁范围：c 索引上 (3,4] 和 (4,supremum] 两个 next-key lock",
+        "加上主键索引 id=4 这一行",
+        "扫描行数就是 1，slow log 的 Rows_examined=1"
+      ]
+    },
+    {
+      "icon": "🔄",
+      "color": "orange",
+      "title": "insert 循环写入",
+      "flow": {"color": "blue", "steps": ["建内存临时表存 c、d", "扫索引 c 取 4,3,2,1 回表", "4 行写入临时表", "临时表排序取第一行", "写回原表 t 并删临时表"]},
+      "bullets": [
+        "把目标表改成 t 自身：insert into t (select c+1,d from t …)",
+        "Rows_examined 变成 5：4 行查 t + 1 行查临时表",
+        "Innodb_rows_read 增加 4，说明对 t 做了全表扫描",
+        "explain Extra 出现 Using temporary"
+      ],
+      "callout": {"text": "insert 和 select 是同一张表就会循环写入，需要引入用户临时表来优化。", "star": true}
+    },
+    {
+      "icon": "⚠️",
+      "color": "blue",
+      "title": "唯一键冲突的锁",
+      "bullets": [
+        "insert 发生唯一键冲突不是简单报错，还会在冲突索引上加锁",
+        "加的是共享 next-key lock（S 锁），如 c 索引上 (5,10]",
+        "作用：避免这一行被别的事务删掉",
+        "官方文档有误：主键冲突和唯一索引冲突加的都是 next-key lock",
+        "冲突报错后要尽快提交或回滚事务，避免加锁时间过长"
+      ],
+      "callout": {"text": "这个官方文档 bug 已被作者报告并 verified：两类索引冲突都加 next-key lock。", "star": true}
+    },
+    {
+      "icon": "💀",
+      "color": "orange",
+      "title": "经典死锁场景",
+      "flow": {"color": "blue", "steps": ["A 插 c=5 加记录锁（唯一索引退化）", "B、C 同样插入冲突加读锁", "A 回滚释放", "B、C 都要加写锁", "互相等对方的行锁成死锁"]},
+      "bullets": [
+        "唯一索引冲突退化为记录锁",
+        "回滚瞬间 B、C 同时试图升级写锁",
+        "两个 session 互等对方行锁，MySQL 检测到死锁回滚其一"
+      ]
+    },
+    {
+      "icon": "📝",
+      "color": "green",
+      "title": "on duplicate key update",
+      "bullets": [
+        "冲突时给索引 c 上 (5,10] 加排他 next-key lock（写锁）",
+        "语义：插入遇到唯一键约束就执行后面的更新",
+        "多个列违反唯一约束时，按索引顺序修改第一个冲突的行",
+        "例：主键先判断，认为与 id=2 冲突，就修改 id=2 的行",
+        "affected rows 返回 2：insert 计数 1 + update 计数 1，实际只更新一行"
+      ],
+      "callout": {"text": "affected rows=2 是代码实现造成的，容易误解，真正更新的只有一行。", "star": true}
+    }
+  ],
+  "summary": "insert 语句本身轻量，但特殊情况要加锁：insert…select 在可重复读 + statement 格式下，为保证日志与数据一致，会给 select 表扫描到的记录和间隙加 next-key 读锁；insert 和 select 同一张表会循环写入，需用临时表优化。唯一键冲突时 insert 会在冲突索引上加共享 next-key lock（主键、唯一索引都一样），报错后应尽快提交或回滚；多个 session 冲突后同时升级写锁会死锁。on duplicate key update 冲突时加排他 next-key lock，affected rows 返回 2 但实际只更新一行。",
+  "oneliner": "insert 的锁不简单：insert…select 给源表加读锁、循环写入用临时表、唯一键冲突加 next-key 锁还会引发死锁。"
+}

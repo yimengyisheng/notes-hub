@@ -1,0 +1,78 @@
+{
+  "num": "09",
+  "topic": "普通索引和唯一索引，应该怎么选择？",
+  "date": "2026-08-12",
+  "questions": [
+    "查询时普通索引和唯一索引性能差多少？",
+    "目标页在内存时，两种索引更新差多少？",
+    "目标页不在内存时，为什么普通索引优势大？",
+    "change buffer 是什么？能持久化吗？",
+    "change buffer 什么时候 merge？",
+    "什么业务适合 change buffer？",
+    "什么业务不适合 change buffer？",
+    "change buffer 和 redo log 各节省什么？",
+    "普通索引和唯一索引到底怎么选？",
+    "DBA 案例：内存命中率为何从 99% 降到 75%？"
+  ],
+  "modules": [
+    {
+      "icon": "🔍",
+      "color": "blue",
+      "title": "查询差异微乎其微",
+      "bullets": [
+        "普通索引：找到第一个再取下一条判断",
+        "唯一索引：找到第一个即停止",
+        "数据按 16KB 页读写，整页已在内存",
+        "多一次指针寻找+计算，可忽略"
+      ],
+      "callout": {"text": "整型字段一页近千个 key，恰好在页尾要读下一页的概率很低。", "star": false}
+    },
+    {
+      "icon": "📥",
+      "color": "green",
+      "title": "change buffer 原理",
+      "bullets": [
+        "目标页不在内存时，更新先缓存在 change buffer",
+        "不读磁盘，下次访问该页时 merge 应用",
+        "change buffer 可持久化，不是纯内存"
+      ],
+      "flow": {"color": "blue", "steps": ["页在内存<br>直接更新", "页不在内存<br>记 change buffer", "下次访问<br>读页+merge"]},
+      "callout": {"text": "merge 时才真正更新；同一页变更越多，收益越大。", "star": false}
+    },
+    {
+      "icon": "⚖️",
+      "color": "orange",
+      "title": "两种索引更新对比",
+      "table": {"head": ["场景", "唯一索引", "普通索引"], "rows": [["目标页在内存", "判断无冲突后插入", "直接插入"], ["目标页不在内存", "必须读入内存判断", "写 change buffer 即结束"]]},
+      "callout": {"text": "唯一索引用不上 change buffer；DBA 案例：把普通索引改唯一索引，内存命中率 99%→75%，更新全堵住。", "star": true}
+    },
+    {
+      "icon": "🎯",
+      "color": "green",
+      "title": "适用场景",
+      "vs": {"a": {"h": "适合：写多读少", "t": "账单类、日志类；写完不会马上被读，merge 前积累变更收益大"}, "b": {"h": "不适合：写后马上查", "t": "立即触发 merge，随机读没减少，还多维护代价"}},
+      "callout": {"text": "业务能接受就优先普通索引；唯一约束必须数据库保证时别无选择。", "star": true}
+    },
+    {
+      "icon": "🧬",
+      "color": "orange",
+      "title": "change buffer vs redo log",
+      "table": {"head": ["机制", "节省"], "rows": [["redo log / WAL", "随机写转顺序写"], ["change buffer", "随机读 IO 减少"]]},
+      "flow": {"color": "green", "steps": ["写两处内存", "记入 redo log", "一次顺序写盘"]},
+      "callout": {"text": "插入两行：Page1 在内存直接更新，Page2 不在则记 change buffer，两个动作一起写 redo log，成本极低。", "star": false}
+    },
+    {
+      "icon": "🧰",
+      "color": "blue",
+      "title": "实践建议",
+      "bullets": [
+        "更新后马上查询的场景：关闭 change buffer",
+        "机械硬盘历史库：普通索引+change buffer 开大",
+        "归档库可把唯一索引改普通索引提升归档效率",
+        "数据量大时普通索引+change buffer 优化明显"
+      ]
+    }
+  ],
+  "summary": "查询上普通索引与唯一索引几乎无差别，差别在更新：唯一索引必须读页判断，普通索引可用 change buffer 缓存变更减少随机读。写多读少用普通索引收益大；业务正确性优先时该用唯一索引就用。",
+  "oneliner": "唯一索引逼你读盘，普通索引+change buffer 把更新攒起来再落地。"
+}

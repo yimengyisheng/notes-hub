@@ -1,0 +1,95 @@
+{
+  "num": "31",
+  "topic": "误删数据后除了跑路，还能怎么办？",
+  "date": "2026-08-12",
+  "questions": [
+    "误删数据分哪几类？",
+    "Flashback 恢复的前提是什么？",
+    "多事务误删怎么恢复？",
+    "为什么不在主库直接恢复？",
+    "sql_safe_updates 有什么用？",
+    "truncate/drop 为什么不能 Flashback？",
+    "误删库/表怎么恢复？",
+    "mysqlbinlog 恢复慢的两个原因？",
+    "延迟复制备库怎么配置？",
+    "预防误删有哪些手段？"
+  ],
+  "modules": [
+    {
+      "icon": "🗂️",
+      "color": "orange",
+      "title": "误删数据的四种类型",
+      "table": {"head": ["类型", "语句", "恢复方式"], "rows": [
+        ["删行", "delete", "Flashback 闪回"],
+        ["删表", "drop/truncate table", "全量备份+binlog"],
+        ["删库", "drop database", "全量备份+binlog"],
+        ["删实例", "rm 命令", "HA 切换+恢复节点"]
+      ]},
+      "callout": {"text": "drop 会经 binlog 传给所有从库，整个集群一起被删，高可用防不住误删。", "star": true}
+    },
+    {
+      "icon": "🔄",
+      "color": "green",
+      "title": "Flashback 恢复误删行",
+      "flow": {"color": "blue", "steps": ["前提 row 格式+FULL", "insert 改 Write_rows→Delete_rows", "delete 改 Delete_rows→Write_rows", "update 对调前后两行", "多事务要逆序执行"]},
+      "bullets": [
+        "原理：修改 binlog 内容拿回原库重放",
+        "多事务 (A)delete(B)insert(C)update 恢复顺序是 reverse C→reverse B→reverse A"
+      ],
+      "callout": {"text": "不要在线上主库直接恢复：恢复出备份或临时库，确认后再回主库，避免二次破坏。", "star": true}
+    },
+    {
+      "icon": "🛡️",
+      "color": "blue",
+      "title": "误删行的预防",
+      "bullets": [
+        "sql_safe_updates=on：delete/update 忘写 where 或 where 不含索引字段会报错",
+        "代码上线前必须经过 SQL 审计",
+        "要清空全表优先 truncate/drop，delete 全表很慢",
+        "truncate/drop 记录的 binlog 是 statement 格式，无法 Flashback"
+      ],
+      "callout": {"text": "delete 全表可 Flashback 但慢；truncate/drop 快但恢复只能靠备份。", "star": true}
+    },
+    {
+      "icon": "📦",
+      "color": "orange",
+      "title": "误删库/表的恢复",
+      "flow": {"color": "blue", "steps": ["取最近一次全量备份", "恢复临时库", "取备份后的 binlog", "跳过误删语句应用日志", "确认后回主库"]},
+      "bullets": [
+        "非 GTID：--stop-position 停、--start-position 续，跳过误删语句",
+        "GTID：set gtid_next=误删GTID; begin; commit 加入集合后自动跳过",
+        "mysqlbinlog 不能只解析一张表，且只能单线程应用",
+        "加速：临时库设成备库的从库 + replicate_do_table 只同步该表 + 并行复制",
+        "缺 binlog 文件就从备份系统下载放回、改 master.index、重启备库"
+      ],
+      "callout": {"text": "要能恢复到半个月内任意时间点，备份系统至少保留半个月日志。", "star": true}
+    },
+    {
+      "icon": "⏱️",
+      "color": "blue",
+      "title": "延迟复制的备库",
+      "bullets": [
+        "CHANGE MASTER TO MASTER_DELAY=N 指定备库保持 N 秒延迟（5.6 引入）",
+        "设 3600：1 小时内发现误删，命令还没在延迟备库执行",
+        "stop slave 后跳过误操作命令，就能快速恢复出数据",
+        "随时得到一个最多再追 1 小时的临时实例"
+      ],
+      "callout": {"text": "适合核心业务，把恢复时间缩短到可接受范围。", "star": true}
+    },
+    {
+      "icon": "🧰",
+      "color": "green",
+      "title": "预防与底线",
+      "bullets": [
+        "账号分离：业务只给 DML 权限，不给 truncate/drop",
+        "DBA 日常只用只读账号，必要时才用有更新权限的账号",
+        "删表前先改名加 _to_be_deleted 后缀，观察无影响再删",
+        "删除动作必须经管理系统，且只能删固定后缀的表",
+        "备份尽量跨机房/跨城市保存；定期演练恢复流程"
+      ],
+      "callout": {"text": "预防远比处理意义大：定期检查备份有效性，恢复功能做成自动化并经常演练。", "star": true}
+    }
+  ],
+  "summary": "误删数据分删行、删表、删库、删实例四类。删行可用 Flashback（前提 row+FULL，多事务逆序重放）；删库/表靠全量备份+binlog 增量，GTID 下用空事务跳过误删语句，或用延迟复制备库（MASTER_DELAY=N）缩短恢复时间；rm 删节点靠 HA 切换。预防上做账号分离、删表先改名加后缀、sql_safe_updates=on、SQL 审计，备份跨机房并定期演练恢复。",
+  "oneliner": "误删行用 Flashback 闪回、删库表靠备份+binlog、防误删靠账号分离和改名后缀；准备一个延迟复制备库最省心。"
+}

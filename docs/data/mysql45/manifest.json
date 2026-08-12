@@ -1,0 +1,218 @@
+{
+  "id": "mysql45",
+  "type": "cornell",
+  "count": 42,
+  "chapters": [
+    {
+      "num": "01",
+      "title": "基础架构：一条SQL查询语句是如何执行的？",
+      "oneliner": "一条 SQL：连接→缓存→解析→优化→执行，共用一个 Server 层，引擎只管存取。"
+    },
+    {
+      "num": "02",
+      "title": "日志系统：一条SQL更新语句是如何执行的？",
+      "oneliner": "先写粉板再写账本（WAL），两阶段提交让 redo 与 binlog 永远逻辑一致。"
+    },
+    {
+      "num": "03",
+      "title": "事务隔离：为什么你改了我还看不见？",
+      "oneliner": "隔离级别越高越安全也越慢；长事务是回滚日志和锁的隐形杀手。"
+    },
+    {
+      "num": "04",
+      "title": "深入浅出索引（上）",
+      "oneliner": "B+ 树低树高少读盘；主键越短，二级索引越小。"
+    },
+    {
+      "num": "05",
+      "title": "深入浅出索引（下）",
+      "oneliner": "覆盖索引免回表，最左前缀复用一个索引，下推把过滤推进索引里。"
+    },
+    {
+      "num": "06",
+      "title": "全局锁和表锁：给表加个字段怎么有这么多阻碍？",
+      "oneliner": "MDL 锁到事务提交才放，给小表加字段也可能拖垮整个库。"
+    },
+    {
+      "num": "07",
+      "title": "行锁功过：怎么减少行锁对性能的影响？",
+      "oneliner": "两阶段锁：锁到最后才放；死锁检测 O(n)，热点行别让并发太高。"
+    },
+    {
+      "num": "08",
+      "title": "事务到底是隔离的还是不隔离的？",
+      "oneliner": "一致性读看旧版本，当前读加锁看最新；可见性三问：提交没？何时提交？是不是我？"
+    },
+    {
+      "num": "09",
+      "title": "普通索引和唯一索引，应该怎么选择？",
+      "oneliner": "唯一索引逼你读盘，普通索引+change buffer 把更新攒起来再落地。"
+    },
+    {
+      "num": "10",
+      "title": "MySQL为什么有时候会选错索引？",
+      "oneliner": "选错索引多半是统计失真，analyze 修统计、force index 兜底。"
+    },
+    {
+      "num": "11",
+      "title": "怎么给字符串字段加索引？",
+      "oneliner": "前缀区分度不够就倒序存或加 crc32 字段，代价是都只支持等值查询。"
+    },
+    {
+      "num": "12",
+      "title": "为什么我的MySQL会“抖”一下？",
+      "oneliner": "SQL 变慢的元凶常常是刷脏页：把 innodb_io_capacity 设成真实磁盘 IOPS，盯住脏页比例别到 75%。"
+    },
+    {
+      "num": "13",
+      "title": "为什么表数据删掉一半，表文件大小不变？",
+      "oneliner": "删数据不缩文件，因为只是留空洞；想回收空间就重建表，5.6+ 的 Online DDL 可以在线做。"
+    },
+    {
+      "num": "14",
+      "title": "count(*)这么慢，我该怎么办？",
+      "oneliner": "InnoDB 的 count(*) 慢是 MVCC 的必然；要高频精确计数就建一张 MySQL 计数表，用事务保一致。"
+    },
+    {
+      "num": "16",
+      "title": "“order by”是怎么工作的？",
+      "oneliner": "order by 的两种排序里，全字段排序省回表、rowid 排序省内存；想让 SQL 免排序就建 (条件字段,排序字段) 联合索引。"
+    },
+    {
+      "num": "17",
+      "title": "如何正确地显示随机消息？",
+      "oneliner": "别用 order by rand()，用 count(*) 加 limit Y,1 拼 SQL，并把三个 Y 合并成 limit N, M-N+1 减少扫描。"
+    },
+    {
+      "num": "18",
+      "title": "为什么这些SQL语句逻辑相同，性能却差异巨大？",
+      "oneliner": "索引字段上做函数就废了索引：month()、隐式类型/字符集转换都会触发全表扫描，写 SQL 前先 explain。"
+    },
+    {
+      "num": "19",
+      "title": "为什么我只查一行的语句，也执行这么慢？",
+      "oneliner": "查一行慢先看 processlist 状态：等锁用 sys 库查持有者再 kill；一致性读撞上海量 undo log 会慢到 800ms，当前读却只要 0.2ms。"
+    },
+    {
+      "num": "20",
+      "title": "幻读是什么，幻读有什么问题？",
+      "oneliner": "幻读=当前读下后一次多出新插入的行，行锁锁不住它，必须靠间隙锁；读提交去掉间隙锁但要配 row 格式 binlog。"
+    },
+    {
+      "num": "21",
+      "title": "为什么我只改一行的语句，锁这么多？",
+      "oneliner": "加锁背下“两原则两优化一 bug”：等值退行锁/间隙锁，范围锁得多；delete 记得加 limit，能少锁一大片。"
+    },
+    {
+      "num": "22",
+      "title": "MySQL有哪些“饮鸩止渴”提高性能的方法？",
+      "oneliner": "高峰救火都是“饮鸩止渴”：先 kill 事务外空闲连接，慢查询按索引/SQL/选错三类对症，平时做好上线前回归最省事。"
+    },
+    {
+      "num": "23",
+      "title": "MySQL是怎么保证数据不丢的？",
+      "oneliner": "双 1 保数据不丢，组提交用一次 fsync 带走一批事务；IO 瓶颈要放松，优先动 binlog 组提交参数，别把 redo 设成 0。"
+    },
+    {
+      "num": "24",
+      "title": "MySQL是怎么保证主备一致的？",
+      "oneliner": "主备一致靠 binlog：statement 省空间有风险，row 可靠还能救误删，双 M 用 server id 断循环复制。"
+    },
+    {
+      "num": "25",
+      "title": "MySQL是怎么保证高可用的？",
+      "oneliner": "高可用拼的是主备延迟：可靠性优先等 SBM=0 再切（推荐），可用性优先几乎不停机但可能数据分叉。"
+    },
+    {
+      "num": "26",
+      "title": "备库为什么会延迟好几个小时？",
+      "oneliner": "备库延迟小时级多是单线程复制追不上，多线程复制从按表/按行到按库再到 LOGICAL_CLOCK/WRITESET，铁律是同行同 worker、同事务不拆。"
+    },
+    {
+      "num": "27",
+      "title": "主库出问题了，从库怎么办？",
+      "oneliner": "一主多从切换最怕找不准位点重复执行；上了 GTID，从库改指新主库即可，DDL 用空事务补 GTID 免重复。"
+    },
+    {
+      "num": "28",
+      "title": "读写分离有哪些坑？",
+      "oneliner": "读写分离的坑是过期读：sleep 不靠谱，semi-sync 只保一主一备，最靠谱是等位点/等 GTID，超时回主库要限流。"
+    },
+    {
+      "num": "29",
+      "title": "如何判断一个数据库是不是出问题了？",
+      "oneliner": "select 1 只能证明进程活着；要判故障用 update 健康表 + performance_schema 统计 redo/binlog 的单次 IO 时间。"
+    },
+    {
+      "num": "31",
+      "title": "误删数据后除了跑路，还能怎么办？",
+      "oneliner": "误删行用 Flashback 闪回、删库表靠备份+binlog、防误删靠账号分离和改名后缀；准备一个延迟复制备库最省心。"
+    },
+    {
+      "num": "32",
+      "title": "为什么还有kill不掉的语句？",
+      "oneliner": "kill 只是“下命令”不是“砍线程”，要等线程走到埋点、跑完终止逻辑；看到 Killed 就调环境加速它收尾。"
+    },
+    {
+      "num": "33",
+      "title": "我查这么多数据，会不会把数据库内存打爆？",
+      "oneliner": "边读边发不存结果集，内存打不爆；LRU 分 young/old 两区，冷扫描只进 old 区，业务命中率不受伤。"
+    },
+    {
+      "num": "34",
+      "title": "到底可不可以使用join？",
+      "oneliner": "join 能不能用看被驱动表有没有索引（explain 是否出现 Block Nested Loop），驱动表永远选“过滤后数据量小”的表。"
+    },
+    {
+      "num": "35",
+      "title": "join语句怎么优化？",
+      "oneliner": "join 优化三板斧：MRR 排序回表、给被驱动表加索引把 BNL 变 BKA、过滤小数据用临时表，极致场景业务端模拟 hash join。"
+    },
+    {
+      "num": "36",
+      "title": "为什么临时表可以重名？",
+      "oneliner": "临时表“仅自己可见、随会话自动删除、可重名”，所以多线程并发用它最省心；它和 Memory 内存表不是一回事。"
+    },
+    {
+      "num": "37",
+      "title": "什么时候会使用内部临时表？",
+      "oneliner": "内部临时表服务于“要暂存中间结果且需要二维表特性”的场景；group by 优化看排序、索引、内存、SQL_BIG_RESULT 四招。"
+    },
+    {
+      "num": "38",
+      "title": "都说InnoDB好，那还要不要使用Memory引擎？",
+      "oneliner": "普通内存表别用（重启丢数据、无双行锁），InnoDB 就够了；只有内存临时表是值得用 Memory 引擎的例外。"
+    },
+    {
+      "num": "39",
+      "title": "自增主键为什么不是连续的？",
+      "oneliner": "自增值“申请即占用、回滚不回收、批量翻倍申请浪费”，所以自增主键只保证递增、不保证连续。"
+    },
+    {
+      "num": "40",
+      "title": "insert语句的锁为什么这么多？",
+      "oneliner": "insert 的锁不简单：insert…select 给源表加读锁、循环写入用临时表、唯一键冲突加 next-key 锁还会引发死锁。"
+    },
+    {
+      "num": "41",
+      "title": "怎么最快地复制一张表？",
+      "oneliner": "小数据用 insert…select，要过滤用 mysqldump，要灵活用 outfile+load data，大表最快是物理拷贝表空间。"
+    },
+    {
+      "num": "42",
+      "title": "grant之后要跟着flush privileges吗？",
+      "oneliner": "grant 同时改表和内存，即时生效；flush privileges 只在权限表被手工改乱时才需要。"
+    },
+    {
+      "num": "43",
+      "title": "要不要使用分区表？",
+      "oneliner": "分区表引擎层是多表、server 层是单表，共用一个 MDL 锁且首次访问全分区；适合按时间分区，分区别太多。"
+    },
+    {
+      "num": "45",
+      "title": "自增id用完怎么办？",
+      "oneliner": "自增 id 各有上限：表的用完报错、row_id 用完覆盖丢数据、max_trx_id 用完脏读，只有 thread_id 靠唯一数组永不重复。"
+    }
+  ],
+  "sections": []
+}

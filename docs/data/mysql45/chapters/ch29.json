@@ -1,0 +1,79 @@
+{
+  "num": "29",
+  "topic": "如何判断一个数据库是不是出问题了？",
+  "date": "2026-08-12",
+  "questions": [
+    "select 1 能判断实例正常吗？",
+    "innodb_thread_concurrency 建议设多少？",
+    "并发连接和并发查询有什么区别？",
+    "为什么等锁的线程不占并发计数？",
+    "查表判断有什么问题？",
+    "更新判断为什么用 server_id 做主键？",
+    "什么是“判定慢”问题？",
+    "performance_schema 怎么统计 IO 时间？",
+    "怎么判断单次 IO 是否异常？",
+    "打开 performance_schema 有损耗吗？"
+  ],
+  "modules": [
+    {
+      "icon": "❓",
+      "color": "orange",
+      "title": "select 1 为什么不够",
+      "bullets": [
+        "select 1 成功只能说明进程还在",
+        "innodb_thread_concurrency=3 时，3 个大查询占满线程，select 1 仍成功但查表被堵",
+        "并发线程到上限后，新请求进入等待直到有线程退出"
+      ],
+      "callout": {"text": "MHA 默认用的就是 select 1 检测，可见它虽不完美但使用广泛。", "star": true}
+    },
+    {
+      "icon": "🧮",
+      "color": "blue",
+      "title": "并发连接 vs 并发查询",
+      "bullets": [
+        "并发连接：show processlist 里看到的几千个连接",
+        "并发查询：当前正在执行的语句，才是 CPU 杀手",
+        "几千个连接只多占内存，影响不大",
+        "innodb_thread_concurrency 默认 0 不限制，建议设 64~128"
+      ],
+      "callout": {"text": "别搞混两者：限制的是并发查询，不是并发连接。", "star": true}
+    },
+    {
+      "icon": "🔒",
+      "color": "green",
+      "title": "锁等待不占并发计数",
+      "flow": {"color": "blue", "steps": ["线程 1 持行锁不提交", "128 个线程等同一行锁", "若等锁也占计数", "InnoDB 认为线程用满", "线程 1 无法提交，系统锁死"]},
+      "bullets": [
+        "等行锁（含间隙锁）的线程不算在 128 里",
+        "等锁的线程已不吃 CPU，减计是合理的",
+        "不减计会让系统堵死且 CPU 为 0，明显不合理"
+      ],
+      "callout": {"text": "这个设计避免了整个系统被锁死。", "star": true}
+    },
+    {
+      "icon": "📋",
+      "color": "orange",
+      "title": "查表判断 与 更新判断",
+      "table": {"head": ["方案", "做法", "局限"], "rows": [
+        ["查表", "定期 select mysql.health_check 一行", "能查出并发线程过多；磁盘满时读仍可用，检测不出"],
+        ["更新", "update health_check 的 t_modified=now()", "备库检测命令在双 M 下会发回主库，需用 server_id 做主键多行防冲突"]
+      ]},
+      "callout": {"text": "外部检测都有随机性：IO 100% 时小 update 可能很快成功，业务 SQL 已很慢，HA 却判正常（判定慢）。", "star": true}
+    },
+    {
+      "icon": "📊",
+      "color": "blue",
+      "title": "内部统计 performance_schema",
+      "bullets": [
+        "file_summary_by_event_name 统计每次 IO 请求时间（皮秒）",
+        "redo log 对应 wait/io/file/innodb/innodb_log_file；binlog 对应 wait/io/file/sql/binlog",
+        "用 MAX_TIMER 判断：单次 IO 超 200ms 视为异常",
+        "发现异常后 truncate 清空统计，便于累积监控",
+        "打开所有项性能约降 10%，建议只开需要的项"
+      ],
+      "callout": {"text": "作者倾向：优先 update 系统表，再配合 performance_schema 的内部 IO 统计。", "star": true}
+    }
+  ],
+  "summary": "判断数据库是否出问题不能只靠 select 1：它只能说明进程活着。演进路线是查表判断（mysql.health_check）、更新判断（用 server_id 做主键避免双 M 冲突），但外部检测都有随机性和判定慢的问题。更可靠的是 performance_schema 内部统计：监控 redo log/binlog 的单次 IO 时间（MAX_TIMER 超 200ms 算异常），只开需要的项控制损耗。",
+  "oneliner": "select 1 只能证明进程活着；要判故障用 update 健康表 + performance_schema 统计 redo/binlog 的单次 IO 时间。"
+}

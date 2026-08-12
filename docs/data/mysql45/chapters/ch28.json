@@ -1,0 +1,84 @@
+{
+  "num": "28",
+  "topic": "读写分离有哪些坑？",
+  "date": "2026-08-12",
+  "questions": [
+    "客户端直连和 proxy 架构各有什么特点？",
+    "什么是过期读？",
+    "强制走主库方案怎么分类请求？",
+    "sleep 方案的依据是什么？",
+    "判断主备无延迟有哪三种做法？",
+    "为什么“备库无延迟”仍可能过期读？",
+    "semi-sync 解决了什么问题？",
+    "一主多从下 semi-sync 有什么问题？",
+    "master_pos_wait 的返回值含义？",
+    "等 GTID 方案怎么拿到事务 GTID？"
+  ],
+  "modules": [
+    {
+      "icon": "🏗️",
+      "color": "green",
+      "title": "两种读写分离架构",
+      "vs": {"a": {"h": "客户端直连", "t": "少一层转发性能稍好、架构简单易排查；但主备切换/迁移时客户端要感知并改连接信息，可用 Zookeeper 管理后端。"}, "b": {"h": "带 proxy", "t": "客户端只连 proxy，不关注后端细节；但要求更高的后端运维能力，proxy 自身也要高可用，整体复杂。"}},
+      "callout": {"text": "目前趋势是往带 proxy 的架构方向发展。", "star": false}
+    },
+    {
+      "icon": "👻",
+      "color": "orange",
+      "title": "过期读",
+      "bullets": [
+        "主从存在延迟，更新事务后马上查从库，可能读到更新前的状态",
+        "主从延迟不能 100% 避免",
+        "客户端希望从库查询结果与主库一致"
+      ],
+      "callout": {"text": "过期读本质是一写多读导致的；有别的免等待水平扩展方案，但往往牺牲写性能。", "star": true}
+    },
+    {
+      "icon": "🛡️",
+      "color": "blue",
+      "title": "强制走主库 与 sleep",
+      "table": {"head": ["方案", "做法", "问题"], "rows": [
+        ["强制走主库", "必须最新结果的请求走主库，可接受旧数据的走从库", "用得最多；所有查询都不能过期读时只能放弃读写分离"],
+        ["sleep", "更新后先 select sleep(1) 再读从库", "假设延迟大多在 1 秒内，不精确但可用"]
+      ]},
+      "callout": {"text": "sleep 可改进：把等待挪到后台更新逻辑里，避免请求路径上的等待，体验更好。", "star": false}
+    },
+    {
+      "icon": "✅",
+      "color": "green",
+      "title": "判断主备无延迟",
+      "flow": {"color": "blue", "steps": ["查前先判断无延迟", "seconds_behind_master=0", "或对比位点两组值", "或对比 GTID 两个集合", "相等才允许查询"]},
+      "bullets": [
+        "位点对比：Master/Read 与 Relay/Exec 两组日志位点完全相同",
+        "GTID 对比：Retrieved_Gtid_Set 与 Executed_Gtid_Set 相同",
+        "比 seconds_behind_master=0 更精确"
+      ],
+      "callout": {"text": "这个逻辑只保证“收到的都执行完”：trx3 若还在主库没发出，从库仍会过期读。", "star": true}
+    },
+    {
+      "icon": "🤝",
+      "color": "orange",
+      "title": "配合 semi-sync",
+      "bullets": [
+        "主库发 binlog 给从库，从库回 ack，主库收到 ack 才回客户端确认",
+        "所有确认过的事务，备库都一定已收到日志",
+        "也能解决普通异步复制下主库掉电丢 binlog 的问题",
+        "一主多从只等一个从库 ack，查询落到其他从库仍可能过期读",
+        "持续延迟时位点等值判断一直不成立，会过度等待"
+      ],
+      "callout": {"text": "semi-sync+位点判断只对一主一备场景成立。", "star": true}
+    },
+    {
+      "icon": "🎯",
+      "color": "blue",
+      "title": "等位点 与 等 GTID",
+      "table": {"head": ["方案", "命令", "流程"], "rows": [
+        ["等主库位点", "master_pos_wait(file,pos,超时)", "事务后 show master status 拿位点，从库等待，≥0 才查"],
+        ["等 GTID", "wait_for_executed_gtid_set(gtid,1)", "5.7.6+ 返回包直接带 GTID，从库等待，返回 0 才查"]
+      ]},
+      "callout": {"text": "master_pos_wait 返回：正整数=执行了几个事务，NULL=同步线程异常，-1=超时，0=已执行过；超时就回主库查，注意限流。", "star": true}
+    }
+  ],
+  "summary": "读写分离要解决过期读：客户端直连性能好但切换要感知，proxy 对客户端友好但复杂度高。六种方案里，强制走主库用得最多；判断主备无延迟（SBM/位点/GTID）比 sleep 准，但仍有日志未发出的窗口；配 semi-sync 能消除该窗口，却只对一主一备成立；等主库位点 master_pos_wait 和等 GTID wait_for_executed_gtid_set 最精确，超时回主库并做好限流。实际可先分类请求再组合使用。",
+  "oneliner": "读写分离的坑是过期读：sleep 不靠谱，semi-sync 只保一主一备，最靠谱是等位点/等 GTID，超时回主库要限流。"
+}

@@ -1,0 +1,84 @@
+{
+  "num": "02",
+  "topic": "日志系统：一条SQL更新语句是如何执行的？",
+  "date": "2026-08-12",
+  "questions": [
+    "更新语句比查询多了哪两个日志模块？",
+    "WAL 是什么？为什么能提升更新效率？",
+    "redo log 的 write pos 和 checkpoint 各代表什么？",
+    "redo log 写满会发生什么？",
+    "什么是 crash-safe？",
+    "redo log 和 binlog 的三点区别？",
+    "update 语句在引擎层的执行流程？",
+    "两阶段提交的 prepare 和 commit 指什么？",
+    "先写 redo log 后写 binlog 崩溃会怎样？",
+    "先写 binlog 后写 redo log 崩溃会怎样？",
+    "innodb_flush_log_at_trx_commit 和 sync_binlog 建议值？"
+  ],
+  "modules": [
+    {
+      "icon": "📝",
+      "color": "blue",
+      "title": "粉板与账本：WAL 思想",
+      "intro": "用孔乙己掌柜的粉板和账本理解 WAL。",
+      "bullets": [
+        "粉板=redo log，账本=磁盘数据文件",
+        "WAL：Write-Ahead Logging，先写日志再写磁盘",
+        "先记粉板，空闲时（打烊）再更新账本",
+        "粉板写满：先擦掉一部分更新到账本腾空间"
+      ],
+      "flow": {"color": "green", "steps": ["更新写 redo log", "更新内存", "空闲时刷盘"]}
+    },
+    {
+      "icon": "🔄",
+      "color": "green",
+      "title": "redo log：循环写",
+      "bullets": [
+        "固定大小循环写：如 4 个文件各 1GB 共 4GB",
+        "write pos：当前记录位置，边写边后移",
+        "checkpoint：当前要擦除的位置",
+        "两者之间是空位，可写新操作",
+        "write pos 追上 checkpoint=粉板满，暂停更新"
+      ],
+      "callout": {"text": "有了 redo log，异常重启后已提交记录不丢失，这个能力叫 crash-safe。", "star": true}
+    },
+    {
+      "icon": "📦",
+      "color": "orange",
+      "title": "binlog：归档日志",
+      "bullets": [
+        "Server 层实现，所有引擎可用",
+        "逻辑日志：记录原始逻辑，如给 ID=2 的 c 加 1",
+        "追加写：写满切下一个文件，不覆盖旧日志",
+        "来源：MyISAM 无 crash-safe，InnoDB 插件自带 redo log"
+      ],
+      "table": {"head": ["维度", "redo log", "binlog"], "rows": [["引擎", "InnoDB 特有", "Server 层通用"], ["类型", "物理日志", "逻辑日志"], ["写法", "循环写", "追加写"]]}
+    },
+    {
+      "icon": "🚀",
+      "color": "blue",
+      "title": "update 内部流程",
+      "flow": {"color": "orange", "steps": ["引擎取 ID=2 行", "执行器 +1 得新行", "引擎更新内存<br>写 redo prepare", "执行器写 binlog", "引擎改 redo commit"]},
+      "callout": {"text": "最后三步就是两阶段提交：redo 先 prepare，再写 binlog，最后 redo 改 commit。", "star": false}
+    },
+    {
+      "icon": "⚖️",
+      "color": "green",
+      "title": "两阶段提交为什么必要",
+      "vs": {"a": {"h": "先 redo 后 binlog", "t": "崩溃后 redo 恢复 c=1，但 binlog 没这条，用它恢复临时库 c=0，与原库不一致"}, "b": {"h": "先 binlog 后 redo", "t": "崩溃后 redo 未写事务无效 c=0，binlog 却多一条，恢复出 c=1，与原库不一致"}},
+      "bullets": [
+        "扩容建备库常用：全量备份+应用 binlog",
+        "两份日志状态不一致会致主从不一致"
+      ]
+    },
+    {
+      "icon": "🔒",
+      "color": "orange",
+      "title": "参数建议",
+      "table": {"head": ["参数", "作用", "建议"], "rows": [["innodb_flush_log_at_trx_commit", "每次事务 redo 落盘", "设 1"], ["sync_binlog", "每次事务 binlog 落盘", "设 1"]]},
+      "callout": {"text": "两个参数都设 1，保证异常重启后 redo log 与 binlog 都不丢。", "star": true}
+    }
+  ],
+  "summary": "更新语句多走两套日志：InnoDB 的 redo log（物理、循环写）保证 crash-safe，Server 层的 binlog（逻辑、追加写）用于归档和恢复。两阶段提交让两份日志状态一致，是崩溃恢复与主从一致的基础。",
+  "oneliner": "先写粉板再写账本（WAL），两阶段提交让 redo 与 binlog 永远逻辑一致。"
+}

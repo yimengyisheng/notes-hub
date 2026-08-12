@@ -1,0 +1,75 @@
+{
+  "num": "32",
+  "topic": "为什么还有kill不掉的语句？",
+  "date": "2026-08-12",
+  "questions": [
+    "kill query 和 kill connection 有什么区别？",
+    "kill 命令实际做了哪两件事？",
+    "为什么说 kill 不是“说停就停”的？",
+    "等锁为什么能被打断而 InnoDB 并发等待不能？",
+    "innodb_thread_concurrency 为什么会导致 kill query 无效？",
+    "kill 不掉的语句分哪两类？",
+    "客户端 Ctrl+C 是怎么实现的？",
+    "-A 和 --quick 参数各有什么作用？",
+    "看到 Killed 状态后该怎么办？"
+  ],
+  "modules": [
+    {
+      "icon": "⚔️",
+      "color": "blue",
+      "title": "两个 kill 命令",
+      "table": {"head": ["命令", "作用", "说明"], "rows": [
+        ["kill query + 线程id", "终止线程中正在执行的语句", "只停语句，不断连接"],
+        ["kill connection + 线程id", "断开线程的连接", "connection 可缺省；有语句先停语句"]
+      ]},
+      "callout": {"text": "kill 之后 show processlist 仍能看到该线程，Command 列显示 Killed，说明语句还在执行中。", "star": true}
+    },
+    {
+      "icon": "🔧",
+      "color": "green",
+      "title": "kill 的实现原理",
+      "flow": {"color": "blue", "steps": ["把状态改成 THD::KILL_QUERY", "给执行线程发信号唤醒", "线程在“埋点”判断状态", "进入语句终止逻辑", "终止逻辑执行完才退出"]},
+      "bullets": [
+        "类似 Linux kill：发信号而不是直接强停进程",
+        "处于等待状态时，必须是可被唤醒的等待，否则根本到不了“埋点”",
+        "session B 等锁时还拿着 MDL 读锁，直接终止会导致锁永远无法释放"
+      ],
+      "callout": {"text": "三个关键点：埋点处判断状态、等待必须可唤醒、终止逻辑本身耗时。所以 kill 不是立即生效。", "star": true}
+    },
+    {
+      "icon": "🧩",
+      "color": "orange",
+      "title": "kill 不掉的两种情况",
+      "vs": {"a": {"h": "没执行到判断逻辑", "t": "等待循环里没有埋点，收不到状态变化。例如 innodb_thread_concurrency 并发等待：每 10 毫秒用 nanosleep 睡一次，循环里从不检查线程状态。"}, "b": {"h": "终止逻辑本身耗时", "t": "已进入终止流程但收尾很久：超大事务回滚、大查询删除临时文件、DDL 最后阶段的收尾工作。"}},
+      "callout": {"text": "innodb_thread_concurrency=2 的例子：kill query 无效，直到 kill connection 才断开客户端，但服务端语句还在跑（Killed）。", "star": true}
+    },
+    {
+      "icon": "💻",
+      "color": "green",
+      "title": "客户端的两个知识点",
+      "bullets": [
+        "Ctrl+C 不是直接杀线程，而是另开一个连接去执行 kill query",
+        "-A：跳过表名自动补全（Tab 补全），建议默认加上",
+        "--quick（-q）也能跳过补全阶段",
+        "--quick 默认用 mysql_use_result：读一行处理一行，不缓存",
+        "本地处理慢会阻塞服务端发送结果，反而让服务端变慢",
+        "--quick 还省本地内存、不记录命令历史，是让“客户端”更快"
+      ],
+      "callout": {"text": "默认 mysql_store_result 本地缓存结果；结果集不大时建议用默认接口，避免大查询占用近 20G 内存。", "star": true}
+    },
+    {
+      "icon": "🛠️",
+      "color": "blue",
+      "title": "遇到 Killed 状态怎么办",
+      "bullets": [
+        "改环境加速终止逻辑，而不是再 kill 一次",
+        "InnoDB 并发度问题：临时调大 innodb_thread_concurrency，或停掉别的线程让位",
+        "回滚慢是因为 IO 受限：减少系统压力让它加速",
+        "做完这些就只能等待流程自己完成"
+      ],
+      "callout": {"text": "被 kill 的事务持续回滚时，不要强行重启进程——重启后该做的回滚动作还是不能少，应等它自己结束；影响太大就先做主备切换。", "star": true}
+    }
+  ],
+  "summary": "kill query 只终止语句，kill connection 断开连接；两者都是设置 THD::KILL_QUERY 状态并发信号唤醒线程，线程要执行到“埋点”才进入终止逻辑，且终止逻辑本身耗时。kill 不掉分两类：没执行到判断逻辑（如 innodb_thread_concurrency 的 10 毫秒 sleep 循环）和终止逻辑耗时久（大事务回滚、删临时文件、DDL 收尾）。客户端 Ctrl+C 实际是另开连接发 kill query；-A 跳过表名补全，--quick 让客户端更快但可能拖慢服务端。看到 Killed 只能调整环境加速终止，不能强停。",
+  "oneliner": "kill 只是“下命令”不是“砍线程”，要等线程走到埋点、跑完终止逻辑；看到 Killed 就调环境加速它收尾。"
+}

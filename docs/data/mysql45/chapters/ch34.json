@@ -1,0 +1,85 @@
+{
+  "num": "34",
+  "topic": "到底可不可以使用join？",
+  "date": "2026-08-12",
+  "questions": [
+    "DBA 不让用 join，到底有没有道理？",
+    "Index Nested-Loop Join 是怎么执行的？",
+    "拆成单表查询比 join 好吗？",
+    "为什么驱动表要选小表？",
+    "Block Nested-Loop Join 是怎么执行的？",
+    "怎么判断 join 能不能用？",
+    "BNL 算法下驱动表怎么选？",
+    "“小表”到底怎么定义？"
+  ],
+  "modules": [
+    {
+      "icon": "🔍",
+      "color": "green",
+      "title": "Index Nested-Loop Join（NLJ）",
+      "flow": {"color": "blue", "steps": ["驱动表 t1 全表扫描取一行 R", "取出 R 的 a 值去 t2 查索引", "匹配行和 R 组成结果行", "循环到 t1 末尾结束"]},
+      "bullets": [
+        "t1 有 100 行、t2 有 1000 行，字段 a 上有索引",
+        "驱动表走全表扫描 100 行，被驱动表每次走树搜索扫 1 行",
+        "总扫描行数 200 行",
+        "不用 join 拆成单表：101 条语句、多 100 次网络交互，还不如直接 join"
+      ],
+      "callout": {"text": "能不能用 join 的关键：被驱动表能否用上索引。看 explain 的 Extra 有没有“Block Nested Loop”字样。", "star": true}
+    },
+    {
+      "icon": "📐",
+      "color": "blue",
+      "title": "为什么小表做驱动表",
+      "bullets": [
+        "驱动表 N 行全表扫描，每行去被驱动表匹配一次",
+        "被驱动表 M 行，每次查一行约 2×log₂M 复杂度",
+        "整体复杂度约 N + N×2×log₂M",
+        "N 扩大 1000 倍，扫描行数扩大 1000 倍",
+        "M 扩大 1000 倍，扫描行数只扩大不到 10 倍",
+        "所以 N（驱动表）的影响更大，选小表做驱动表"
+      ]
+    },
+    {
+      "icon": "📦",
+      "color": "orange",
+      "title": "Block Nested-Loop Join（BNL）",
+      "flow": {"color": "blue", "steps": ["把驱动表分块读入 join_buffer", "扫描被驱动表每一行", "每行和 join_buffer 里的行做判断", "内存不够就分多次读被驱动表"]},
+      "bullets": [
+        "被驱动表用不上索引时才走 BNL",
+        "join 字段用没索引的 b 字段时触发",
+        "被驱动表可能被多次全表扫描，占大量系统资源",
+        "比较次数等于两个表参与 join 的行数乘积"
+      ],
+      "callout": {"text": "大表 join 出现 BNL 要尽量避免：扫描行数过多、占用大量资源，尤其被驱动表是冷数据表时还会污染 Buffer Pool。", "star": true}
+    },
+    {
+      "icon": "⚖️",
+      "color": "green",
+      "title": "驱动表选择小结",
+      "table": {"head": ["算法", "驱动表选择"], "rows": [
+        ["NLJ（用上被驱动表索引）", "选小表"],
+        ["BNL 且 join_buffer 足够大", "两表一样"],
+        ["BNL 且 join_buffer 不够大", "选小表"]
+      ]},
+      "bullets": [
+        "结论：总是应该使用小表做驱动表",
+        "例：t2.id<=50 过滤后前 50 行才是“小表”",
+        "例：只查字段 b 的 t1 只需放一列进 join_buffer，比放三列的 t2 更小"
+      ],
+      "callout": {"text": "“小表”不是行数少：是按各自条件过滤后，参与 join 的各个字段总数据量小的那个表。", "star": true}
+    },
+    {
+      "icon": "🧠",
+      "color": "blue",
+      "title": "回顾上期：客户端慢的后果",
+      "bullets": [
+        "客户端迟迟不接收数据，会造成“长事务”",
+        "长事务占着行锁，别的更新语句会被锁住",
+        "undo log 不能被回收，回滚段空间膨胀"
+      ],
+      "callout": {"text": "同一个事务更新后要尽快提交，不要做没必要的查询，尤其不要执行返回大量数据的查询。", "star": true}
+    }
+  ],
+  "summary": "join 有两种算法：能用被驱动表索引时是 Index Nested-Loop Join（NLJ），总扫描行数约 N+N×2×log₂M；不能用索引时退化为 Block Nested-Loop Join（BNL），被驱动表可能被多次全表扫描，比较次数是行数乘积。结论：能用 NLJ 时 join 比拆单表好；explain 出现“Block Nested Loop”就尽量别用；无论哪种算法都选小表做驱动表。“小表”是按过滤后参与 join 的字段总数据量来定义的。",
+  "oneliner": "join 能不能用看被驱动表有没有索引（explain 是否出现 Block Nested Loop），驱动表永远选“过滤后数据量小”的表。"
+}

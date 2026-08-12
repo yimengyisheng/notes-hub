@@ -1,0 +1,75 @@
+{
+  "num": "17",
+  "topic": "如何正确地显示随机消息？",
+  "date": "2026-08-12",
+  "questions": [
+    "order by rand() 的 Extra 显示什么？",
+    "内存临时表排序为什么选 rowid 排序？",
+    "order by rand() 的扫描行数怎么算？",
+    "tmp_table_size 超限会怎样？",
+    "优先队列排序算法解决什么问题？",
+    "为什么 limit 1000 不用优先队列？",
+    "随机算法 1 有什么缺陷？",
+    "随机算法 2 的扫描行数是多少？",
+    "如何进一步优化随机算法 3？"
+  ],
+  "modules": [
+    {
+      "icon": "🎲",
+      "color": "orange",
+      "title": "order by rand() 怎么执行",
+      "flow": {"color": "blue", "steps": ["建内存临时表 R+W 两字段", "扫 words 10000 行，rand() 生成 R 存入", "扫临时表 10000 行进 sort_buffer", "按 R 排序", "取前 3 个位置回临时表取 word"]},
+      "callout": {"text": "Extra 显示 Using temporary + Using filesort，总扫描行数高达 20003。", "star": true}
+    },
+    {
+      "icon": "🧠",
+      "color": "blue",
+      "title": "内存临时表用 rowid 排序",
+      "bullets": [
+        "内存表“回表”只是按数组下标访问内存，没有磁盘开销",
+        "优化器于是优先选排序行更小的 rowid 排序",
+        "有主键的表 rowid=主键 id；无主键用 6 字节系统 rowid",
+        "MEMORY 引擎可看作数组，rowid 就是数组下标"
+      ],
+      "callout": {"text": "和 InnoDB 相反：InnoDB 怕回表磁盘读所以优先全字段排序，内存表没这层顾虑。", "star": true}
+    },
+    {
+      "icon": "📀",
+      "color": "green",
+      "title": "磁盘临时表与优先队列",
+      "bullets": [
+        "tmp_table_size 默认 16M，超限后内存临时表转磁盘临时表",
+        "磁盘临时表默认 InnoDB，由 internal_tmp_disk_storage_engine 控制",
+        "只需取 R 最小的 3 个，归并排序却把 10000 行全排好，浪费计算",
+        "5.6+ 的优先队列算法维护最大堆，只留最小的 3 个",
+        "filesort_priority_queue_optimization=chosen 时 number_of_tmp_files=0"
+      ],
+      "callout": {"text": "limit 1000 不用优先队列：堆要维护 1000 行 (name,rowid)，超过 sort_buffer_size 只能用归并排序。", "star": true}
+    },
+    {
+      "icon": "🧮",
+      "color": "orange",
+      "title": "随机算法 1 与 2",
+      "table": {"head": ["算法", "做法", "扫描行数", "问题"], "rows": [
+        ["算法 1", "取 max/min id，X=rand 后 id>=X limit 1", "约 3 行", "id 有空洞时概率不均，id 1,2,4,5 中 4 被选概率翻倍"],
+        ["算法 2", "count(*) 得 C，再 limit Y,1", "C+Y+1", "严格随机，但 Y 大时接近 order by rand()"]
+      ]},
+      "callout": {"text": "id 空洞大到 1,2,40000,40001 时，算法 1 基本可以当 bug 看待。", "star": true}
+    },
+    {
+      "icon": "🎯",
+      "color": "green",
+      "title": "随机算法 3 与优化",
+      "flow": {"color": "blue", "steps": ["count(*) 得 C", "生成 Y1/Y2/Y3", "执行三次 limit Y,1", "扫描 C+(Y1+1)+(Y2+1)+(Y3+1)"]},
+      "bullets": [
+        "取三个 Y 的最大值 M、最小值 N",
+        "改为一条 select * from t limit N, M-N+1",
+        "总扫描行数降到 C+M+1",
+        "规范做法：随机逻辑放业务代码，让数据库只负责读写数据"
+      ],
+      "callout": {"text": "应用代码拼 SQL，是这类随机需求的常用优化手段。", "star": false}
+    }
+  ],
+  "summary": "order by rand() 要建内存/磁盘临时表并排序，扫描行数巨大，应尽量避开。随机需求推荐：算法 1 取 id 区间很快但被空洞扭曲概率；算法 2/3 基于 count(*) 严格随机；再优化为 limit N, M-N+1 一条语句，扫描 C+M+1 行。随机生成逻辑放到应用代码里，数据库只负责读写。",
+  "oneliner": "别用 order by rand()，用 count(*) 加 limit Y,1 拼 SQL，并把三个 Y 合并成 limit N, M-N+1 减少扫描。"
+}

@@ -1,0 +1,90 @@
+{
+  "num": "01",
+  "topic": "基础架构：一条SQL查询语句是如何执行的？",
+  "date": "2026-08-12",
+  "questions": [
+    "MySQL 整体分为哪两层？Server 层包含哪些组件？",
+    "连接器认证通过后会做什么？权限修改对已有连接生效吗？",
+    "长连接导致内存涨得快，如何解决？",
+    "查询缓存为什么弊大于利？MySQL 8.0 如何处理它？",
+    "分析器做词法分析和语法分析，分别识别什么？",
+    "优化器在哪些场景下做选择？",
+    "执行器执行无索引查询的流程是什么？",
+    "rows_examined 表示什么？",
+    "InnoDB 从哪个版本起成为默认存储引擎？",
+    "为什么建议尽量使用长连接？"
+  ],
+  "modules": [
+    {
+      "icon": "📐",
+      "color": "blue",
+      "title": "全局鸟瞰：两层架构",
+      "intro": "先把 MySQL 拆开看全貌，再钻细节。",
+      "bullets": [
+        "Server 层：连接器、查询缓存、分析器、优化器、执行器",
+        "跨存储引擎功能都在 Server 层：存储过程、触发器、视图",
+        "引擎层插件式：InnoDB、MyISAM、Memory 等",
+        "InnoDB 从 <b>MySQL 5.5.5</b> 起成为默认引擎"
+      ],
+      "flow": {"color": "green", "steps": ["连接器", "查询缓存", "分析器", "优化器", "执行器"]}
+    },
+    {
+      "icon": "🔌",
+      "color": "green",
+      "title": "连接器：认证与权限",
+      "bullets": [
+        "认证：用户名密码，错则 Access denied for user",
+        "认证通过后到<b>权限表</b>查出权限，之后判断都依赖它",
+        "改权限不影响已存在连接，新建连接才生效",
+        "wait_timeout 默认 <b>8 小时</b>断开空闲连接",
+        "show processlist 中 Command=Sleep 表示空闲连接"
+      ],
+      "callout": {"text": "长连接内存涨得快：执行中临时内存挂在连接对象上，断开才释放，累积可能 OOM。方案：定期断开，或 5.7+ 用 mysql_reset_connection。", "star": true}
+    },
+    {
+      "icon": "🗃️",
+      "color": "orange",
+      "title": "查询缓存：弊大于利",
+      "bullets": [
+        "key-value 缓存：key 是语句，value 是结果",
+        "命中缓存直接返回，跳过后面所有阶段",
+        "任一更新清空整表缓存，命中率极低",
+        "适合静态表：如系统配置表",
+        "query_cache_type=DEMAND + SQL_CACHE 按需用",
+        "MySQL 8.0 直接删除整块功能"
+      ]
+    },
+    {
+      "icon": "🔍",
+      "color": "blue",
+      "title": "分析器：词法与语法",
+      "flow": {"color": "green", "steps": ["词法分析<br>识别词义", "语法分析<br>判断对错", "报错 use near"]},
+      "callout": {"text": "语法错误提示要看紧接 use near 的内容，那里是第一个出错位置。", "star": false}
+    },
+    {
+      "icon": "⚖️",
+      "color": "green",
+      "title": "优化器：决定执行方案",
+      "bullets": [
+        "多索引时决定用哪个索引",
+        "多表 join 决定各表连接顺序",
+        "例：t1.c=10 and t2.d=20 可先查 t1 或先查 t2",
+        "逻辑结果一样，效率可能不同"
+      ]
+    },
+    {
+      "icon": "▶️",
+      "color": "orange",
+      "title": "执行器：真正干活",
+      "flow": {"color": "blue", "steps": ["判断权限", "打开表", "调引擎接口取行", "判断 ID=10", "返回结果集"]},
+      "bullets": [
+        "无权限报 ERROR 1142 SELECT command denied",
+        "rows_examined：执行器调用引擎取行的累加数",
+        "引擎一次调用可能扫多行，与 rows_examined 不完全相同",
+        "命中查询缓存时返回前做权限验证，优化器前有 precheck"
+      ]
+    }
+  ],
+  "summary": "MySQL 分 Server 层与存储引擎层。一条查询依次经过连接器、查询缓存、分析器、优化器、执行器，最终由引擎接口取数。多数场景查询缓存弊大于利，长连接要防内存累积。",
+  "oneliner": "一条 SQL：连接→缓存→解析→优化→执行，共用一个 Server 层，引擎只管存取。"
+}

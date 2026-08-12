@@ -1,0 +1,83 @@
+{
+  "num": "39",
+  "topic": "自增主键为什么不是连续的？",
+  "date": "2026-08-12",
+  "questions": [
+    "自增值保存在哪里？",
+    "InnoDB 和 MyISAM 存自增值有什么区别？",
+    "自增值修改机制是什么样的？",
+    "为什么唯一键冲突会导致空洞？",
+    "事务回滚为什么不能回收自增 id？",
+    "批量插入是怎么申请自增 id 的？",
+    "innodb_autoinc_lock_mode 是什么？",
+    "怎么配置才能既并发好又主备一致？"
+  ],
+  "modules": [
+    {
+      "icon": "💾",
+      "color": "blue",
+      "title": "自增值保存在哪",
+      "table": {"head": ["引擎", "保存位置", "重启行为"], "rows": [
+        ["MyISAM", "数据文件中", "不丢"],
+        ["InnoDB 5.7 及之前", "内存里，不持久化", "重启后取 max(id)+1"],
+        ["InnoDB 8.0", "记录在 redo log", "重启恢复原值"]
+      ]},
+      "bullets": [
+        "例：max(id)=10 时 AUTO_INCREMENT=11，删除 id=10 后重启，AUTO_INCREMENT 变成 10",
+        "MySQL 重启可能修改表的 AUTO_INCREMENT 值"
+      ]
+    },
+    {
+      "icon": "⚙️",
+      "color": "green",
+      "title": "自增值修改机制",
+      "flow": {"color": "blue", "steps": ["id 指定 0/null/未指定用当前自增值", "指定具体值就直接用", "X<Y 自增值不变", "X≥Y 找第一个大于 X 的值更新"]},
+      "bullets": [
+        "新自增值从 auto_increment_offset 起、按 auto_increment_increment 步长叠加",
+        "默认两个参数都是 1：新自增值就是“准备插入的值+1”",
+        "双 M 双写场景设 increment=2，一个库奇数一个库偶数，避免主键冲突"
+      ]
+    },
+    {
+      "icon": "🧩",
+      "color": "orange",
+      "title": "空洞原因一：唯一键冲突",
+      "flow": {"color": "blue", "steps": ["InnoDB 取当前自增值 2", "把行改成 (2,1,1)", "自增值改成 3", "插入时发现 c=1 冲突报错", "事务回滚但自增值不回退"]},
+      "bullets": [
+        "自增值是“申请即占用”的，回滚不回收",
+        "所以 c 唯一键冲突一次，就出现一个空洞"
+      ]
+    },
+    {
+      "icon": "📦",
+      "color": "blue",
+      "title": "空洞原因二：批量申请浪费",
+      "bullets": [
+        "批量插入不知道要多少个 id，采用翻倍申请策略",
+        "同一语句第一次申请 1 个、第二次 2 个、第三次 4 个……",
+        "insert…select 插入 4 行：分三次申请到 id=1、2-3、4-7",
+        "实际只用 4 个，id=5 到 7 被浪费",
+        "之后 insert values(null,5,5) 实际插入的是 (8,5,5)"
+      ],
+      "callout": {"text": "翻倍申请只发生在“预先不知道要申请多少个 id”的批量语句上；普通 insert 可精确计算，一次性申请后立即释放。", "star": true}
+    },
+    {
+      "icon": "🔒",
+      "color": "orange",
+      "title": "innodb_autoinc_lock_mode",
+      "table": {"head": ["模式", "锁策略", "适用"], "rows": [
+        ["0 传统", "语句结束才释放自增锁", "兼容旧版"],
+        ["1 连续", "批量可预知数量，申请完提前释放", "默认"],
+        ["2 交叉", "所有语句申请完即释放，并发最好", "需 binlog_format=row"]
+      ]},
+      "bullets": [
+        "MySQL 5.1.22 引入该参数",
+        "模式 2 下 statement 格式 binlog 不自洽",
+        "建议：autoinc_lock_mode=2 + binlog_format=row"
+      ],
+      "callout": {"text": "自增主键不能保证连续，业务不要依赖它的连续性；只保证递增。", "star": true}
+    }
+  ],
+  "summary": "自增主键不能保证连续，主要因为：唯一键冲突后事务回滚但自增值“申请即占用”不回退；批量插入按 1、2、4 翻倍申请 id，用不完的部分浪费；删行也不回收。MyISAM 自增值存数据文件，InnoDB 5.7 及之前存内存、重启取 max(id)+1，8.0 才用 redo log 持久化。innodb_autoinc_lock_mode 控制自增锁范围，建议设为 2 并配 binlog_format=row，兼顾并发与主备一致。",
+  "oneliner": "自增值“申请即占用、回滚不回收、批量翻倍申请浪费”，所以自增主键只保证递增、不保证连续。"
+}

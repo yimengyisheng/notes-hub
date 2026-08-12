@@ -1,0 +1,73 @@
+{
+  "num": "05",
+  "topic": "深入浅出索引（下）",
+  "date": "2026-08-12",
+  "questions": [
+    "k between 3 and 5 的查询过程回表几次？",
+    "什么是覆盖索引？有什么好处？",
+    "什么时候值得建冗余联合索引？",
+    "最左前缀原则是什么？",
+    "联合索引字段顺序怎么安排？",
+    "什么是索引下推？",
+    "索引下推减少了什么？",
+    "为什么重建索引能省空间？",
+    "重建主键索引的两个 alter 有什么问题？"
+  ],
+  "modules": [
+    {
+      "icon": "🔍",
+      "color": "blue",
+      "title": "回表分析",
+      "intro": "select * from T where k between 3 and 5",
+      "flow": {"color": "green", "steps": ["k 树找 k=3<br>得 ID=300", "回表查 R3", "k 树取 k=5<br>得 ID=500", "回表查 R4", "取 k=6<br>不满足结束"]},
+      "callout": {"text": "读 k 索引树 3 条记录，回表 2 次。", "star": false}
+    },
+    {
+      "icon": "🛡️",
+      "color": "green",
+      "title": "覆盖索引",
+      "bullets": [
+        "select ID from T where k between 3 and 5",
+        "ID 已在 k 索引树上，直接返回无需回表",
+        "减少树搜索次数，显著提升性能",
+        "引擎读了 3 条，Server 层只认 2 条"
+      ],
+      "callout": {"text": "高频“身份证号查姓名”可建（id_card,name）联合索引用覆盖索引，但冗余索引有维护代价，需权衡。", "star": true}
+    },
+    {
+      "icon": "🧭",
+      "color": "orange",
+      "title": "最左前缀原则",
+      "bullets": [
+        "联合索引按字段定义顺序排序",
+        "where name=张三 可快速定位 ID4",
+        "name like 张% 也能用上索引",
+        "最左前缀=联合索引最左 N 字段或字符串最左 M 字符",
+        "已有 (a,b) 一般无需单独 a 索引"
+      ],
+      "callout": {"text": "第一原则：调整字段顺序能少维护一个索引就优先；还要考虑空间，name 比 age 大，建（name,age）+（age）。", "star": true}
+    },
+    {
+      "icon": "⬇️",
+      "color": "green",
+      "title": "索引下推",
+      "intro": "需求：名字首字张且 age=10 的男孩。",
+      "vs": {"a": {"h": "MySQL 5.6 之前", "t": "只用“张”定位，逐条回表对比 age 等条件，回表 4 次"}, "b": {"h": "5.6 索引下推", "t": "索引内先判断 age=10 过滤，只回表 2 次（ID4、ID5）"}},
+      "flow": {"color": "orange", "steps": ["索引内判断<br>age=10", "过滤不满足", "只回表<br>满足的行"]}
+    },
+    {
+      "icon": "🧰",
+      "color": "blue",
+      "title": "索引维护与重建",
+      "bullets": [
+        "删除或页分裂产生空洞",
+        "重建索引按顺序插入，页面利用率最高",
+        "重建主键的两个 alter 会把整表重建两次",
+        "替代：alter table T engine=InnoDB"
+      ],
+      "callout": {"text": "重建索引 k 合理省空间；重建主键第一条白做，别连着执行。", "star": false}
+    }
+  ],
+  "summary": "覆盖索引让查询免回表，联合索引靠最左前缀复用，索引下推在索引内提前过滤减少回表。设计表结构要尽量少访问资源，冗余索引要权衡维护成本。",
+  "oneliner": "覆盖索引免回表，最左前缀复用一个索引，下推把过滤推进索引里。"
+}

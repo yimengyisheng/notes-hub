@@ -1,0 +1,78 @@
+{
+  "num": "06",
+  "topic": "全局锁和表锁：给表加个字段怎么有这么多阻碍？",
+  "date": "2026-08-12",
+  "questions": [
+    "MySQL 锁按加锁范围分哪三类？",
+    "FTWRL 命令是什么？会阻塞哪些操作？",
+    "不加锁备份会出现什么问题？",
+    "single-transaction 备份的原理和适用条件？",
+    "为什么不用 readonly 代替 FTWRL？",
+    "表锁 lock tables 什么场景才用？",
+    "MDL 是什么？读锁写锁何时加？",
+    "小表加字段为什么会让整个库挂掉？",
+    "MDL 锁什么时候释放？",
+    "如何安全地给小表加字段？"
+  ],
+  "modules": [
+    {
+      "icon": "🔒",
+      "color": "blue",
+      "title": "锁的分类",
+      "bullets": [
+        "全局锁、表级锁、行锁三类",
+        "锁用于控制并发下的资源访问规则",
+        "本文讲全局锁和表级锁"
+      ],
+      "callout": {"text": "全局锁=整个实例只读。", "star": false}
+    },
+    {
+      "icon": "🌐",
+      "color": "orange",
+      "title": "全局锁 FTWRL",
+      "bullets": [
+        "Flush tables with read lock 让整库只读",
+        "阻塞：增删改、DDL、更新类事务提交",
+        "典型场景：全库逻辑备份"
+      ],
+      "flow": {"color": "blue", "steps": ["备 u_account", "用户购买课程", "备 u_course", "余额没扣<br>课程多了"]},
+      "callout": {"text": "不加锁备份得到非逻辑时间点：用户 A 余额没扣却多一门课，恢复时赚了。", "star": true}
+    },
+    {
+      "icon": "📦",
+      "color": "green",
+      "title": "一致性备份两种方式",
+      "vs": {"a": {"h": "FTWRL", "t": "整库只读；主库备份业务停摆，从库备份主从延迟"}, "b": {"h": "single-transaction", "t": "可重复读+MVCC 一致性视图；备份中可正常更新；仅适用全事务引擎"}},
+      "callout": {"text": "mysqldump --single-transaction 启动事务拿一致性视图；MyISAM 等不支持事务只能 FTWRL。", "star": true}
+    },
+    {
+      "icon": "⚠️",
+      "color": "orange",
+      "title": "为什么不用 readonly",
+      "bullets": [
+        "readonly 常被用于判断主库备库，影响面大",
+        "FTWRL 客户端异常断开自动释放锁",
+        "readonly 异常后一直保持，风险更高"
+      ]
+    },
+    {
+      "icon": "🧱",
+      "color": "blue",
+      "title": "表锁与 MDL",
+      "table": {"head": ["锁", "何时用", "特点"], "rows": [["表锁 lock tables", "显式使用", "InnoDB 一般不推荐"], ["MDL 元数据锁", "自动加", "5.5 引入"]]},
+      "bullets": [
+        "增删改查加 MDL 读锁，结构变更加写锁",
+        "读锁之间不互斥，读写/写写互斥"
+      ]
+    },
+    {
+      "icon": "💥",
+      "color": "green",
+      "title": "小表加字段事故",
+      "flow": {"color": "orange", "steps": ["A 持 MDL 读锁", "B 读锁正常", "C 要写锁<br>被阻塞", "后续读锁<br>全被 C 挡", "表不可读写"]},
+      "callout": {"text": "事务中 MDL 语句结束不释放，等事务提交才释放；安全做法：先查 innodb_trx 处理长事务，热点表用 ALTER TABLE ... NOWAIT / WAIT n，拿不到就放弃重试（AliSQL/MariaDB 支持）。", "star": true}
+    }
+  ],
+  "summary": "全局锁 FTWRL 用于逻辑备份但代价大，全 InnoDB 库用 mysqldump --single-transaction 更友好。表锁在无行锁引擎才用；MDL 自动加且到事务提交才释放，加字段前要防长事务和热点表排队。",
+  "oneliner": "MDL 锁到事务提交才放，给小表加字段也可能拖垮整个库。"
+}

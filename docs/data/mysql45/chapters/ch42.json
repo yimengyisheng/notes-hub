@@ -1,0 +1,91 @@
+{
+  "num": "42",
+  "topic": "grant之后要跟着flush privileges吗？",
+  "date": "2026-08-12",
+  "questions": [
+    "grant 之后真的需要执行 flush privileges 吗？",
+    "create user 语句做了什么？",
+    "全局权限存在哪里？",
+    "grant 对已存在的连接生效吗？",
+    "db 权限和全局权限有什么不同？",
+    "flush privileges 到底做了什么？",
+    "什么时候才需要 flush privileges？",
+    "grant 带 identified by 有什么坑？"
+  ],
+  "modules": [
+    {
+      "icon": "👤",
+      "color": "green",
+      "title": "用户与权限的存储",
+      "bullets": [
+        "create user ‘ua’@‘%’ identified by ‘pa’：用户名 + 地址才表示一个用户",
+        "ua@ip1 和 ua@ip2 是两个不同的用户",
+        "磁盘上往 mysql.user 表插一行，权限字段都是 N",
+        "内存里往 acl_users 数组加一个对象，access 值为 0",
+        "权限范围从大到小：全局 → 库 → 表 → 列"
+      ]
+    },
+    {
+      "icon": "🌐",
+      "color": "blue",
+      "title": "全局权限",
+      "flow": {"color": "blue", "steps": ["grant 修改 mysql.user 权限字段为 Y", "同时改 acl_users 里 access 为全 1", "新连接登录时拷贝权限到线程对象", "之后判断都用线程对象里的权限位"]},
+      "bullets": [
+        "全局权限作用于整个实例，存在 mysql.user 表和 acl_users 数组",
+        "grant 对磁盘和内存同时生效，命令完成后即时生效",
+        "已存在的连接不受 grant/revoke 影响",
+        "例：revoke 回收 super 后，老连接 set global 依然能通过",
+        "生产环境要控制权限范围，别给所有 IP 配全部权限"
+      ]
+    },
+    {
+      "icon": "📚",
+      "color": "orange",
+      "title": "db 权限",
+      "bullets": [
+        "基于库的权限存在 mysql.db 表和 acl_dbs 数组",
+        "grant all on db1.*：磁盘插行权限位全 Y，内存加对象全 1",
+        "每次判断库读写权限都要遍历 acl_dbs 数组",
+        "按 user、host、db 匹配对象再判断权限位",
+        "grant 修改 db 权限同样对磁盘和内存同时生效"
+      ]
+    },
+    {
+      "icon": "🔄",
+      "color": "green",
+      "title": "flush privileges 的原理",
+      "flow": {"color": "blue", "steps": ["清空 acl_users 数组", "从 mysql.user 表读取数据", "重新加载构造 acl_users", "db/表/列权限同样重建"]},
+      "bullets": [
+        "规范使用 grant/revoke 时，内存和数据表本来就同步更新",
+        "所以正常情况下 grant 之后没必要跟 flush privileges",
+        "flush 只在内存与数据表不一致时用来重建，达到一致"
+      ],
+      "callout": {"text": "不一致往往来自直接用 DML 操作权限表：delete 用户后内存还有，还能登录；flush 后才报“无法访问”。", "star": true}
+    },
+    {
+      "icon": "⚠️",
+      "color": "orange",
+      "title": "不规范操作造成的诡异现象",
+      "bullets": [
+        "T3 直接 delete 删用户，T4 用 ua 还能登录成功",
+        "T5 执行 flush 后，T6 再登录报“无法访问”",
+        "直接删数据表记录后：给 ua 赋权限失败（表里找不到行）",
+        "重新创建 ua 也失败（内存判断认为用户还存在）",
+        "结论：尽量不要用 DML 语句直接操作系统权限表"
+      ]
+    },
+    {
+      "icon": "🔑",
+      "color": "blue",
+      "title": "grant 的另一种写法",
+      "bullets": [
+        "grant super on *.* to ‘ua’@‘%’ identified by ‘密码’ 不建议用",
+        "这种写法会顺带创建用户或修改密码",
+        "容易不慎把已有用户的密码改掉"
+      ],
+      "callout": {"text": "上期答案：statement 格式 binlog 里的 load data 用 local，是为了备库 secure_file_priv=null 时也能导入，以及 mysqlbinlog 解析后发到非本地目标库。", "star": true}
+    }
+  ],
+  "summary": "grant/revoke 会同时修改磁盘权限表和内存权限数组（全局权限 acl_users、库权限 acl_dbs 等），命令即时生效，新连接用新权限、已存在连接不受影响。flush privileges 会清空并用数据表重建内存权限数组，所以规范使用 grant/revoke 时根本不需要跟着 flush。它只在内存与数据表不一致时（如直接用 DML 改权限表）才有必要。grant 带 identified by 会顺带创建用户或改密码，不建议使用。",
+  "oneliner": "grant 同时改表和内存，即时生效；flush privileges 只在权限表被手工改乱时才需要。"
+}

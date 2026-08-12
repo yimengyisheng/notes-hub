@@ -1,0 +1,73 @@
+{
+  "num": "33",
+  "topic": "我查这么多数据，会不会把数据库内存打爆？",
+  "date": "2026-08-12",
+  "questions": [
+    "全表扫描 200G 的表会不会把内存打爆？",
+    "服务端是怎么“边读边发”的？",
+    "net_buffer_length 和 socket send buffer 各是什么？",
+    "“Sending to client”和“Sending data”有什么区别？",
+    "客户端收得慢会有什么影响？",
+    "mysql_store_result 和 mysql_use_result 怎么选？",
+    "InnoDB 改进的 LRU 是怎么分区的？",
+    "为什么全表扫描不会把 young 区冲掉？",
+    "innodb_old_blocks_time 控制什么？"
+  ],
+  "modules": [
+    {
+      "icon": "📡",
+      "color": "green",
+      "title": "服务端取数发数流程",
+      "flow": {"color": "blue", "steps": ["取一行写入 net_buffer", "写满 16k 就调用网络接口发出", "发送成功清空继续取", "socket 写满则等待可写"]},
+      "bullets": [
+        "net_buffer_length 默认 16k，控制取数缓冲",
+        "发送函数返回 EAGAIN 表示 socket send buffer 写满，进入等待",
+        "查询过程中服务端内部占用内存最大就是 net_buffer_length，不会到 200G"
+      ],
+      "callout": {"text": "MySQL 是“边读边发”的：服务端不保存完整结果集，所以大查询不会把内存打爆。", "star": true}
+    },
+    {
+      "icon": "⚠️",
+      "color": "orange",
+      "title": "两个容易误会的状态",
+      "vs": {"a": {"h": "Sending to client", "t": "表示服务端网络栈（socket send buffer）写满了，结果发不出去在等待。看到很多线程处于这个状态，要优化查询结果。"}, "b": {"h": "Sending data", "t": "只是执行器阶段的一个状态，可能是执行中的任意阶段，甚至等锁时也是它，并不一定在“发送数据”。"}},
+      "callout": {"text": "客户端收得慢会让服务端事务执行时间变长；调大 net_buffer_length 可以快速减少“Sending to client”线程。", "star": true}
+    },
+    {
+      "icon": "📦",
+      "color": "blue",
+      "title": "客户端两种接收方式",
+      "vs": {"a": {"h": "mysql_store_result（默认）", "t": "本地开内存先把结果缓存起来。结果集不大时推荐，接口简单且不会拖慢服务端。"}, "b": {"h": "mysql_use_result（--quick）", "t": "读一行处理一行。业务处理慢会阻塞服务端发送；结果特别大（如客户端占近 20G 内存）时才改用。"}},
+      "bullets": [
+        "客户端读得慢，服务端结果发不出去，查询被堵住",
+        "不是内存被打爆，而是服务端发送被阻塞"
+      ]
+    },
+    {
+      "icon": "🧠",
+      "color": "green",
+      "title": "InnoDB 改进的 LRU 算法",
+      "flow": {"color": "blue", "steps": ["LRU 按 5:3 分 young/old 区", "新页先放 old 区（LRU_old 处）", "old 区页被访问判断存活时间", "超过 1 秒才移到链表头部", "顺序扫描页留 old 区快速淘汰"]},
+      "bullets": [
+        "young 区占链表头部 5/8，old 区占尾部 3/8",
+        "innodb_old_blocks_time 默认 1000 毫秒",
+        "全表扫描访问数据页间隔不超过 1 秒，新页始终留在 old 区，很快被淘汰"
+      ],
+      "callout": {"text": "改进后最大的收益：扫描 200G 历史大表时，对 young 区完全没有影响，业务查询的 Buffer Pool 命中率不受冲击。", "star": true}
+    },
+    {
+      "icon": "🖥️",
+      "color": "blue",
+      "title": "对线上业务的建议",
+      "bullets": [
+        "大查询不会把内存打爆，但全表扫描很耗 IO",
+        "业务高峰期不要直接在线上主库执行全表扫描",
+        "大查询前先评估返回结果是否合理",
+        "结果集小用 store_result，结果集巨大才用 use_result"
+      ],
+      "callout": {"text": "被 kill 的事务回滚：重启后回滚动作不会少，应等它自己结束；影响其他语句时先做主备切换再等它完成。", "star": true}
+    }
+  ],
+  "summary": "全表扫描不会打爆内存：服务端边读边发，最大只占 net_buffer_length（默认 16k），socket send buffer 写满就等待，因此结果集不会完整保存在服务端。客户端收得慢会导致服务端“Sending to client”阻塞，而“Sending data”只是执行器任意阶段的通用状态。InnoDB 把 LRU 按 5:3 分成 young/old 区，新页先进 old 区，存活超过 1 秒（innodb_old_blocks_time）才移入 young，全表扫描的页很快被淘汰，不影响业务命中率。",
+  "oneliner": "边读边发不存结果集，内存打不爆；LRU 分 young/old 两区，冷扫描只进 old 区，业务命中率不受伤。"
+}

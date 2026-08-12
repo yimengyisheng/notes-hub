@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "📚 我的读书笔记",
-    "subtitle": "《从零开始学架构》康奈尔笔记 · 持续收录中",
+    "subtitle": "康奈尔笔记 · 持续收录中",
     "emoji": "📚"
   },
   "books": [
@@ -121,6 +121,15 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mysql45",
+      "title": "《MySQL实战45讲》康奈尔笔记",
+      "emoji": "🐬",
+      "desc": "MySQL 实战 45 讲读书笔记 · 康奈尔笔记法：SQL 执行、日志系统、事务隔离、索引、锁、主从与高可用等核心问题。",
+      "type": "cornell",
+      "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-mysql-45-10-html",
+      "dataDir": "work"
     }
   ]
 }

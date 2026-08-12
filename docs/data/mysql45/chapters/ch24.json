@@ -1,0 +1,70 @@
+{
+  "num": "24",
+  "topic": "MySQL是怎么保证主备一致的？",
+  "date": "2026-08-12",
+  "questions": [
+    "备库为什么要设置成 readonly？",
+    "同步线程为什么不受 readonly 影响？",
+    "change master 和 start slave 各做什么？",
+    "relay log 是什么？",
+    "statement 格式有什么风险？",
+    "row 格式 binlog 由哪些 event 组成？",
+    "mixed 格式怎么决定用哪种？",
+    "row 格式怎么恢复误删数据？",
+    "双 M 结构怎么避免循环复制？"
+  ],
+  "modules": [
+    {
+      "icon": "🔄",
+      "color": "blue",
+      "title": "主备基本流程",
+      "flow": {"color": "blue", "steps": ["change master 设主库地址+位点", "start slave 启动 io_thread/sql_thread", "主库按位点读 binlog 发给备库", "备库写入 relay log", "sql_thread 解析 relay log 执行"]},
+      "callout": {"text": "读写都访问主库 A，备库 B 只同步更新；切换后 A、B 角色互换。", "star": true}
+    },
+    {
+      "icon": "🛡️",
+      "color": "orange",
+      "title": "备库为什么要只读",
+      "bullets": [
+        "防止运营类查询误操作写到备库",
+        "防止切换逻辑出 bug 出现双写，造成主备不一致",
+        "可以用 readonly 状态判断节点角色",
+        "readonly 对 super 权限用户无效，同步线程拥有 super 权限"
+      ],
+      "callout": {"text": "备库同步更新不受 readonly 影响，因为同步线程是超级权限。", "star": true}
+    },
+    {
+      "icon": "📜",
+      "color": "green",
+      "title": "binlog 三种格式",
+      "table": {"head": ["格式", "记录内容", "特点"], "rows": [
+        ["statement", "SQL 语句原文", "省空间；带 limit 等语句可能主备不一致（索引选择不同）"],
+        ["row", "Table_map + 行变更 event", "记录真实行数据，可靠；占空间大"],
+        ["mixed", "MySQL 自选", "可能不一致用 row，否则 statement，折中方案"]
+      ]},
+      "callout": {"text": "线上设成 statement 基本算不合理，至少要用 mixed。", "star": true}
+    },
+    {
+      "icon": "💾",
+      "color": "blue",
+      "title": "row 格式与数据恢复",
+      "bullets": [
+        "delete 的 binlog 保留被删行整行，可转成 insert 恢复",
+        "误 insert 可按记录字段转成 delete 删掉",
+        "update 记录修改前后两行，对调即可回滚",
+        "MariaDB Flashback 工具就是基于这个原理",
+        "mixed+now() 会追加 SET TIMESTAMP 固定时间，保证主备一致"
+      ],
+      "callout": {"text": "重放 binlog 要用 mysqlbinlog 解析后整体执行，直接拷贝 statement 有风险（依赖上下文命令）。", "star": true}
+    },
+    {
+      "icon": "♻️",
+      "color": "orange",
+      "title": "循环复制怎么断",
+      "flow": {"color": "blue", "steps": ["双 M：A、B 互为主备", "log_slave_updates=on 备库也生成 binlog", "binlog 记录来源 server id", "备库重放后生成的 binlog 沿用原 server id", "节点发现 server id 与自己相同就丢弃"]},
+      "callout": {"text": "两个库 server id 必须不同，否则不能设主备关系。", "star": true}
+    }
+  ],
+  "summary": "主备同步靠 binlog：备库 io_thread 拉日志写 relay log，sql_thread 解析执行；建议备库设 readonly（super 权限不受限）。binlog 三种格式中 statement 省空间但可能主备不一致，row 记录真实行数据可靠且利于误操作恢复，mixed 由 MySQL 按需选择。双 M 结构靠 server id 判重丢弃自己的日志，避免循环复制。",
+  "oneliner": "主备一致靠 binlog：statement 省空间有风险，row 可靠还能救误删，双 M 用 server id 断循环复制。"
+}

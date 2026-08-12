@@ -1,0 +1,77 @@
+{
+  "num": "18",
+  "topic": "为什么这些SQL语句逻辑相同，性能却差异巨大？",
+  "date": "2026-08-12",
+  "questions": [
+    "为什么 month(t_modified)=7 用不上索引？",
+    "优化器放弃树搜索后还会走这个索引吗？",
+    "如何改写才能用上索引快速定位？",
+    "id+1=10000 为什么不能用索引？",
+    "MySQL 中字符串和数字比较的转换规则？",
+    "tradeid=110717 为什么会全表扫描？",
+    "id 是 int 时 where id='83126' 会全表扫描吗？",
+    "字符集不同的 join 为什么会对被驱动表全表扫描？",
+    "怎么优化字符集不一致的 join？"
+  ],
+  "modules": [
+    {
+      "icon": "🧮",
+      "color": "orange",
+      "title": "案例一：函数操作破坏有序性",
+      "flow": {"color": "blue", "steps": ["month(t_modified)=7", "B+ 树第一层就不知道往哪走", "优化器放弃树搜索", "仍选较小的 t_modified 索引", "全索引扫描 10 万行"]},
+      "bullets": [
+        "B+ 树的快速定位依赖同一层兄弟节点的有序性",
+        "对索引字段做函数计算可能破坏有序性",
+        "key=t_modified 但 rows=100335，即扫描整个索引",
+        "改成范围条件：t_modified>='2016-7-1' and t_modified<'2016-8-1' 等"
+      ],
+      "callout": {"text": "优化器会偷懒：id+1=10000 不改变有序性也不重写，必须手写成 id=10000-1。", "star": true}
+    },
+    {
+      "icon": "🔢",
+      "color": "blue",
+      "title": "案例二：隐式类型转换",
+      "bullets": [
+        "tradeid 是 varchar，条件 tradeid=110717 是数字",
+        "MySQL 规则：字符串和数字比较，把字符串转成数字",
+        "于是变成 CAST(tradeid AS signed int)=110717，又是函数操作",
+        "对索引字段做函数，优化器放弃树搜索，全表扫描"
+      ],
+      "callout": {"text": "反过来 id 是 int 时 where id='83126' 会把字符串转数字，索引字段没做函数，能正常走索引。", "star": true}
+    },
+    {
+      "icon": "🔤",
+      "color": "green",
+      "title": "案例三：隐式字符编码转换",
+      "flow": {"color": "blue", "steps": ["tradelog utf8mb4，trade_detail utf8", "join 时低级别字符集转高级 utf8mb4", "CONVERT 加在被驱动表索引字段上", "被驱动表 tradeid 索引失效全表扫描", "改为 d.tradeid=CONVERT(l.tradeid USING utf8)"]},
+      "callout": {"text": "最彻底的做法是把 trade_detail.tradeid 字符集也改成 utf8mb4，一劳永逸。", "star": true}
+    },
+    {
+      "icon": "🛠️",
+      "color": "orange",
+      "title": "本质是同一件事",
+      "bullets": [
+        "三个案例都是：对索引字段做函数操作",
+        "函数操作破坏索引值有序性，优化器放弃树搜索",
+        "结果都是全索引/全表扫描",
+        "优化器有“偷懒”嫌疑，不会帮你重写 SQL"
+      ],
+      "callout": {"text": "业务代码每次升级，把新增的 SQL 都 explain 一遍是个好习惯。", "star": true}
+    },
+    {
+      "icon": "✅",
+      "color": "green",
+      "title": "自查清单",
+      "bullets": [
+        "索引字段上不套函数：month(x)=7 改成范围条件",
+        "类型要匹配：varchar 字段别拿数字去等值比较",
+        "join 双方字段字符集保持一致",
+        "必要时转换参数侧，而不是索引字段侧",
+        "id+1=10000 这类写法手动改写"
+      ],
+      "callout": {"text": "写 SQL 前先 explain 一下，能提前发现这类“逻辑相同性能不同”的坑。", "star": false}
+    }
+  ],
+  "summary": "三个“逻辑相同性能不同”的案例是同一根源：对索引字段做函数操作会破坏 B+ 树有序性，优化器放弃树搜索，只能全索引扫描。包括 month() 函数、隐式类型转换（字符串转数字）和隐式字符集转换（CONVERT 加在索引字段上）。优化器不会主动重写语句，写 SQL 要避免索引字段上的函数，join 双方字符集保持一致。",
+  "oneliner": "索引字段上做函数就废了索引：month()、隐式类型/字符集转换都会触发全表扫描，写 SQL 前先 explain。"
+}

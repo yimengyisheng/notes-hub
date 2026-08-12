@@ -1,0 +1,72 @@
+{
+  "num": "14",
+  "topic": "count(*)这么慢，我该怎么办？",
+  "date": "2026-08-12",
+  "questions": [
+    "MyISAM 的 count(*) 为什么快？",
+    "为什么 InnoDB 的 count(*) 慢？",
+    "InnoDB 优化器会遍历哪棵索引树？",
+    "show table status 的 TABLE_ROWS 准确吗？",
+    "用 Redis 保存计数有什么问题？",
+    "把计数放在 MySQL 计数表里如何保证一致？",
+    "count(字段) 和 count(*) 语义有什么不同？",
+    "四种 count 用法的效率排序？",
+    "为什么优化器不把 count(主键 id) 优化成 count(*)？"
+  ],
+  "modules": [
+    {
+      "icon": "⚙️",
+      "color": "green",
+      "title": "不同引擎的实现",
+      "vs": {"a": {"h": "MyISAM", "t": "把总行数存在磁盘上，count(*) 直接返回，效率很高；但不支持事务。"}, "b": {"h": "InnoDB", "t": "因 MVCC 要逐行读出并判断可见性再累加，结果准确但慢。"}},
+      "callout": {"text": "加了 where 条件后，MyISAM 也不能直接返回，同样要扫描。", "star": false}
+    },
+    {
+      "icon": "🧩",
+      "color": "blue",
+      "title": "为什么 InnoDB 不存总数",
+      "bullets": [
+        "可重复读靠 MVCC 实现，同一时刻不同会话看到的行数可能不同",
+        "每行都要判断对当前会话是否可见，可见才参与计数",
+        "普通索引树比主键树小，优化器选最小那棵遍历",
+        "保证逻辑正确前提下尽量少扫数据，是数据库通用法则"
+      ],
+      "callout": {"text": "三个会话同时 count 同一张表，结果可以不一样，所以 InnoDB 无法直接存一个总数。", "star": true}
+    },
+    {
+      "icon": "📊",
+      "color": "orange",
+      "title": "show table status 不靠谱",
+      "bullets": [
+        "TABLE_ROWS 来自索引统计的采样估算",
+        "官方文档说误差可能达到 40%~50%",
+        "返回快，但行数不能直接拿来用"
+      ],
+      "callout": {"text": "MyISAM 快但无事务，show table status 快但不准，InnoDB 直接 count 准但慢。", "star": true}
+    },
+    {
+      "icon": "🗄️",
+      "color": "green",
+      "title": "自己计数怎么选",
+      "table": {"head": ["方案", "崩溃丢失", "逻辑一致性"], "rows": [
+        ["Redis 计数", "会丢更新", "即使正常工作也常不一致，调换读写顺序同样无解"],
+        ["MySQL 计数表", "不丢（有崩溃恢复）", "事务内读写，未提交的 +1 不可见，读出来一致"]
+      ]},
+      "callout": {"text": "两个独立存储无法拿到精确一致视图，是 Redis 方案的本质问题；计数表利用事务的原子性和隔离性解决。", "star": true}
+    },
+    {
+      "icon": "🔢",
+      "color": "blue",
+      "title": "count 的四种写法",
+      "table": {"head": ["写法", "语义", "说明"], "rows": [
+        ["count(*)", "总行数", "专门优化为不取值，最快"],
+        ["count(1)", "总行数", "不取值放数字 1，与 count(*) 相当"],
+        ["count(主键 id)", "总行数", "要取 id 回传 server 层，比 count(1) 慢"],
+        ["count(字段)", "字段非 NULL 的行数", "允许 NULL 时还要取值判断，最慢"]
+      ]},
+      "callout": {"text": "效率排序：count(字段)<count(主键 id)<count(1)≈count(*)，建议尽量用 count(*)。", "star": true}
+    }
+  ],
+  "summary": "MyISAM 把行数存磁盘所以 count(*) 快，但无事务；InnoDB 因 MVCC 只能逐行读并判断可见性，优化器挑最小索引树遍历，结果准确但慢；show table status 靠采样估算，误差 40%~50%。高频精确计数的业务自己维护：Redis 会丢数据且逻辑不一致，放进 MySQL 计数表用事务保证一致性。count 写法效率上 count(字段)<count(主键 id)<count(1)≈count(*)。",
+  "oneliner": "InnoDB 的 count(*) 慢是 MVCC 的必然；要高频精确计数就建一张 MySQL 计数表，用事务保一致。"
+}

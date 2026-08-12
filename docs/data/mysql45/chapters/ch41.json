@@ -1,0 +1,88 @@
+{
+  "num": "41",
+  "topic": "怎么最快地复制一张表？",
+  "date": "2026-08-12",
+  "questions": [
+    "复制一张表有哪三种方法？",
+    "mysqldump 导出有哪些关键参数？",
+    "source 是 SQL 语句吗？",
+    "select…into outfile 有什么注意事项？",
+    "load data 怎么导入数据？",
+    "直接拷贝 .frm 和 .ibd 文件可以吗？",
+    "可传输表空间是怎么做的？",
+    "三种复制方法怎么选？"
+  ],
+  "modules": [
+    {
+      "icon": "🧰",
+      "color": "blue",
+      "title": "三种方法一览",
+      "table": {"head": ["方法", "类型", "特点"], "rows": [
+        ["mysqldump 导出 INSERT", "逻辑备份", "可 where 过滤，可跨引擎"],
+        ["select…into outfile + load data", "逻辑备份", "支持所有 SQL 写法，最灵活"],
+        ["可传输表空间（物理拷贝）", "物理备份", "最快，大表首选"]
+      ]},
+      "bullets": [
+        "控制好源表扫描行数和加锁范围时，直接用 insert…select",
+        "更稳妥：先导出到外部文本文件，再写回目标表"
+      ]
+    },
+    {
+      "icon": "📤",
+      "color": "green",
+      "title": "mysqldump 导出",
+      "flow": {"color": "blue", "steps": ["mysqldump 加过滤条件导出", "生成含多组 value 的 INSERT", "客户端 source 执行", "服务端执行真正的 INSERT"]},
+      "bullets": [
+        "--single-transaction：不加表锁，用 START TRANSACTION WITH CONSISTENT SNAPSHOT",
+        "--add-locks=0：不输出 LOCK TABLES t WRITE",
+        "--no-create-info：不导出表结构",
+        "--set-gtid-purged=off：不输出 GTID 信息",
+        "--skip-extended-insert：一条 INSERT 只插一行"
+      ],
+      "callout": {"text": "一条 INSERT 包含多个 value 对执行更快；source 是客户端命令，slow log 和 binlog 记录的是真正执行的 INSERT 语句。", "star": true}
+    },
+    {
+      "icon": "📄",
+      "color": "blue",
+      "title": "导出 CSV + load data",
+      "flow": {"color": "blue", "steps": ["select…into outfile 导出", "生成在服务端目录的 csv", "load data infile 导入", "服务端读文件写入目标表"]},
+      "bullets": [
+        "文件生成在服务端，不是客户端",
+        "位置受 secure_file_priv 限制：empty 不限（不安全）、路径字符串限定目录、NULL 禁止",
+        "不覆盖同名文件，存在就报错",
+        "换行符、制表符前加反斜杠转义",
+        "binlog_format=statement 时 load data 记录为带 local 的语句，备库本地执行"
+      ]
+    },
+    {
+      "icon": "⚡",
+      "color": "orange",
+      "title": "物理拷贝：可传输表空间",
+      "flow": {"color": "blue", "steps": ["create table r like t", "alter table r discard tablespace", "flush table t for export 生成 cfg", "cp 两个文件（进程要有权限）", "unlock tables 删 cfg", "alter table r import tablespace"]},
+      "bullets": [
+        "直接拷贝 .frm/.ibd 不行：数据字典没注册该表",
+        "MySQL 5.6 引入 transportable tablespace",
+        "flush 后 t 表只读，直到 unlock tables 释放",
+        "import 会修改每个数据页里的表空间 id，TB 级文件也要花时间",
+        "比逻辑导入的耗时非常短"
+      ],
+      "callout": {"text": "误删表后：用备份恢复临时库，再把临时库的表物理拷贝回生产库，是恢复数据最快的方法。", "star": true}
+    },
+    {
+      "icon": "⚖️",
+      "color": "green",
+      "title": "三种方法对比",
+      "table": {"head": ["方法", "优势", "局限"], "rows": [
+        ["物理拷贝", "最快，大表首选", "全表拷贝、需登录服务器、仅 InnoDB"],
+        ["mysqldump", "可过滤部分数据", "不支持 join 等复杂 where"],
+        ["into outfile", "支持所有 SQL 写法", "一次一张表，表结构要另备份"]
+      ]},
+      "bullets": [
+        "后两种是逻辑备份，可跨引擎使用",
+        "物理拷贝源表和目标表必须都是 InnoDB"
+      ]
+    }
+  ],
+  "summary": "复制一张表有三种方法：mysqldump 导出 INSERT 语句（--single-transaction 不加表锁、可 where 过滤，但不支持 join 等复杂条件）；select…into outfile 导出 CSV 再 load data 导入（最灵活支持所有 SQL，但一次一张表、受 secure_file_priv 限制）；可传输表空间物理拷贝（5.6 引入，create like + discard + flush export + cp + import，最快但仅限 InnoDB 全表拷贝）。直接拷贝 .frm/.ibd 不行，因为数据字典没有注册。",
+  "oneliner": "小数据用 insert…select，要过滤用 mysqldump，要灵活用 outfile+load data，大表最快是物理拷贝表空间。"
+}

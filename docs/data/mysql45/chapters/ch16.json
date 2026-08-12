@@ -1,0 +1,72 @@
+{
+  "num": "16",
+  "topic": "“order by”是怎么工作的？",
+  "date": "2026-08-12",
+  "questions": [
+    "Explain 中 Using filesort 表示什么？",
+    "全字段排序的执行流程是什么？",
+    "sort_buffer_size 不够时怎么办？",
+    "number_of_tmp_files 表示什么？",
+    "max_length_for_sort_data 的作用是什么？",
+    "rowid 排序比全字段排序多做了什么？",
+    "为什么 InnoDB 优先选全字段排序？",
+    "怎么让 order by 完全不用排序？",
+    "examined_rows 和 Innodb_rows_read 差在哪里？"
+  ],
+  "modules": [
+    {
+      "icon": "📋",
+      "color": "green",
+      "title": "全字段排序",
+      "flow": {"color": "blue", "steps": ["初始化 sort_buffer，放入 name/city/age", "走 city 索引定位第一个“杭州”的主键 id", "回表取整行存入 sort_buffer", "循环直到 city≠“杭州”", "按 name 快速排序", "取前 1000 行返回"]},
+      "callout": {"text": "Extra 里出现 Using filesort 就表示需要排序，MySQL 会给每个线程分配一块 sort_buffer。", "star": true}
+    },
+    {
+      "icon": "🧠",
+      "color": "blue",
+      "title": "sort_buffer 与外部排序",
+      "bullets": [
+        "数据量小于 sort_buffer_size 就在内存中排序",
+        "放不下则用磁盘临时文件辅助，采用归并排序",
+        "number_of_tmp_files=12 表示分成 12 份各自排序再合并",
+        "sort_buffer_size 越小，分成的份数越多，临时文件越多",
+        "examined_rows=4000 表示参与排序的行数是 4000 行"
+      ],
+      "callout": {"text": "用 OPTIMIZER_TRACE 看 number_of_tmp_files 是否为 0，就能确认排序是否用了临时文件。", "star": true}
+    },
+    {
+      "icon": "🏷️",
+      "color": "orange",
+      "title": "rowid 排序",
+      "flow": {"color": "blue", "steps": ["max_length_for_sort_data=16 小于单行 36", "sort_buffer 只放 name+id", "按 name 排序", "取前 1000 个 id", "回原表取 city/name/age 返回"]},
+      "bullets": [
+        "单行太长时只把排序列和主键 id 放进 sort_buffer",
+        "排序后还要按 id 回表取完整字段，多读 1000 行",
+        "Innodb_rows_read 从 4000 变成 5000",
+        "sort_mode 变为 <sort_key,rowid>，临时文件减为 10"
+      ],
+      "callout": {"text": "rowid 排序在内存不足时一次能排更多行，但代价是排序后要回表。", "star": true}
+    },
+    {
+      "icon": "⚖️",
+      "color": "green",
+      "title": "全字段排序 vs rowid 排序",
+      "vs": {"a": {"h": "全字段排序", "t": "内存够时优先：把所需字段都放进 sort_buffer，排完直接返回，不再回表。"}, "b": {"h": "rowid 排序", "t": "担心内存太小时使用：一次能排更多行，但要额外回表读 1000 行。"}},
+      "callout": {"text": "设计思想：内存够就多利用内存，尽量少访问磁盘；InnoDB 表优先选全字段排序。", "star": true}
+    },
+    {
+      "icon": "🚫",
+      "color": "orange",
+      "title": "能不能不排序？",
+      "bullets": [
+        "MySQL 要排序，是因为取出来的行本来就是无序的",
+        "建 (city,name) 联合索引后，city 内天然按 name 递增",
+        "此时 order by name 直接顺序读取即可，无需排序",
+        "建对索引、避免 filesort 是根本手段"
+      ],
+      "callout": {"text": "排序成本高，能用索引天然有序就绝不排序。", "star": false}
+    }
+  ],
+  "summary": "order by 默认用全字段排序：把要返回的字段都放进 sort_buffer，排完直接返回；当单行太长（超过 max_length_for_sort_data）就退化为 rowid 排序，只排排序列+主键 id，最后按 id 回表补全字段。内存不够时用磁盘临时文件归并排序，number_of_tmp_files 可观察。要彻底避免排序，就建联合索引让数据天然有序。",
+  "oneliner": "order by 的两种排序里，全字段排序省回表、rowid 排序省内存；想让 SQL 免排序就建 (条件字段,排序字段) 联合索引。"
+}
