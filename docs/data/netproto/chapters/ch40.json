@@ -1,0 +1,62 @@
+{
+  "num": "40",
+  "topic": "搭建一个网络实验环境：授人以鱼不如授人以渔",
+  "date": "2026-08-12",
+  "questions": [
+    "为什么网络是实验性很强的学科？",
+    "首推的网络书是哪本？",
+    "没有实验环境怎么办？",
+    "虚拟机双网卡怎么配？各管什么？",
+    "Docker 和 OpenvSwitch 装哪些包？",
+    "实验镜像里装了哪些工具？",
+    "setupenv.sh 做了什么？",
+    "P2P 网络如何用 peer 网卡 + ip netns 搭建？",
+    "netb 为什么要配 arp proxy？",
+    "容器如何访问外网？"
+  ],
+  "modules": [
+    {
+      "icon": "🧪", "color": "blue", "title": "为什么搭实验环境",
+      "intro": "“一看觉得懂，一问就打鼓，一用就糊涂”——网络要上手操作、抓包看才有定论。",
+      "bullets": [
+        "首推 Rechard Stevens《<b>TCP/IP 详解</b>》：理论深入浅出 + 大量上手实践和抓包",
+        "书中实验基于一个复杂拓扑图——以前要有现成的环境，现在 <b>1 核 2G 虚拟机 + Docker + OpenvSwitch</b> 就能搭",
+        "作者脚本在 GitHub：popsuper1982/tcpipillustrated"
+      ]
+    },
+    {
+      "icon": "💻", "color": "orange", "title": "第一步：Ubuntu 虚拟机双网卡",
+      "table": {
+        "head": ["网卡", "模式", "用途"],
+        "rows": [
+          ["enp0s8", "Host-only", "只有笔记本能登录——SSH 操作走它，配置稳定；公司装一半回家接着装"],
+          ["enp0s3", "NAT", "访问互联网（装软件用）——笔记本能上网虚拟机就能上"]
+        ]
+      },
+      "bullets": [
+        "Host-only 的虚拟网桥在 VirtualBox「管理→主机网络管理」配置 IP 并启用 DHCP",
+        "Ubuntu 网卡配置在 <b>/etc/network/interfaces</b>，两块都设 dhcp 自动获取"
+      ]
+    },
+    {
+      "icon": "🐳", "color": "green", "title": "第二步：装 Docker 和 OpenvSwitch",
+      "bullets": [
+        "按 Docker 官方文档装 docker-ce（18.06）",
+        "装 openvswitch-switch/common/vtep 等 + bridge-utils + arping",
+        "镜像已打好可直接 pull；Dockerfile 基于 Ubuntu 14.04 装 <b>iproute2、net-tools、tcpdump、traceroute、curl、telnet</b> 等，ENTRYPOINT 起 sshd"
+      ]
+    },
+    {
+      "icon": "🕸️", "title": "第三步：setupenv.sh 一键搭拓扑",
+      "intro": "每个节点一个容器（--privileged=true，先 --net none 不配网），ovs-vsctl add-br 建两个二层网桥，<b>pipework</b> 把容器连上。",
+      "bullets": [
+        "<b>P2P 网络</b>：建 peer 网卡对，两个容器的 netns 各塞一个（ip netns 命令）；slip↔bsdi 是 140.252.13.64/27，二层网是 .32/27——按 /24 看像同一网络，/27 就不是（复习 CIDR）",
+        "netb 两边是<b>同一个二层网络</b>，不是普通路由器 → 要配 <b>arp proxy</b>",
+        "各节点配 ip route 指网关（slip 找 bsdi 的 13.66；bsdi/svr4 出外网找 sun 的 13.33；aix 等找 gateway 的 1.4）",
+        "出外网：gateway 建 peer 网卡对，虚拟机配 iptables <b>MASQUERADE</b>（SNAT）——容器访问外网源地址得伪装"
+      ]
+    }
+  ],
+  "summary": "网络是实验性学科，光看理论一问就打鼓——需要抓包环境。《TCP/IP 详解》的复杂拓扑现在用 1 核 2G 虚拟机就能复现：VirtualBox 装 Ubuntu，双网卡（Host-only 管 SSH 稳定操作 + NAT 管上互联网），Ubuntu 内装 Docker + OpenvSwitch + bridge-utils；拉现成镜像（含 tcpdump/traceroute 等工具），跑 setupenv.sh：容器当节点、OVS 网桥当二层网络、pipework 连线、peer 网卡对 + ip netns 做 P2P 链路、netb 配 arp proxy、ip route 逐点配网关、gateway 用 MASQUERADE 让容器访问外网——所有节点互 ping 通且能上网。",
+  "oneliner": "授人以渔：VirtualBox 双网卡 + Docker 当节点 + OVS 当交换机 + pipework 连线，1 核 2G 复现《TCP/IP 详解》实验室。"
+}

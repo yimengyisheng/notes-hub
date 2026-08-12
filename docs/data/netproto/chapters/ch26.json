@@ -1,0 +1,63 @@
+{
+  "num": "26",
+  "topic": "云中的网络安全：虽然不是土豪，也需要基本安全和保障",
+  "date": "2026-08-12",
+  "questions": [
+    "公有云虚拟机面临什么威胁？",
+    "“五星级防盗门+坏窗户把手”比喻什么？",
+    "云上的访问控制规则集合叫什么？",
+    "网络包进一台机器经过哪五个节点？",
+    "Netfilter 框架是什么？hook 能做什么？",
+    "iptables 四大功能类别？",
+    "filter 表的三条链？",
+    "nat 表的三条链？Snat 和 Dnat？",
+    "如何用 iptables 封死机器只留 22 和 80？",
+    "安全组如何批量下发到虚拟机？",
+    "MASQUERADE 地址伪装解决什么？"
+  ],
+  "modules": [
+    {
+      "icon": "🥷", "color": "blue", "title": "公有云的威胁与对策",
+      "intro": "公有云不纯净：黑客扫端口、探应用、找漏洞。虚拟机跑着加固的电商站，但不小心装的后台应用监听了个公网端口——<b>五星级防盗门，厕所窗户把手是坏的</b>。",
+      "bullets": [
+        "对策：<b>只开放需要的端口</b>，其余一概关闭，守护好唯一入口",
+        "用 <b>ACL（访问控制列表）</b>控制 IP 和端口——只有指定 IP 段能访问指定接口",
+        "云平台上这些规则的集合 = <b>安全组</b>"
+      ]
+    },
+    {
+      "icon": "🧲", "color": "orange", "title": "Netfilter：五个节点的钩子", "tag": "内核框架",
+      "intro": "包进机器：摘 MAC 头 → 摘 IP 头 → 路由判断。Linux 内核 <b>Netfilter</b> 框架在五个节点插入 hook 函数截获干预包。",
+      "flow": {"color": "orange", "steps": ["PREROUTING<br>路由判断前", "INPUT<br>发本机", "FORWARD<br>要转发", "OUTPUT<br>本机发出", "POSTROUTING<br>离开前"]},
+      "bullets": [
+        "hook 可以：修改后交回协议栈（<b>ACCEPT</b>）、过滤掉（<b>DROP</b>）、QUEUE 发给用户态进程（内部负载均衡：目标地址和权重动态变，协议栈搞不定就接管）"
+      ]
+    },
+    {
+      "icon": "📊", "color": "green", "title": "iptables：表与链",
+      "intro": "内核模块 ip_tables 在五节点埋函数，四大功能：<b>连接跟踪 conntrack（基础）</b>、过滤 filter、地址转换 nat、修改 mangle。表优先级 raw→mangle→nat→filter。",
+      "table": {
+        "head": ["表", "功能", "主要链"],
+        "rows": [
+          ["filter", "过滤", "INPUT（目标是本机）/ FORWARD（路过）/ OUTPUT（本机产生）"],
+          ["nat", "地址转换", "PREROUTING（到达时 <b>Dnat</b> 改目标）/ OUTPUT / POSTROUTING（离开时 <b>Snat</b> 改源）"],
+          ["mangle", "修改包", "五条链都有"]
+        ]
+      },
+      "bullets": [
+        "封死机器再开门：-A INPUT -j DROP 全拒 → -I INPUT --dport 22 -j ACCEPT 放行 ssh → --dport 80 ACCEPT 放行 web"
+      ],
+      "callout": {"text": "家里路由器访问 163：出口 <b>Snat</b> 把私网 192.168.1.x 换成公网 IP，回来再 nat 回来——虚拟机出网同理，且很多虚拟机共享一个公网 IP = <b>MASQUERADE 地址伪装</b>。", "star": true}
+    },
+    {
+      "icon": "🛡️", "title": "云平台安全组批量下发",
+      "intro": "虚拟机太多，不能让用户逐台配 iptables——云平台让虚拟机归属<b>安全组</b>批量管理。",
+      "bullets": [
+        "例：安全组 A（Tomcat 群）：任意 IP 可访 8080，22 端口仅管理员网段 203.0.113.0/24；安全组 B（MySQL）：3306 仅允许<b>来自安全组 A</b> 的机器",
+        "规则自动下发：用户界面配规则 → 每台机器跑 <b>Agent</b> → 转成 iptables 规则配置在<b>网桥</b>上（两个 VM 的 tap 网卡同桥本可随意互通，需在桥上统一管控）"
+      ]
+    }
+  ],
+  "summary": "公有云威胁来自开放端口的漏洞应用（防盗门好但窗户把手坏），对策是只开必要端口 + ACL，云上叫安全组。实现根基是内核 Netfilter 框架：在 PREROUTING/INPUT/FORWARD/OUTPUT/POSTROUTING 五节点插 hook（ACCEPT/DROP/QUEUE）；iptables 分 filter（过滤三链）、nat（PREROUTING 做 Dnat、POSTROUTING 做 Snat）、mangle（改包）等表，conntrack 是基础。实战：先 DROP 全部再 ACCEPT 22/80；云平台用 Agent 把安全组规则批量转成网桥上的 iptables；虚拟机出公用 MASQUERADE 共享公网 IP。",
+  "oneliner": "Netfilter 五节点埋钩子，iptables 表链定规则；安全组批量下发，出网 MASQUERADE 伪装。"
+}

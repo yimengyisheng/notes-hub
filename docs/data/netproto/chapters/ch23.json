@@ -1,0 +1,54 @@
+{
+  "num": "23",
+  "topic": "移动网络：去巴塞罗那，手机也上不了脸书",
+  "date": "2026-08-12",
+  "questions": [
+    "2G/3G/4G 的通俗说法是什么？",
+    "2G 时代手机上网走的是什么网络？",
+    "无线接入网 RAN 由哪两部分组成？",
+    "核心网里的 MSC/AUC/VLR/HLR/GMSC 各干什么？",
+    "2.5G 加了什么组件支持 IP？",
+    "3G 和 4G 的基站分别叫什么？",
+    "4G 控制面和数据面为什么分离？",
+    "4G 控制面的 HSS/MME/SGW/PGW/PCRF 各是什么？",
+    "SCTP 比 TCP 多了哪五个特点？",
+    "GTP-C 为什么基于 UDP 还能可靠？",
+    "手机上网的隧道有几段？IP 地址谁分配？"
+  ],
+  "modules": [
+    {
+      "icon": "📱", "color": "blue", "title": "移动网络演进史", "tag": "2G看txt 3G看jpg 4G看avi",
+      "table": {
+        "head": ["时代", "关键变化", "组件"],
+        "rows": [
+          ["2G", "走电话网 PSTN 模拟信号", "手机 MS（含 SIM）↔ BTS 收发信台 ↔ BSC 控制器（合称 <b>RAN 无线接入网</b>）→ 核心网 CN：MSC 接待 → AUC/EIR 查合法 → VLR/HLR 查本地外地 → GMSC 网关出网"],
+          ["2.5G", "电路交换 + <b>分组交换</b>，支持 IP", "多 PCU 分组控制单元；核心网接待员 SGSN、网关 GGSN"],
+          ["3G", "无线带宽大增（W-CDMA 下行 2M）", "基站 Node B + RNC 无线网络控制器；核心网不变"],
+          ["4G", "下行向百兆迈进；<b>控制面/数据面分离</b>", "基站 <b>eNodeB</b>（Node B+RNC 合一）；HSS 签约数据库、MME 控制核心、SGW 数据接待、PGW 出口网关、PCRF 策略计费"]
+        ]
+      },
+      "callout": {"text": "为何分离？控制面是指令小包要<b>及时性</b>，数据面是流量大包要<b>吞吐量</b>——合二为一灵活性差。MME 认证后选 SGW/PGW，告诉 eNodeB“连它们吧”。", "star": true}
+    },
+    {
+      "icon": "🔗", "color": "green", "title": "控制面协议：SCTP", "tag": "比 TCP 更适合移动网络",
+      "intro": "eNodeB 和 MME 之间是正常的 IP 网络，但 IP 之上既不是 TCP 也不是 UDP，而是 <b>SCTP</b>。",
+      "bullets": [
+        "<b>多宿主</b>：多个网卡多条路径放进一个“联合”，一条失效自动走另一条，应用无感知",
+        "<b>多流</b>：一个联合分多个独立的流，编号传送——不像 TCP 强制顺序，前不到后必等",
+        "<b>四次握手防 SYN 攻击</b>：服务器 INIT-ACK 带 Cookie，客户端 COOKIE-ECHO 回来时<b>才分配资源</b>——伪造 SYN 耗不死服务器",
+        "<b>消息分帧</b>：借鉴 UDP，写多少读多少——不像 TCP 字节流没头没尾",
+        "<b>断开三次挥手</b>：放弃半关闭状态，一端关两端全关"
+      ]
+    },
+    {
+      "icon": "🚇", "color": "orange", "title": "数据面：GTP 隧道",
+      "bullets": [
+        "MME 认证通过后，用控制面协议 <b>GTP-C</b> 建数据通路：两段隧道——eNodeB↔SGW（MME 经 S1-MME 和 S11 分别告知两端）、SGW↔PGW（S11 + S5）",
+        "GTP-C <b>基于 UDP</b>（“城会玩”实例）：头里有<b>隧道 ID + 序列号</b>；靠递增序列号保证有序、检测重复，超时定时器重发——不用 TCP 自己实现可靠",
+        "隧道打通后 <b>PGW 给手机分配 IP</b>（隧道内部 IP，归运营商管）——类比 IPsec 里的内部 IP"
+      ]
+    }
+  ],
+  "summary": "移动网络演进：2G 走电话网（RAN：BTS+BSC；核心网：MSC 接待、AUC/EIR 鉴权、VLR/HLR 分本地外地、GMSC 出网关）；2.5G 加分组交换（PCU/SGSN/GGSN）支持 IP；3G 无线提速（Node B+RNC）；4G 基站合一为 eNodeB，核心网控制面（MME+HSS 认证）与数据面（SGW/PGW+PCRF 计费）分离。控制面用 SCTP（多宿主、多流、四次握手 Cookie 防 SYN 攻击、消息分帧、三次挥手）；数据面用 GTP-C 建两段隧道（基于 UDP，靠序列号+定时器自实现可靠），PGW 分配隧道内 IP 给手机上网。",
+  "oneliner": "4G 要诀：控制面找 MME（SCTP 保信令），数据面走隧道（GTP 连 SGW-PGW），PGW 发 IP。"
+}

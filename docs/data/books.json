@@ -130,6 +130,15 @@
       "type": "cornell",
       "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-mysql-45-10-html",
       "dataDir": "work"
+    },
+    {
+      "id": "netproto",
+      "title": "《趣谈网络协议》康奈尔笔记",
+      "emoji": "🌐",
+      "desc": "趣谈网络协议读书笔记 · 康奈尔笔记法：网络分层、MAC/IP/路由、DNS、HTTP、TCP 与 UDP 等网络协议核心知识。",
+      "type": "cornell",
+      "srcPath": "/Users/loveinalife/Desktop/康奈尔笔记-趣谈网络协议",
+      "dataDir": "."
     }
   ]
 }

@@ -1,0 +1,208 @@
+{
+  "id": "netproto",
+  "type": "cornell",
+  "count": 40,
+  "chapters": [
+    {
+      "num": "01",
+      "title": "为什么要学习网络协议？",
+      "oneliner": "协议三要素：语法、语义、顺序；一次下单，就是 TCP/IP 世界的玄奘西行。"
+    },
+    {
+      "num": "02",
+      "title": "网络分层的真实含义是什么？",
+      "oneliner": "网络包是套娃：想象自己是处理包的程序，记住——可以有下层没上层，不能有上层没下层。"
+    },
+    {
+      "num": "03",
+      "title": "ifconfig：最熟悉又陌生的命令行",
+      "oneliner": "IP 是门牌号负责定位，MAC 是身份证只认现场；CIDR 算网络号：掩码与 IP 按位 AND。"
+    },
+    {
+      "num": "04",
+      "title": "DHCP与PXE：IP是怎么来的，又是怎么没的？",
+      "oneliner": "DHCP 是租房中介：喊一嗓子(Discover)、报价(Offer)、选定(Request)、签约(ACK)，过半续租；PXE 是它推荐的装修队。"
+    },
+    {
+      "num": "05",
+      "title": "从物理层到MAC层：如何在宿舍里自己组网玩联机游戏？",
+      "oneliner": "MAC 层管堵车、ARP 靠吼、交换机会学习——记住谁在哪，就不用广播了。"
+    },
+    {
+      "num": "06",
+      "title": "交换机与VLAN：办公室太复杂，我要回学校",
+      "oneliner": "环路靠 STP 比武破成树（BPDU 选掌门）；广播和安全靠 VLAN 分会议室（TAG 12 位，Trunk 互联）。"
+    },
+    {
+      "num": "07",
+      "title": "ICMP与ping：投石问路的侦察兵",
+      "oneliner": "ICMP 是侦察兵：ping 主动打探（查询报文），Traceroute 故意送死（差错报文）。"
+    },
+    {
+      "num": "08",
+      "title": "世界这么大，我想出网关：欧洲十国游与玄奘西行",
+      "oneliner": "过网关 MAC 必换；IP 换不换看类型——欧洲游一签到底（转发），玄奘西行要办通关文牒（NAT）。"
+    },
+    {
+      "num": "09",
+      "title": "路由协议：西出网关无故人，敢问路在何方",
+      "oneliner": "内部 OSPF 算最短、外部 BGP 带路径；距离矢量坏消息慢，链路状态秒收敛。"
+    },
+    {
+      "num": "10",
+      "title": "UDP协议：因性善而简单，难免碰到“城会玩”",
+      "oneliner": "UDP 是性善的小孩：简单、轻信、愣头青——但正因为简单，城会玩都拿它自定义可靠性。"
+    },
+    {
+      "num": "11",
+      "title": "TCP协议（上）：因性恶而复杂，先恶后善反轻松",
+      "oneliner": "三次握手防单相思（绕路旧包），四次挥手加 TIME_WAIT 等 2MSL（仁至义尽再跑路）。"
+    },
+    {
+      "num": "12",
+      "title": "TCP协议（下）：西行必定多妖孽，恒心智慧消磨难",
+      "oneliner": "序号+累计确认管靠谱，滑动窗口管分寸（rwnd），拥塞窗口管进退（cwnd）：慢启动指数爬，BBR 找平衡。"
+    },
+    {
+      "num": "13",
+      "title": "套接字Socket：Talk is cheap, show me the code",
+      "oneliner": "TCP 监听/连接两个 Socket，UDP 一个就够；C10K 的答案：epoll——别轮询，有事通知我。"
+    },
+    {
+      "num": "14",
+      "title": "HTTP协议：看个新闻原来这么麻烦",
+      "oneliner": "HTTP 三步走：请求行定方法、首部管缓存、正文装数据；2.0 分帧分流治队首阻塞。"
+    },
+    {
+      "num": "15",
+      "title": "HTTPS协议：点外卖的过程原来这么复杂",
+      "oneliner": "非对称加密只用来送对称密钥的“纸条”，证书链是户口本层层盖章——HTTPS = 安全与效率兼得。"
+    },
+    {
+      "num": "16",
+      "title": "流媒体协议：如何在直播里看到美女帅哥？",
+      "oneliner": "视频靠四种冗余压缩成 I/P/B 帧 + NALU；RTMP 推流先握手对表，Message 拆 Chunk 慢慢发。"
+    },
+    {
+      "num": "17",
+      "title": "P2P协议：我下小电影，99%急死你",
+      "oneliner": "P2P 人越多越快；tracker 是介绍人，DHT 是朋友圈——哈希对 ID，XOR 论远近。"
+    },
+    {
+      "num": "18",
+      "title": "DNS协议：网络世界的地址簿",
+      "oneliner": "DNS 树状递归查地址：根指路、顶级引荐、权威拍板；域名解耦 IP，顺手把负载均衡也办了。"
+    },
+    {
+      "num": "19",
+      "title": "HTTPDNS：网络世界的地址簿也会指错路",
+      "oneliner": "本地导游有小心思（缓存/转发/NAT），HTTPDNS 改自由行：SDK 直连自建地址簿，缓存调度都自己说了算。"
+    },
+    {
+      "num": "20",
+      "title": "CDN：你去小卖部取过快递么？",
+      "oneliner": "CDN = 就近仓库 + 逐级缓存：静态拉取、流媒体推送加防盗链，动态数据靠边缘计算或冷链运输。"
+    },
+    {
+      "num": "21",
+      "title": "数据中心：我是开发商，自己拿地盖别墅",
+      "oneliner": "数据中心三层：接入、汇聚、核心；网卡 bond、交换机堆叠、大二层 TRILL——南北流量让位东西流量，叶脊登场。"
+    },
+    {
+      "num": "22",
+      "title": "VPN：朝中有人好做官",
+      "oneliner": "VPN = 公网上的轮渡隧道；IPsec 用 DH 让密钥从不上网，MPLS 用标签让转发不查路由。"
+    },
+    {
+      "num": "23",
+      "title": "移动网络：去巴塞罗那，手机也上不了脸书",
+      "oneliner": "4G 要诀：控制面找 MME（SCTP 保信令），数据面走隧道（GTP 连 SGW-PGW），PGW 发 IP。"
+    },
+    {
+      "num": "24",
+      "title": "云中网络：自己拿地成本高，购买公寓更灵活",
+      "oneliner": "虚拟机是买公寓：qemu-kvm 软件骗硬件，TUN/TAP 出网卡，br0 当宿舍交换机，VLAN 4096 不够用。"
+    },
+    {
+      "num": "25",
+      "title": "软件定义网络：共享基础设施的小区物业管理办法",
+      "oneliner": "SDN = 物业监控室遥控全小区：控制转发分离、北向给应用、南向（OpenFlow 流表）控设备。"
+    },
+    {
+      "num": "26",
+      "title": "云中的网络安全：虽然不是土豪，也需要基本安全和保障",
+      "oneliner": "Netfilter 五节点埋钩子，iptables 表链定规则；安全组批量下发，出网 MASQUERADE 伪装。"
+    },
+    {
+      "num": "27",
+      "title": "云中的网络QoS：邻居疯狂下电影，我该怎么办？",
+      "oneliner": "QoS 只管出门不管进门：令牌桶定速、HTB 分树互借、流表指队列——3:1:6 各拿各的。"
+    },
+    {
+      "num": "28",
+      "title": "云中网络的隔离GRE、VXLAN：虽然住一个小区，也要保护隐私",
+      "oneliner": "VLAN 不够就加头：GRE 三层套三层点对点，VXLAN 二层套头 24 位 ID + VTEP 管家 + 组播找人。"
+    },
+    {
+      "num": "29",
+      "title": "容器网络：来去自由的日子，不买公寓去合租",
+      "oneliner": "容器 = 合租集装箱：namespace 看起来隔离、cgroup 用起来隔离；NAT 跨机就乱——IP 重叠端口冲突，网络必须打平。"
+    },
+    {
+      "num": "30",
+      "title": "容器网络之Flannel：每人一亩三分地",
+      "oneliner": "Flannel：一机一网段永不冲突，UDP 用户态能跑、VXLAN 内核态更快。"
+    },
+    {
+      "num": "31",
+      "title": "容器网络之Calico：为高效说出善意的谎言",
+      "oneliner": "Calico 不打隧道只路由：/32 容器 + 假网关 169.254.1.1，Felix 配路由、BIRD 用 BGP 广播、iptables 管策略。"
+    },
+    {
+      "num": "32",
+      "title": "RPC协议综述：远在天边，近在眼前",
+      "oneliner": "RPC 三板斧：协议定义文件定约定、Stub 做翻译、RPCRuntime 管传输——远程调用，像本地一样写。"
+    },
+    {
+      "num": "33",
+      "title": "基于XML的SOAP协议：不要说NBA，请说美国职业篮球联赛",
+      "oneliner": "二进制是黑话，XML 是全称；SOAP = XML 装进信封走 HTTP，WSDL = 给陌生人的说明书。"
+    },
+    {
+      "num": "34",
+      "title": "基于JSON的RESTful接口协议：我不关心过程，请给我结果",
+      "oneliner": "RESTful = HTTP 方法表动作 + JSON 述资源 + 服务端无状态 + 幂等可缓存——我不关心过程，给我结果。"
+    },
+    {
+      "num": "35",
+      "title": "二进制类RPC协议：还是叫NBA吧，总说全称多费劲",
+      "oneliner": "内部调用回二进制：Dubbo 走 Netty，Hessian2 自描述——黑话照说，但这次句句带前因后果。"
+    },
+    {
+      "num": "36",
+      "title": "跨语言类RPC协议：交流之前，双方先来个专业术语表",
+      "oneliner": "gRPC = proto 术语表 + PB 极致压缩 + HTTP/2 双流 + Envoy 发现——多快好省全都要。"
+    },
+    {
+      "num": "37",
+      "title": "知识串讲：用双十一的故事串起碎片的网络协议（上）",
+      "oneliner": "串讲上：云上搭平台（VPC+VXLAN+PaaS）、BGP 告天下、手机过隧道拿 IP——万里长征刚起步。"
+    },
+    {
+      "num": "38",
+      "title": "知识串讲：用双十一的故事串起碎片的网络协议（中）",
+      "oneliner": "串讲中：图片走 CDN、下单先握手——TCP 三次建信任，HTTPS 五步换密钥，包好 MAC 才出门。"
+    },
+    {
+      "num": "39",
+      "title": "知识串讲：用双十一的故事串起碎片的网络协议（下）",
+      "oneliner": "串讲下：隧道出移动网、NAT 换身份、BGP 逐跳到边界；TCP 管重传、幂等管重调，VXLAN 送进 VPC 下单成功。"
+    },
+    {
+      "num": "40",
+      "title": "搭建一个网络实验环境：授人以鱼不如授人以渔",
+      "oneliner": "授人以渔：VirtualBox 双网卡 + Docker 当节点 + OVS 当交换机 + pipework 连线，1 核 2G 复现《TCP/IP 详解》实验室。"
+    }
+  ],
+  "sections": []
+}

@@ -1,0 +1,64 @@
+{
+  "num": "04",
+  "topic": "DHCP与PXE：IP是怎么来的，又是怎么没的？",
+  "date": "2026-08-12",
+  "questions": [
+    "手动配置 IP 用哪些命令？",
+    "乱配一个不同网段的 IP 会发生什么？",
+    "为什么跨网段的包网卡根本不收？",
+    "数据中心服务器和客户端配 IP 有何不同？",
+    "DHCP 解决什么问题？买房和租房的比喻？",
+    "DHCP 四步流程是什么？",
+    "DHCP Discover 为什么用广播？",
+    "多个 DHCP Server 同时响应怎么办？",
+    "IP 租约如何续租和收回？",
+    "PXE 解决什么问题？",
+    "PXE 客户端放在哪里？如何找到 PXE 服务器？",
+    "PXE 装系统的完整流程？"
+  ],
+  "modules": [
+    {
+      "icon": "🔧", "color": "blue", "title": "手动配置 IP 的坑",
+      "intro": "命令：ifconfig eth1 10.0.0.1/24 + up，或 ip addr add ... dev eth1 + ip link set up。但自由度太大——配个和谁都不搭界的地址会怎样？",
+      "bullets": [
+        "配成 16.158.23.6，ping 旁边的 192.168.1.6：<b>包根本发不出去</b>",
+        "原因：完整包原则——MAC 层必须填；Linux 判断目标<b>是否同网段</b>，同网段才发 ARP 求 MAC",
+        "跨网段 → 发给网关：目标 MAC 是网关的，旁边那台机器网卡<b>不收</b>（MAC 不匹配）",
+        "没配网关 → 包压根发不出去；把网关配成 192.168.1.6 → 配不成功（网关必须与某网卡同网段）"
+      ],
+      "callout": {"text": "手动配 IP 一定要问网络管理员申请正确地址段；实际配置写在<b>配置文件</b>里：CIDR、子网掩码、广播地址、网关。"}
+    },
+    {
+      "icon": "🏠", "color": "orange", "title": "DHCP：动态主机配置协议", "tag": "租房 vs 买房",
+      "intro": "数据中心服务器 IP 配好基本不变 = <b>买房自己装修</b>；客户端抱着电脑到处走 = <b>租房</b>，DHCP 帮你配好，用完退租别人还能用。",
+      "bullets": [
+        "管理员只需配一段<b>共享 IP 地址池</b>，新机器通过 DHCP 申请、自动配置",
+        "非技术人员不再需要 IT 逐台配置"
+      ]
+    },
+    {
+      "icon": "📢", "color": "green", "title": "DHCP 四步：广播不能“抢单”", "tag": "Discover-Offer-Request-ACK",
+      "flow": {"color": "blue", "steps": ["① Discover<br>新人广播求租", "② Offer<br>房东给地址", "③ Request<br>选一家并告知", "④ ACK<br>签约成交"]},
+      "bullets": [
+        "新人只知自己 MAC：用源 0.0.0.0、目标 255.255.255.255 发<b>广播</b>（封装 UDP→BOOTP，DHCP 是其增强版）",
+        "此时 <b>MAC 唯一性</b>至关重要——这是新人的唯一身份",
+        "多个 DHCP Server 都回复（收到多个 IP 受宠若惊）→ 一般选<b>最先到达</b>的，广播告知所有 Server 选了谁、请其他家撤销",
+        "全程仍用 0.0.0.0 广播，直到 ACK 才正式成交"
+      ],
+      "callout": {"text": "<b>续租</b>：租期过 50% 时就主动向原 Server 发 Request 续租（收到 ACK 更新配置）——不能到期才说；不续就收回给别人。", "star": true}
+    },
+    {
+      "icon": "💿", "title": "PXE：自动装操作系统", "tag": "预启动执行环境",
+      "intro": "数据中心一次几百台空机器，一台台装系统会累死。PXE（Pre-boot Execution Environment）插在 BIOS 启动之后——还没系统、没有启动扇区，所以叫<b>预启动</b>。",
+      "bullets": [
+        "PXE 客户端<b>放在 BIOS 里</b>，启动时调入内存",
+        "先通过 <b>DHCP</b> 拿到 IP；DHCP 配置里加 <b>next-server</b>（PXE 服务器地址）和 <b>filename</b>（pxelinux.0）",
+        "向 PXE 服务器的 <b>TFTP</b> 下载启动文件 → 执行 → 下载 pxelinux.cfg 配置（内核、initramfs 在哪）→ 下载并启动 <b>Linux 内核</b>",
+        "操作系统启动后，一切就好办了"
+      ],
+      "callout": {"text": "管理员美梦成真：空机器开机 → 自动拿 IP → 自动装系统 → 启动即用。", "star": true}
+    }
+  ],
+  "summary": "手动配 IP 的坑：跨网段不发 ARP 而发给网关，目标机器网卡因 MAC 不匹配根本收不到包——配置必须找管理员要正确网段（CIDR、掩码、广播、网关）。DHCP 像房产中介：Discover（新人广播求租）→ Offer（分配地址）→ Request（选定并告知各家）→ ACK（签约），全程广播、租期过半主动续租。DHCP 还能推荐“装修队”PXE：客户端驻 BIOS，经 DHCP 拿到 IP 和 PXE 服务器地址（next-server + filename），再用 TFTP 下载启动文件和内核，实现几百台空机器自动安装操作系统。",
+  "oneliner": "DHCP 是租房中介：喊一嗓子(Discover)、报价(Offer)、选定(Request)、签约(ACK)，过半续租；PXE 是它推荐的装修队。"
+}

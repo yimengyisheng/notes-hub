@@ -1,0 +1,58 @@
+{
+  "num": "33",
+  "topic": "基于XML的SOAP协议：不要说NBA，请说美国职业篮球联赛",
+  "date": "2026-08-12",
+  "questions": [
+    "ONC RPC 二进制压缩存在哪四个问题？",
+    "“NBA 缩略语”比喻什么？",
+    "XML 文本传输解决了哪些问题？",
+    "为什么说 XML 是面向对象的？",
+    "SOAP 是什么？信封结构？",
+    "SOAP 用什么协议传输？",
+    "WSDL 解决什么问题？包含哪些定义？",
+    "SOAP 适合什么场景？"
+  ],
+  "modules": [
+    {
+      "icon": "🤐", "color": "blue", "title": "ONC RPC 的问题：压缩即黑话",
+      "intro": "参数压缩成二进制串解决协议约定，但像缩略语——跟球迷说 NBA 他懂，跟大妈说她不知所云。",
+      "bullets": [
+        "<b>格式必须完全一致</b>：多一位少一位错一位都无法解压",
+        "<b>修改不灵活</b>：业务改字段要及时通知对方、重新生成两端 Stub",
+        "<b>版本升级是大工程</b>：一个客户端要加字段，50 个在线客户端都得适配——不需要的客户端很“冤”",
+        "<b>面向函数而非面向对象</b>——与主流设计方式不符"
+      ],
+      "callout": {"text": "根源在压缩：只适用于<b>两端同一拨人开发</b>、密切沟通有大量共同语言的场景。给陌生人用？请说“美国职业篮球联赛”。", "star": true}
+    },
+    {
+      "icon": "📄", "color": "green", "title": "XML：一看就懂的文本",
+      "intro": "用文本类方式传输，任何客户端拿到都知道意义（不像 010101 不知所云）。",
+      "bullets": [
+        "<b>格式不必完全一致</b>：price 和 author 换位置不影响解析，不会把作者叫成 68",
+        "<b>加字段友好</b>：加一行 &lt;recommended&gt; 即可，不需要的客户端不解析这行就没事",
+        "订单用标签对象描述——<b>面向对象</b>、贴近业务场景"
+      ]
+    },
+    {
+      "icon": "✉️", "color": "orange", "title": "SOAP：XML 装进信封走 HTTP",
+      "intro": "SOAP = 简单对象访问协议：XML 编写请求/回复消息，<b>用 HTTP（POST，Content-Type: application/soap+xml）传输</b>。",
+      "bullets": [
+        "像寄邮件：<b>Envelope 信封</b> → Header 抬头（如事务标记 mustUnderstand）→ Body 正文（订单详情）",
+        "请求行 POST /purchaseOrder，正文是完整 XML——无论调什么函数都用 POST，动作写在 XML 里"
+      ]
+    },
+    {
+      "icon": "📐", "title": "WSDL：给陌生人看的严谨说明书",
+      "intro": "服务给陌生人用，写文档放在官网不一定及时严谨——需要 <b>WSDL（Web 服务描述语言）</b>，也是 XML 文件。",
+      "bullets": [
+        "<b>wsdl:types</b>：定义类型（order 的 date/className/Author/price 及各字段类型）",
+        "<b>wsdl:message</b>：定义消息结构（purchase 包含 purchaseOrder）",
+        "<b>wsdl:portType</b>：暴露端口，定义 operation 的 input/output",
+        "<b>wsdl:binding</b>：把以上绑定到 SOAP 的 body（style=rpc，走 HTTP）"
+      ],
+      "callout": {"text": "WSDL 能<b>生成客户端 Stub</b>——所以 SOAP 常用于传统 RPC 方式：调用远端像调用本地。", "star": true}
+    }
+  ],
+  "summary": "ONC RPC 的二进制压缩像缩略语：两端必须完全一致、改字段要双方重新生成 Stub、版本升级牵连所有客户端、面向函数——只适合同一拨人密切沟通。对陌生人要用文本：XML 一看就懂、字段顺序无关、加字段向后兼容、面向对象。SOAP 把 XML 请求/回复装进 Envelope（Header + Body）用 HTTP POST 传输；协议约定靠严谨的 WSDL（types/message/portType/binding 四层定义），WSDL 还能生成 Stub，使 SOAP 常用于传统 RPC 式调用。",
+  "oneliner": "二进制是黑话，XML 是全称；SOAP = XML 装进信封走 HTTP，WSDL = 给陌生人的说明书。"
+}

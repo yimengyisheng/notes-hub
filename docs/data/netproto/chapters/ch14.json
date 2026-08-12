@@ -1,0 +1,81 @@
+{
+  "num": "14",
+  "topic": "HTTP协议：看个新闻原来这么麻烦",
+  "date": "2026-08-12",
+  "questions": [
+    "URL 为什么叫“统一”资源定位符？",
+    "发 HTTP 请求前要先做什么？",
+    "HTTP 1.1 的 Keep-Alive 有什么用？",
+    "HTTP 报文分哪三大部分？",
+    "GET/POST/PUT/DELETE 各用于什么？",
+    "POST 和 PUT 的细微区别？",
+    "首部有哪些重要字段？",
+    "Cache-control 和 If-Modified-Since 怎么用？",
+    "接入层缓存架构是什么样？",
+    "HTTP 请求发送的完整链路？",
+    "常见状态码和 Retry-After？",
+    "HTTP 2.0 解决了什么问题？怎么解决的？"
+  ],
+  "modules": [
+    {
+      "icon": "🌐", "color": "blue", "title": "请求的准备",
+      "bullets": [
+        "URL 是<b>统一资源定位符</b>：协议 + 域名 + 位置，格式统一浏览器才知道怎么处理",
+        "域名先经 DNS 解析成 IP；HTTP 基于 TCP——<b>先三次握手建连接</b>",
+        "HTTP 1.1 默认开启 <b>Keep-Alive</b>：TCP 连接在多次请求中复用（握手挥手很费劲，做一点事就断开太浪费）"
+      ]
+    },
+    {
+      "icon": "📮", "color": "green", "title": "请求报文三部分", "tag": "请求行/首部/正文",
+      "table": {
+        "head": ["方法", "用途", "云计算 API 例子"],
+        "rows": [
+          ["GET", "获取资源（页面或 JSON）", "获取云主机列表"],
+          ["POST", "主动告诉服务端信息，常<b>创建</b>资源", "创建云主机：CPU/内存/硬盘放 JSON 正文"],
+          ["PUT", "向指定位置上传最新内容，常<b>修改</b>资源", "给云主机打“生产/测试”标签"],
+          ["DELETE", "删除资源", "删除云主机"]
+        ]
+      },
+      "bullets": [
+        "首部是 key-value：Accept-Charset（防乱码）、Content-Type（正文格式）"
+      ]
+    },
+    {
+      "icon": "🗄️", "color": "orange", "title": "首部里的缓存学问", "tag": "高并发必备",
+      "intro": "商品详情页：图片长期不变、库存经常变——每次更新都刷整页，服务器压力太大。高并发系统在业务逻辑前要有<b>接入层</b>把静态资源拦在最外面。",
+      "flow": {"color": "orange", "steps": ["DNS/CDN", "Nginx 接入层", "Vanish 缓存层", "Tomcat 应用集群"]},
+      "bullets": [
+        "<b>Cache-control: max-age</b>——缓存时间小于指定值就用缓存；max-age=0 则穿透到应用集群",
+        "<b>If-Modified-Since</b>——资源没更新就返回 <b>304 Not Modified</b>，客户端不用下载，省带宽"
+      ]
+    },
+    {
+      "icon": "🚚", "color": "blue", "title": "请求的完整链路",
+      "flow": {"color": "blue", "steps": ["浏览器<br>Socket", "TCP 分段<br>ACK 可靠传输", "IP 层<br>判断同网段", "ARP 找 MAC<br>网关逐跳转发", "目标机<br>层层摘头"]},
+      "bullets": [
+        "HTTP 不用操心重传——TCP 埋头苦干；每个报文段要有 ACK，否则 TCP 自己重传",
+        "目标机：MAC 符合 → IP 符合 → TCP 序列号检查入缓存回 ACK → 按端口交给 <b>HTTP 服务器进程</b>"
+      ]
+    },
+    {
+      "icon": "📬", "color": "green", "title": "返回报文",
+      "bullets": [
+        "状态码反映结果：<b>200</b> 大吉大利；<b>404</b> 服务端无法响应；<b>503</b> 服务暂时不可用",
+        "<b>Retry-After</b>：告诉客户端多久后再试",
+        "返回首部也有 Content-Type（HTML 还是 JSON）；返回过程把来的路<b>反向走一遍</b>（路径不一定相同，逻辑一样）"
+      ]
+    },
+    {
+      "icon": "⚡", "title": "HTTP 2.0 与 QUIC", "tag": "进化",
+      "intro": "HTTP 1.1 纯文本、每次带完整头、一问一答——实时性并发性差。HTTP 2.0 的两大机制：",
+      "bullets": [
+        "<b>头部压缩</b>：两端建索引表，相同的头只发索引",
+        "<b>分流分帧</b>：一个 TCP 连接切多个<b>虚拟流</b>（有 ID、有优先级、双向）；传输信息切成<b>二进制帧</b>（Header 帧开新流、Data 帧传正文）",
+        "帧可<b>打散乱序</b>发送，按流标识重组，按优先级处理"
+      ],
+      "callout": {"text": "效果：解决 HTTP 1.1 <b>队首阻塞</b>；css/js/jpg 一个连接并行传；不再需要 pipeline 多条 TCP 连接。更进一步还有基于 UDP 的 <b>QUIC</b>（HTTP/3）。", "star": true}
+    }
+  ],
+  "summary": "HTTP 请求全链路：DNS 解析域名 → TCP 三次握手（1.1 默认 Keep-Alive 复用连接）→ 构建报文（请求行方法 GET/POST/PUT/DELETE + 首部 + 正文）→ Socket 交给 TCP 分段可靠传输 → IP/ARP/网关逐跳 → 目标机摘头按端口给 HTTP 进程 → 返回报文（200/404/503 + Retry-After）反向走回。首部缓存学问大：Cache-control max-age 和 If-Modified-Since(304) 配合接入层（Nginx+Vanish）拦截静态资源。HTTP 2.0 用头部压缩索引表和分流分帧（二进制、乱序、优先级）解决队首阻塞；HTTP/3 则基于 UDP 的 QUIC。",
+  "oneliner": "HTTP 三步走：请求行定方法、首部管缓存、正文装数据；2.0 分帧分流治队首阻塞。"
+}

@@ -1,0 +1,49 @@
+{
+  "num": "30",
+  "topic": "容器网络之Flannel：每人一亩三分地",
+  "date": "2026-08-12",
+  "questions": [
+    "Flannel 如何解决容器 IP 冲突？",
+    "为什么看 IP 就知道容器归哪台物理机？",
+    "Flannel 的 UDP Overlay 怎么工作？",
+    "flanneld 进程和 flannel.1 网卡怎么来的？",
+    "Flannel 为什么用 UDP？",
+    "UDP 方式的缺点？",
+    "Flannel 的 VXLAN 方式有何改进？",
+    "VXLAN 方式的封装层次？"
+  ],
+  "modules": [
+    {
+      "icon": "🧱", "color": "blue", "title": "思路：大网段里抠小网段",
+      "intro": "每台物理机都用 172.17.0.0/16 必冲突，但这网段太大，一台物理机根本起不了那么多容器——<b>每台抠一个 /24 小网段</b>，各看各的一亩三分地。",
+      "bullets": [
+        "物理机 A：172.17.8.0/24；物理机 B：172.17.9.0/24——容器 IP 绝不冲突",
+        "看 IP 就知道容器是本机还是远程、归哪台物理机管——<b>路由识别太方便了</b>"
+      ],
+      "callout": {"text": "这正是和虚拟机 Overlay 最大的不同：虚拟机网段在物理机间“飘来飘去”；Flannel <b>网段固定到机器</b>，给了做路由策略的可能。", "star": true}
+    },
+    {
+      "icon": "📬", "color": "orange", "title": "方式一：UDP Overlay（用户态）",
+      "flow": {"color": "orange", "steps": ["容器A 发包<br>默认路由到 docker0", "路由规则<br>转 flannel.1 网卡", "flanneld 读包<br>封 UDP+物理机 IP", "物理机B flanneld<br>解 UDP", "docker0<br>转给容器B"]},
+      "bullets": [
+        "flannel.1 网卡：flanneld 进程打开 <b>/dev/net/tun</b> 字符设备时出现（和 qemu-kvm 同款机制）",
+        "发到 flannel.1 的包都被 flanneld 读进去处理——但<b>不用模拟虚拟机网卡</b>",
+        "为什么 UDP？<b>不想在 flanneld 间建两两连接</b>，UDP 无连接，任意机器互发",
+        "缺点：封装解封装全在<b>用户态</b>，性能差"
+      ]
+    },
+    {
+      "icon": "⚡", "color": "green", "title": "方式二：VXLAN（内核态）",
+      "intro": "虚拟机跨物理机互通的成熟方案是 VXLAN——Flannel 也能用。不开 TUN 设备，改用 <b>netlink</b>（用户态内核态通信机制）通知内核建 VTEP 网卡 flannel.1。",
+      "bullets": [
+        "容器 A → 默认路由到 docker0 → 路由规则转 flannel.1（此时它是 <b>VXLAN VTEP</b>）→ 内核态封装",
+        "内层 MAC：源=A 的 flannel.1 MAC，目标=B 的 flannel.1 MAC；再加 <b>VXLAN 头</b>",
+        "外层 IP：物理机 A IP → 物理机 B IP；最外物理机 MAC",
+        "到 B 的 flannel.1 解包 → docker0 → 容器 B，通信成功"
+      ],
+      "callout": {"text": "VXLAN 在<b>内核态</b>封装，性能比 UDP 用户态好——Flannel 生产环境的主流选择。", "star": true}
+    }
+  ],
+  "summary": "Flannel 的核心创意是“每人一亩三分地”：把 172.17.0.0/16 大网段按 /24 分给各物理机，容器 IP 永不冲突，且看 IP 即知归属——为路由策略留下可能（这是与虚拟机 Overlay 的本质区别）。跨机互通两种 Overlay 实现：UDP 方式由 flanneld 进程打开 TUN 设备在用户态封装（免两两建连，但性能差）；VXLAN 方式用 netlink 建 VTEP 网卡 flannel.1 在内核态封装（内层 VTEP MAC + VXLAN 头 + 外层物理机 IP），性能更好，是主流选择。",
+  "oneliner": "Flannel：一机一网段永不冲突，UDP 用户态能跑、VXLAN 内核态更快。"
+}

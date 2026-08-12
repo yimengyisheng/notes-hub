@@ -1,0 +1,58 @@
+{
+  "num": "31",
+  "topic": "容器网络之Calico：为高效说出善意的谎言",
+  "date": "2026-08-12",
+  "questions": [
+    "Calico 与 Flannel 的设计思路有何本质不同？",
+    "Calico 为什么不用隧道？",
+    "容器 /32 地址和 169.254.1.1 网关是什么技巧？",
+    "“善意的谎言”指什么？",
+    "Calico 三个组件分别干什么？",
+    "Felix 解决什么？",
+    "BGP Speaker 解决什么？为什么用 BGP？",
+    "Calico 网络策略用什么实现？",
+    "BGP 全互连的规模和复杂性问题怎么解？"
+  ],
+  "modules": [
+    {
+      "icon": "🛣️", "color": "blue", "title": "思路：不走 Overlay，全用三层路由",
+      "intro": "Flannel 每机一个网段 → 网段不同就有<b>做路由策略</b>的可能。Calico：<b>不封装不隧道</b>，把物理机全配成路由器，按容器网段配路由表。",
+      "bullets": [
+        "物理机 A 配：去 172.17.9.0/24 下一跳 192.168.100.101（物理机 B）；B 上反向同理",
+        "去掉 docker0（省一个 IP）：路由直接指向 <b>veth pair 在物理机这端的网卡</b>",
+        "没有隧道封装解封装，单纯路由转发——<b>性能好很多</b>"
+      ]
+    },
+    {
+      "icon": "🎭", "color": "orange", "title": "善意的谎言：169.254.1.1",
+      "intro": "容器 IP 是 <b>/32</b>（容器自己就是单点局域网）。容器内默认路由 default via 169.254.1.1——但<b>全网没有一张网卡是这个地址</b>。",
+      "bullets": [
+        "网关 IP 从不出现在任何包头里——只要能<b>响应 ARP</b> 就行",
+        "Calico 把 169.254.1.1 的 ARP 记录<b>硬塞</b>进容器，MAC 指向 veth1（物理机端网卡）",
+        "于是容器发出的包第一跳就到物理机这个“路由器”——谎言善意且高效"
+      ]
+    },
+    {
+      "icon": "🧩", "color": "green", "title": "Calico 三大组件",
+      "table": {
+        "head": ["组件", "职责", "说明"],
+        "rows": [
+          ["Felix", "路由配置 agent", "容器创建/删除、节点加入/退出时自动配路由——手动根本配不过来（N 台物理机两两互配）"],
+          ["BGP Speaker（BIRD）", "路由广播", "把“如何到达我这个节点、访问我上面的容器”广播全网——就是<b>路由协议</b>的活，Calico 用 BGP；所有 Node 全互连"],
+          ["Network Policy", "安全策略", "和虚拟机安全组一样用 <b>iptables</b> 实现：Netfilter 各点嵌入 cali-* 规则（from/to workload 分方向按网卡细配；cali-fip-dnat/snat 做浮动 IP 转换）"]
+        ]
+      }
+    },
+    {
+      "icon": "🕸️", "title": "规模问题：BGP Route Reflector",
+      "bullets": [
+        "6 个节点 BGP 全互连已很复杂，节点多了成蜘蛛网",
+        "引入 <b>BGP Route Reflector</b>（也用 BIRD 实现）：BGP Speaker 不再全互连，都直连它，由它把全网路由广播出去",
+        "但规模再大，RR 本身能不能扛住又是新问题——凡事皆有代价"
+      ],
+      "callout": {"text": "Calico 的哲学：能用路由就不用隧道——<b>性能优先</b>，复杂度交给 Felix + BGP 自动化。", "star": true}
+    }
+  ],
+  "summary": "Calico 利用 Flannel 式“每机一网段”的前提，彻底走三层路由而不走 Overlay：物理机化身路由器按容器网段互配路由，去掉了 docker0 和隧道开销，性能更好。巧妙细节：容器 /32 + 默认网关 169.254.1.1（不存在的地址，ARP 硬塞指向物理机端 veth——网关 IP 从不进包头，能响应 ARP 即可）。三大组件：Felix 自动配置路由、BIRD（BGP Speaker）广播路由、iptables 实现 Network Policy（cali-* 规则链）。规模大了用 BGP Route Reflector 解全互连蜘蛛网。",
+  "oneliner": "Calico 不打隧道只路由：/32 容器 + 假网关 169.254.1.1，Felix 配路由、BIRD 用 BGP 广播、iptables 管策略。"
+}

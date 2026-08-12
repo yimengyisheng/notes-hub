@@ -1,0 +1,74 @@
+{
+  "num": "25",
+  "topic": "软件定义网络：共享基础设施的小区物业管理办法",
+  "date": "2026-08-12",
+  "questions": [
+    "原生 VLAN + Linux 网桥管理云平台有什么不足？",
+    "SDN 的物业管理比喻？",
+    "SDN 的三个特点？",
+    "什么是北向接口和南向接口？",
+    "OpenFlow 和 OpenvSwitch 各是什么？",
+    "流表规则的结构？",
+    "OpenFlow 能管到 TCP/IP 哪几层？",
+    "OpenvSwitch 的 access port 和 trunk port 区别？",
+    "如何用 OpenvSwitch 实验 VLAN？",
+    "bond_mode 有哪三种？"
+  ],
+  "modules": [
+    {
+      "icon": "🏘️", "color": "blue", "title": "SDN：智能物业监控室", "tag": "三个特点",
+      "intro": "VLAN+网桥方式要登录一台台设备配置，缺统一视图。云计算像合住公寓，网络是电梯楼道大门——高峰期需要物业智能调控。",
+      "bullets": [
+        "<b>控制与转发分离</b>：转发平面是路（只管走人），控制平面是物业监控室（统一控制）",
+        "<b>开放接口</b>：控制器向上被应用调用 = <b>北向接口</b>；向下控制网络设备 = <b>南向接口</b>（上北下南）",
+        "<b>逻辑上集中控制</b>：一个控制平面管多个转发设备，有<b>全局网络视图</b>，按全局状态优化控制"
+      ]
+    },
+    {
+      "icon": "🌊", "color": "orange", "title": "OpenFlow 流表", "tag": "南向接口协议",
+      "intro": "OpenFlow = SDN 控制器与网络设备间的南向接口协议；OpenvSwitch = 支持 OpenFlow 的软件虚拟交换机（也有硬件支持），被统一控制器管理。",
+      "bullets": [
+        "核心是<b>流表</b>：一张张表，每行一条规则，<b>优先级</b>高的先看",
+        "每条规则 = <b>匹配条件</b>（从哪个口进、包头有什么）+ <b>动作</b>（改包头/跳表/转发/丢弃）"
+      ],
+      "table": {
+        "head": ["层", "匹配规则", "执行动作"],
+        "rows": [
+          ["物理层", "从哪个口进来", "从哪个口出去"],
+          ["MAC 层", "dl_src / dl_dst / dl_vlan", "mod_dl_src / mod_dl_dst / mod_vlan_vid / strip_vlan / learn"],
+          ["网络层", "nw_src / nw_dst", "mod_nw_src / mod_nw_dst"],
+          ["传输层", "tp_src / tp_dst", "mod_tp_src / mod_tp_dst"]
+        ]
+      },
+      "callout": {"text": "网络包到了 OpenvSwitch 手里就是一个 Buffer——<b>想怎么改怎么改，想发哪就发哪</b>，四层全覆盖。", "star": true}
+    },
+    {
+      "icon": "🧪", "color": "green", "title": "实验一：OpenvSwitch 实现 VLAN",
+      "intro": "ovs-vsctl add-br 建虚拟交换机，端口分两类：",
+      "bullets": [
+        "<b>access port</b>：配 tag——进来的包打上 tag；VLAN ID 等于 tag 才从此口发出；发出的包不带 VLAN ID",
+        "<b>trunk port</b>：配 trunks——为空则所有 VLAN 放行（无 VLAN 算 VLAN 0）；非空则只放行指定的 VLAN ID",
+        "实验：vnet0~2 分别 tag=101/102/103，first_br tag=103、third_br trunks=101,102 → 抓包验证同 VLAN 才互通，trunk 口出包带 VLAN ID",
+        "不用买支持 VLAN 的交换机也能学 VLAN"
+      ]
+    },
+    {
+      "icon": "🔗", "title": "实验二：模拟网卡绑定 bond",
+      "table": {
+        "head": ["bond_mode", "行为"],
+        "rows": [
+          ["active-backup（默认）", "一个 active 其他 backup，active 失效 backup 顶上"],
+          ["balance-slb", "按源 MAC 和 output VLAN 负载均衡"],
+          ["balance-tcp", "需交换机支持 LACP，可按 L2/L3/L4 负载均衡"]
+        ]
+      },
+      "bullets": [
+        "add-bond 建绑定 + lacp=active；默认模式下抓包全走 first_if",
+        "把 first_if 设 down → 流量切到 second_if，业务不受影响",
+        "改 balance-slb → 两路 ping 的包被分流到不同链路"
+      ]
+    }
+  ],
+  "summary": "SDN 解决 VLAN+网桥管理的碎片化：控制与转发分离（监控室 vs 道路）、北向接口给应用、南向接口控设备、逻辑集中控制获得全局视图。开源实现 OpenFlow（南向协议）+ OpenvSwitch（软交换机）：核心是流表——按优先级匹配条件（口/MAC/VLAN/IP/端口，覆盖四层）执行动作（改包/转发/丢弃），包到手里就是可随意处置的 Buffer。实验验证了 access/trunk 端口实现 VLAN 隔离，以及 bond 三种模式（active-backup 高可用、balance-slb/tcp 负载均衡）。",
+  "oneliner": "SDN = 物业监控室遥控全小区：控制转发分离、北向给应用、南向（OpenFlow 流表）控设备。"
+}

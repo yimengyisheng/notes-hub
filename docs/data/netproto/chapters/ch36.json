@@ -1,0 +1,71 @@
+{
+  "num": "36",
+  "topic": "跨语言类RPC协议：交流之前，双方先来个专业术语表",
+  "date": "2026-08-12",
+  "questions": [
+    "四种已学 RPC 各自的优劣？",
+    "微服务时代对 RPC 框架有哪些新要求？",
+    "gRPC 如何同时满足二进制和跨语言？",
+    "proto 文件里的字段数字标识有什么用？",
+    "Protocol Buffers 变长整数如何编码？",
+    "TLV 存储是什么？Tag 怎么算？",
+    "PB 如何保证升级兼容性？",
+    "gRPC 传输基于什么？",
+    "gRPC 的四种服务方法？",
+    "gRPC 的服务发现与负载均衡怎么做？Envoy 四要素？"
+  ],
+  "modules": [
+    {
+      "icon": "🧮", "color": "blue", "title": "四种 RPC 的账本与新要求",
+      "intro": "ONC RPC、SOAP、RESTful、Hessian2 各有长短：二进制快但难跨语言；文本慢但跨语言；要协议文件的严谨、不要的灵活。",
+      "bullets": [
+        "① 传输性能要好——调用频繁，<b>二进制越快越好</b>",
+        "② <b>跨语言</b>——服务多了什么语言都有，不能一个语言走到底",
+        "③ <b>既严谨又灵活</b>——加字段不用重新编译发布",
+        "④ 既要服务发现也要<b>服务治理</b>（Dubbo/Spring Cloud 那样）"
+      ]
+    },
+    {
+      "icon": "📋", "color": "orange", "title": "gRPC + Protocol Buffers：专业术语表",
+      "intro": "既二进制又跨语言 = 又说方言又说缩略语？解法：双方先约定<b>协议文件 .proto</b>——专业术语表，沟通就顺畅了。",
+      "bullets": [
+        ".proto 定义 message（Order：date=1, classname=2, author=3, price=4）和 service（rpc Purchase）",
+        "<b>每个字段有唯一数字标识</b>——传输时不传字段名只传数字，省空间",
+        "各语言都有工具生成两端 Stub——像调本地一样调远程"
+      ]
+    },
+    {
+      "icon": "🗜️", "color": "green", "title": "PB 的极致序列化",
+      "bullets": [
+        "<b>变长整数</b>：每 Byte 最高位为 1 表示没完、为 0 结束，7 位存内容——小于 128 只用 1 字节（int32 本来要 4 字节）",
+        "<b>TLV</b>：Tag = (field_num &lt;&lt; 3) | wire_type，Length，Value——field_num 来自 proto 的数字标识",
+        "兼容性设计：<b>required</b> 必存在（不能增删）；<b>optional</b> 可增可删（不设用默认值）；<b>repeated</b> 可重复",
+        "升级规则：字段数字标识别改；别增删 required；optional/repeated 随便加——<b>先升服务端或客户端都行</b>（新字段被设默认或被忽略）"
+      ],
+      "callout": {"text": "序列化效率做到极致，灵活性靠修饰符保留——多快好省。", "star": true}
+    },
+    {
+      "icon": "🌊", "color": "blue", "title": "传输：Netty + HTTP/2，四种服务方法",
+      "intro": "Java 栈经 Netty Channel 传输，每个请求封装成 <b>HTTP/2 的 Stream</b>（一个 TCP 连接切多个有 ID、有优先级的双向虚拟通道，二进制帧可乱序重组）。",
+      "table": {
+        "head": ["服务方法", "形态"],
+        "rows": [
+          ["单向 RPC", "一请求一应答，像普通函数调用（最常用）"],
+          ["服务端流式", "一请求 → 返回<b>数据流</b>，客户端读到没消息为止"],
+          ["客户端流式", "客户端写入一系列消息 → 服务端读完统一应答"],
+          ["双向流式", "两边各自读写流，顺序独立——服务端状态改变可<b>主动通知</b>客户端"]
+        ]
+      }
+    },
+    {
+      "icon": "🧭", "title": "服务发现与治理：Envoy",
+      "intro": "gRPC 本身没有服务发现，负载均衡 LVS/HAProxy/Nginx 都能做，关键是<b>发现服务端并动态改配置</b>——用 <b>Envoy</b>（高性能 C++ Proxy）。",
+      "bullets": [
+        "规则可静态（配置文件，支持热加载热重启），更好是动态：放在统一的 <b>Discovery Service</b>，定期拉取改策略",
+        "配置四要素：<b>listener</b>（监听端口接请求）、<b>endpoint</b>（目标 IP+端口）、<b>cluster</b>（行为相同的一组 endpoint）、路由规则"
+      ]
+    }
+  ],
+  "summary": "微服务时代要“多快好省”：二进制、跨语言、严谨又灵活、发现加治理。gRPC 的方案是 .proto 协议文件（专业术语表）+ Protocol Buffers：字段用数字标识省空间，变长整数（高位续传标志）和 TLV 把序列化做到极致；required/optional/repeated 修饰符保证升级兼容（两端可独立升级）。传输走 Netty + HTTP/2 Stream，于是支持四种方法：单向、服务端流、客户端流、双向流（服务端可主动推送）。gRPC 不管服务发现，配 Envoy：listener/endpoint/cluster/路由四要素，规则静态热加载或 Discovery Service 动态下发。",
+  "oneliner": "gRPC = proto 术语表 + PB 极致压缩 + HTTP/2 双流 + Envoy 发现——多快好省全都要。"
+}

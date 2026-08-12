@@ -1,0 +1,61 @@
+{
+  "num": "27",
+  "topic": "云中的网络QoS：邻居疯狂下电影，我该怎么办？",
+  "date": "2026-08-12",
+  "questions": [
+    "QoS 解决云上的什么现象？",
+    "为什么只能控制出方向？",
+    "Linux 用什么控制 QoS？",
+    "pfifo_fast 如何工作？",
+    "随机公平队列 SFQ 解决什么？",
+    "令牌桶 TBF 的原理？桶大小防什么？",
+    "HTB 分层令牌桶的结构？rate 和 ceil？",
+    "HTB 子类互借流量有什么好处？",
+    "tc filter 如何按来源分流？",
+    "OpenvSwitch 如何控制进/出方向 QoS？"
+  ],
+  "modules": [
+    {
+      "icon": "🎬", "color": "blue", "title": "问题与方向",
+      "intro": "合租共享 Wi-Fi，邻居狂下小电影你网都上不去——云平台上用 <b>QoS</b>（服务质量）流量控制保障大多数用户。",
+      "bullets": [
+        "两个方向：入方向和出方向",
+        "<b>能控制的只有出方向</b>：Shaping 把出的流量整成想要的模样",
+        "入方向无法控制，只能靠 <b>Policy 丢弃</b>包"
+      ]
+    },
+    {
+      "icon": "🧺", "color": "orange", "title": "无类别排队规则", "tag": "TC 三大类",
+      "table": {
+        "head": ["规则", "机制"],
+        "rows": [
+          ["pfifo_fast", "三个 FIFO 队列（Band 0/1/2，0 优先级最高）；按 IP 头 <b>TOS</b> 四位（16 种）经 priomap 映射进不同 Band；Band 0 发完才轮 Band 1"],
+          ["SFQ 随机公平队列", "很多 FIFO 队列，TCP Session 算 <b>hash</b> 分配到队列，轮询取包发送——没有一个 Session 霸占全部流量；hash 会变防长期互相影响"],
+          ["TBF 令牌桶", "到队头还要<b>拿到令牌</b>才能发；令牌按设定速度生成 → 队再长也按定速发送；桶有大小，<b>放满为止</b>——防长时间空闲攒一堆令牌、突发流量瞬间爆炸"]
+        ]
+      }
+    },
+    {
+      "icon": "🌳", "color": "green", "title": "基于类别：HTB 分层令牌桶", "tag": "一棵树",
+      "intro": "tc 为 eth0 建 HTB 根（handle 1:），下挂 root class（rate=ceil=100kbps），再分三个子 class：30/10/60kbps（rate 之和=网卡最大速度），ceil 都是 100kbps。",
+      "bullets": [
+        "<b>rate</b> = 一般速度，<b>ceil</b> = 最高速度",
+        "好特性：同一 root class 下子类可<b>互借流量</b>——不用的分支借给别人，带宽不浪费（不挂 root 直接建 class 则不能互借）",
+        "叶子挂队列规则：pfifo limit 5 / sfq perturb 10",
+        "<b>tc filter</b> 分流：源 1.2.3.4 且 dport 80 走分支 1:10；源 1.2.3.4 其他走 1:11；其余走默认"
+      ]
+    },
+    {
+      "icon": "🎛️", "title": "OpenvSwitch 的 QoS",
+      "bullets": [
+        "入方向：ingress_policing_rate/burst（策略限速）",
+        "出方向：Egress shaping，支持 <b>HTB</b>——port 上建 QoS 规则，下挂多个 Queue（min-rate/max-rate）",
+        "流表规则匹配后进不同队列：actions=enqueue:5:0/1/2",
+        "实测：单独测各家都打满带宽；三家一起狂发则按队列配比 <b>3:1:6</b> 分配"
+      ],
+      "callout": {"text": "队列配比（min-rate）决定共享时的分配比例——邻居下片再也挤不垮你。", "star": true}
+    }
+  ],
+  "summary": "QoS 解决“邻居疯狂下电影”：只能控出方向（Shaping），入方向只能丢（Policy）。Linux TC 无类别规则：pfifo_fast 按 TOS 分三 Band 优先级发送；SFQ 按 Session 哈希分队列轮询防霸占；TBF 令牌桶定速发送、桶满防突发。基于类别的 HTB 是一棵树：root class 定总速，子 class 各配 rate/ceil 且可互借流量，叶子挂 pfifo/sfq，tc filter 按源/端口分流。OpenvSwitch 入方向用 ingress policing、出方向用 HTB 队列（min-rate/max-rate），流表 enqueue 进队列，多租户共享时按比例分配带宽。",
+  "oneliner": "QoS 只管出门不管进门：令牌桶定速、HTB 分树互借、流表指队列——3:1:6 各拿各的。"
+}

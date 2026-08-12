@@ -1,0 +1,63 @@
+{
+  "num": "28",
+  "topic": "云中网络的隔离GRE、VXLAN：虽然住一个小区，也要保护隐私",
+  "date": "2026-08-12",
+  "questions": [
+    "VLAN 4096 不够用怎么办？改协议为什么不可行？",
+    "什么是 Underlay 和 Overlay 网络？",
+    "GRE 是什么？隧道怎么工作？",
+    "GRE 头的 Key 字段干什么？NVGRE 给网络 ID 多少位？",
+    "GRE 的三个不足？",
+    "VXLAN 与 GRE 封装层次有何不同？VXLAN ID 多少位？",
+    "VTEP 是什么？虚拟机如何注册？",
+    "VXLAN 如何定位目标机器（组播）？",
+    "VXLAN 跨机 ARP 的完整过程？",
+    "VTEP 如何“学习”？",
+    "OpenvSwitch 支持哪三类隧道？"
+  ],
+  "modules": [
+    {
+      "icon": "🧩", "color": "blue", "title": "思路：扩展而非改协议",
+      "intro": "VLAN 只有 12 位 4096 个，云厂商不够用。改协议？千千万设备都在跑，没法挨个通知——不可行。只能<b>扩展</b>：原包格式外加一个头装租户 ID，外层尽量兼容传统格式。",
+      "bullets": [
+        "<b>Underlay</b>：底层物理网络设备组成的网络",
+        "<b>Overlay</b>：虚拟机和云技术组成的虚拟化网络，基于物理网络实现",
+        "与 VPN 隧道同理（轮渡），但这里的扩展头是<b>区分用户</b>而非加密"
+      ]
+    },
+    {
+      "icon": "🚇", "color": "orange", "title": "GRE：IP-over-IP 隧道",
+      "intro": "Generic Routing Encapsulation：IP 包封装进 GRE 包再套外层 IP 头；一端封装、通路传输、另一端解封装——Tunnel 是<b>虚拟点对点</b>连接。",
+      "bullets": [
+        "GRE 头前 32 位必有，<b>Key 字段 32 位放 Tunnel ID</b> 区分用户——够任何云平台用；<b>NVGRE</b> 给网络 ID 24 位也够用",
+        "封装/解封装在路由器或有路由功能的 Linux 机器；隧道建立后多出 Tunnel 端口",
+        "传输示例：主机 A（192.168.1.102）→ 默认路由到左路由器 → 经 Tunnel0 进隧道，内层 IP 外 + GRE 头 + 外层公网 IP（172.17.10.10 → 172.16.11.10）→ 公网逐跳 → 对端解封装 → E3 口到主机 B"
+      ],
+      "callout": {"text": "GRE 三不足：①点对点，N 个网络隧道数<b>指数增长</b>；②<b>不支持组播</b>，广播帧发给所有隧道对端；③很多防火墙/三层设备无法解析 GRE，没法过滤和负载均衡。"}
+    },
+    {
+      "icon": "📦", "color": "green", "title": "VXLAN：二层外套 + VTEP 管家", "tag": "24 位 ID",
+      "intro": "与 GRE“三层套三层”不同，VXLAN 在<b>二层外面</b>套 VXLAN 头（<b>VXLAN ID 24 位</b>），再封 UDP、IP、外层 MAC。封装/解封装点叫 <b>VTEP</b>（VXLAN Tunnel Endpoint）。",
+      "bullets": [
+        "每台物理机一个 VTEP = 虚拟机网络的<b>管家</b>：VM 启动向 VTEP 注册，VTEP 知道自己管多少 VM；跨 VTEP 通信由 VTEP 代理封装解封",
+        "VXLAN 不是点对点——支持<b>组播</b>定位目标：VTEP 启动时用 <b>IGMP 加入组播组</b>（像加入微信群）"
+      ],
+      "flow": {"color": "green", "steps": ["VM1 不知 VM2 MAC<br>发 ARP", "VTEP1 封进 VXLAN<br>组播 @all", "VTEP2 本地广播<br>VM2 应答", "单播回 VTEP1<br>互相学到归属", "之后封 VXLAN<br>直发对方 VTEP"]},
+      "bullets": [
+        "同一用户的 VM 分配相同 VXLAN ID（如 101）",
+        "经过 ARP 一来一回，<b>VTEP1 和 VTEP2 互相学到对方管哪些 VM</b>——之后通信不用组播，直接封装直发"
+      ]
+    },
+    {
+      "icon": "🏠", "title": "融入云平台",
+      "bullets": [
+        "宿舍闹矛盾分三个宿舍（VM 分到不同物理机）：寝室长（路由器）单独一台物理机，只有他有公网口",
+        "偷偷在三个宿舍间<b>打隧道</b>，把三段 br0 连成一个逻辑 br0——GRE/VXLAN 都是挖法",
+        "多一个 <b>br1</b> 虚拟交换机：把 VM 间互联和物理机间互联<b>分成两层</b>设计",
+        "OpenvSwitch 支持三类隧道：<b>GRE、VXLAN、IPsec_GRE</b>，虚拟交换机即封装端点"
+      ]
+    }
+  ],
+  "summary": "VLAN 4096 不够用的出路是扩展不改协议：Underlay 物理网络之上建 Overlay 虚拟网络。GRE 是 IP-over-IP 点对点隧道，Key 字段 32 位区分租户（NVGRE 24 位），但隧道数指数增长、不支持组播、防火墙无法解析。VXLAN 在二层外套 24 位 VXLAN ID + UDP/IP/MAC，由 VTEP（每物理机的 VM 管家）封装解封；用 IGMP 组播“微信群 @all”完成跨机 ARP，一来一回后 VTEP 互相学到 VM 归属，之后直发不再组播。落地云平台时用 br1 分层设计 VM 互联与物理机互联，OpenvSwitch 直接支持 GRE/VXLAN/IPsec_GRE 三类隧道。",
+  "oneliner": "VLAN 不够就加头：GRE 三层套三层点对点，VXLAN 二层套头 24 位 ID + VTEP 管家 + 组播找人。"
+}

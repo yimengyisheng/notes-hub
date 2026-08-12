@@ -1,0 +1,60 @@
+{
+  "num": "39",
+  "topic": "知识串讲：用双十一的故事串起碎片的网络协议（下）",
+  "date": "2026-08-12",
+  "questions": [
+    "移动网络里包如何经隧道到 PGW？",
+    "PGW 出口的 NAT 起什么作用？",
+    "从运营商到云平台边界走什么协议？",
+    "为什么一路只换 MAC 不换目标 IP？",
+    "TCP 重传会导致重复下单吗？",
+    "什么情况会真的重复下单？怎么办？",
+    "滑动窗口的接收方四部分？",
+    "包进数据中心后公网如何转私网？",
+    "VXLAN 隧道在这里怎么用？",
+    "HAProxy 是几层负载均衡？"
+  ],
+  "modules": [
+    {
+      "icon": "🚇", "color": "blue", "title": "阶段七（上）：隧道出移动网",
+      "intro": "手机默认网关在 PGW；手机→SGW→PGW 有隧道：外层是 eNodeB/SGW/PGW 的核心网地址，内层乘客是下单包（UE IP → SLB 公网 IP）。",
+      "bullets": [
+        "SGW 处换隧道：外层变 SGW→PGW，内层不变",
+        "PGW 解包转发，出口路由器 <b>NAT</b>：手机 IP 转公网 IP（返回再转回）——先“欧洲十国游”出 PGW，再“玄奘西行”过 NAT",
+        "互联网段：运营商是 <b>Transit AS</b>（帮别人传包），云平台是 <b>Multihomed AS</b>（多连接但不帮传）；AS 间 eBGP、内部 iBGP"
+      ]
+    },
+    {
+      "icon": "🎯", "color": "orange", "title": "阶段七（中）：逐跳到边界",
+      "bullets": [
+        "SLB 公网 IP 早已被云平台边界路由器用 BGP 宣告全网——下单包下一跳 A2 → C1 → C2 → 边界路由器",
+        "<b>一路只换目标 MAC，不换目标 IP</b>——这就是“下一跳”：每个路由器把下一跳 IP 通过 ARP 转成 MAC 填进 MAC 头",
+        "TCP 三次握手、HTTPS 密钥交换的每个包都走如此复杂的路（路径不一定一致）"
+      ]
+    },
+    {
+      "icon": "🪟", "color": "green", "title": "阶段七（下）：TCP 可靠性与幂等",
+      "intro": "路复杂包易丢 → TCP 重传：维护 Sequence Number 看哪些到没到；接收方按滑动窗口分四部分（已 ACK 已交应用 / 已 ACK 未交应用 / 已收未 ACK / 未收有空缓存）。",
+      "bullets": [
+        "ACK 要从 SLB 反向走回手机，也不轻松",
+        "<b>同一 TCP 连接内不会重复下单</b>：收不到 ACK 才重发，接收端窗口只存一份，ACK 过的包只交应用层一次",
+        "但 TCP 连接断了（手机信号不好）→ 重建连接 → HTTP 层调两次 RESTful API → <b>可能下两遍单</b> → RESTful API 必须<b>幂等</b>",
+        "ACK 过的包交给应用层后缓存空出 → 大三角顺时针滑动，窗口更新"
+      ],
+      "callout": {"text": "TCP 可靠性防的是<b>传输层重复</b>；应用层幂等防的是<b>连接重建后的重复调用</b>——两层各管一段。", "star": true}
+    },
+    {
+      "icon": "🏰", "title": "阶段八、九：进数据中心到下单",
+      "intro": "包到 SLB 公网网口（MAC+IP 匹配收进来）：",
+      "flow": {"color": "blue", "steps": ["虚拟网关 NAT<br>公网→私网 IP", "分发给 HAProxy<br>集群节点", "OVS 封 VXLAN<br>带 VPC 的 ID", "物理机 A 解封<br>HAProxy 监听端口", "四层转发<br>Controller 层"]},
+      "bullets": [
+        "虚拟网关节点多个，物理网络分流；HAProxy 是大集群",
+        "VXLAN ID = 创建 VPC 时给租户分配的那个——内外层 MAC/IP 各一套",
+        "HAProxy 是<b>四层负载均衡</b>：只解析到 TCP，不关心 HTTP，转发给后端 Controller；此时 HAProxy 是 TCP 连接的服务端（连接状态、滑动窗口在它这维护）",
+        "HAProxy 再发包时它成了客户端——之后经 Controller→组合服务→基础服务，最终下单入库"
+      ]
+    }
+  ],
+  "summary": "双十一串讲（下）走完最后一段：⑦包经移动隧道（外层 eNodeB→SGW→PGW）出核心网，PGW 出口 NAT 成公网 IP；互联网段经 eBGP/iBGP 在自治系统间逐跳，一路只换 MAC 不换目标 IP，到达云平台边界路由器；TCP 滑动窗口+重传保可靠（同连接内不会重复下单，但连接断了重调 API 会——RESTful 必须幂等）；⑧进数据中心：虚拟网关 NAT 公网转私网，分发到 HAProxy 集群；⑨OVS 把包封进 VXLAN（VPC 的租户 ID）到物理机解封，HAProxy 作为四层负载均衡只认 TCP，转发给 Controller 层，再经组合服务、基础服务下单入库。",
+  "oneliner": "串讲下：隧道出移动网、NAT 换身份、BGP 逐跳到边界；TCP 管重传、幂等管重调，VXLAN 送进 VPC 下单成功。"
+}
