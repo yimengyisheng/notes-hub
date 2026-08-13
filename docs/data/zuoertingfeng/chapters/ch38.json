@@ -1,0 +1,60 @@
+{
+ "topic": "37 | 编程范式游记（8）- Go 语言的委托模式",
+ "questions": [
+  "Go 的委托模式是怎么实现的？",
+  "嵌入（Embedding）和聚合（Aggregation）有什么区别？",
+  "成员变量重名时怎么办？",
+  "Go 如何用接口实现多态？",
+  "IntSet 示例展示了什么？"
+ ],
+ "modules": [
+  {
+   "icon": "🤝",
+   "color": "blue",
+   "title": "委托与嵌入",
+   "bullets": [
+    "Go 的模式：声明 struct，直接把另一个 struct 类型放进去（Embedding，委托）",
+    "Label 嵌入 Widget，同时聚合 Text 字段，还可以用 X 覆盖 Widget.X",
+    "重名变量需要手动解决冲突：label.Widget.X 访问被覆盖的字段",
+    "示例输出：X=100, Y=10, Text=State, Widget.X=10"
+   ]
+  },
+  {
+   "icon": "🧩",
+   "color": "green",
+   "title": "组合结构",
+   "bullets": [
+    "Button{Label}：一层层嵌入 Widget",
+    "ListBox{Widget, Texts []string, Index int}",
+    "每个类型实现自己的 Paint() 方法（Override）",
+    "Go 用嵌入+聚合代替了传统继承"
+   ]
+  },
+  {
+   "icon": "🔌",
+   "color": "orange",
+   "title": "接口多态",
+   "bullets": [
+    "声明 Painter 接口（Paint()）和 Clicker 接口（Click()）",
+    "for _, painter := range []Painter{label, listBox, button1, button2} 统一调用",
+    "类型断言：if clicker, ok := widget.(Clicker); ok 判断是否实现接口",
+    "这是面向对象和原型编程综合的玩法"
+   ]
+  },
+  {
+   "icon": "📦",
+   "color": "purple",
+   "title": "IntSet 容器示例",
+   "bullets": [
+    "IntSet 数据容器：data map[int]bool",
+    "方法：Add、Delete、Contains、String",
+    "String() 满足 fmt.Stringer 接口",
+    "用指针接收者修改数据：func (set *IntSet) Add"
+   ]
+  }
+ ],
+ "summary": "Go 的委托模式通过 struct 嵌入实现：把 Widget 直接嵌入 Label/Button/ListBox，字段和方法自动提升，重名时手动限定访问。配合 Painter/Clicker 接口与类型断言实现多态，是面向对象和原型编程的综合玩法。IntSet 示例展示数据容器 + 方法 + 接口满足（fmt.Stringer）。",
+ "oneliner": "Go 用嵌入代替继承、接口代替虚函数：委托+聚合+覆盖，重名冲突手动解。",
+ "num": "38",
+ "date": "2026-08-13"
+}

@@ -1,0 +1,76 @@
+{
+ "topic": "35 | 编程范式游记（6）- 面向对象编程",
+ "questions": [
+  "面向对象的三大特性是什么？",
+  "对象与传统程序思想的区别是什么？",
+  "GoF 设计模式的两个核心理念是什么？",
+  "为什么喜欢组合而不是继承？",
+  "策略模式怎么体现面向对象？",
+  "函数式编程和面向对象编程关注点有何不同？"
+ ],
+ "modules": [
+  {
+   "icon": "🏛️",
+   "color": "blue",
+   "title": "OOP 基本思想",
+   "bullets": [
+    "三大特性：<b>封装、继承、多态</b>",
+    "对象是类的实例，包含数据、属性、代码与方法",
+    "每一个对象都能接受数据、处理数据、将数据传达给其它对象——像小型机器",
+    "传统思想：程序是函数集合或计算机指令；OOP：程序是一组独立又互相调用的对象",
+    "几乎所有主流语言都支持：Python、Java、C++、Swift、C#、Ruby 等"
+   ]
+  },
+  {
+   "icon": "📖",
+   "color": "green",
+   "title": "GoF 两个核心理念",
+   "bullets": [
+    "《设计模式》GoF 四作者（Gamma/Helm/Johnson/Vlissides）收录 23 种模式",
+    "理念一：<b>Program to an interface, not an implementation</b>——面向接口编程，使用者只需知道接口，利于抽象封装多态",
+    "理念二：<b>Favor object composition over class inheritance</b>——优先组合而非继承",
+    "继承的坑：给子类暴露父类设计细节、父类改变殃及子类、以为为了重用却要重写很多方法",
+    "继承更多应该是为了多态"
+   ]
+  },
+  {
+   "icon": "🧱",
+   "color": "orange",
+   "title": "桥接模式示例",
+   "bullets": [
+    "材质类 Material（燃点、密度）+ 家具类 Furniture（价格、体积）",
+    "Furniture 耦合 Material，Wood/Plastic 在构造时注入",
+    "重量 = 密度 × 体积，可计算",
+    "材料类可重用，与现实世界对应——组合而非继承的精髓"
+   ]
+  },
+  {
+   "icon": "💳",
+   "color": "purple",
+   "title": "策略模式示例",
+   "bullets": [
+    "需求：订单计价，有的打折有的不打折",
+    "BillingStrategy 接口（GetActPrice），NormalStrategy 与 HappyHourStrategy 实现",
+    "OrderItem 封装商品+策略，Order.PayBill 逐项计算总价",
+    "定价策略与订单流程分离：随时给不同商品注入不同策略，运营可配置",
+    "叠加策略可用函数式的 pipeline/decorator 实现",
+    "陈皓认为策略模式是设计模式中最经典的"
+   ]
+  },
+  {
+   "icon": "🔀",
+   "color": "teal",
+   "title": "与函数式对比",
+   "bullets": [
+    "函数式强调<b>动词</b>，面向对象强调<b>名词</b>",
+    "OOP 更多关注接口间的关系，通过多态适配不同实现",
+    "函数式需要无状态，但天下没有无状态的代码——状态总要有地方放，这正是 OOP 存在的原因",
+    "RAII：lock 后 return 忘 unlock 的问题，用析构自动释放"
+   ]
+  }
+ ],
+ "summary": "OOP 三大特性是封装、继承、多态，把程序组织成互相调用的对象（小型机器）。GoF 23 种设计模式的两个核心理念：面向接口编程、优先组合而非继承（继承易暴露细节、多态才是目的）。桥接模式（材质+家具组合）和策略模式（BillingStrategy 分离计价策略）都是范例。函数式强调动词、OOP 强调名词，状态总要有地方放，这正是 OOP 的价值。",
+ "oneliner": "OOP 三特性：封装继承多态；面向接口编程、优先组合而非继承，策略模式最经典。",
+ "num": "36",
+ "date": "2026-08-13"
+}

@@ -1,0 +1,78 @@
+{
+ "topic": "28 | 推荐阅读：分布式系统架构经典资料",
+ "questions": [
+  "CAP 定理的 C、A、P 分别指什么？CA/CP/AP 各是什么？",
+  "分布式计算的 8 个错误假设是什么？",
+  "FLP 不可能性说明了什么？有什么启发？",
+  "分布式理论要掌握哪些关键点？",
+  "经典图书各自的特点是什么？"
+ ],
+ "modules": [
+  {
+   "icon": "🎩",
+   "color": "blue",
+   "title": "CAP 定理",
+   "bullets": [
+    "C 一致性：每次读取要么获得最近写入数据，要么获得错误",
+    "A 可用性：每次请求都获得非错误响应，但不保证最新",
+    "P 分区容忍：网络消息丢失/延迟仍继续运行",
+    "网络分区时一致性可用性二选一；正常运行时两者可同时满足",
+    "注意：CAP 的一致性与 ACID 事务一致性截然不同",
+    "互联网应用选 AP（门户网站）；银行等选 CP；CA 需要 2PC，网络故障时只能变只读"
+   ]
+  },
+  {
+   "icon": "❌",
+   "color": "green",
+   "title": "分布式计算 8 大错误假设",
+   "bullets": [
+    "1. 网络是稳定的  2. 网络延迟为零  3. 带宽无穷大",
+    "4. 网络是安全的  5. 网络拓扑不会改变",
+    "6. 只有一个系统管理员  7. 传输数据成本为零  8. 整个网络是同构的",
+    "每条都会随时间被证明是错的，导致严重问题",
+    "核心认知：错误不可避免，要把错误处理当功能写进代码",
+    "提出者：Sun 公司 Laurence Peter Deutsch 等人（1994-1997），Ghostscript 作者"
+   ]
+  },
+  {
+   "icon": "🧮",
+   "color": "orange",
+   "title": "FLP 不可能性",
+   "bullets": [
+    "Fischer、Lynch、Paterson 提出：共识问题让所有处理者最后对同一结果达成共识",
+    "同步环境可解：等待一个完整步长检测失败",
+    "结论：<b>异步模型下仅一个处理者可能崩溃，就不存在解决共识问题的分布式算法</b>",
+    "原因：异步模型对回复时间没有上界，无法判断是崩溃还是慢",
+    "启发：网络不能长期拥塞；计算结点资源要充分（内存、磁盘、CPU）、软件确保不超时"
+   ]
+  },
+  {
+   "icon": "📚",
+   "color": "purple",
+   "title": "理论学习要点",
+   "bullets": [
+    "失败和时间：进程可能失败、且没有好方法表明失败；Lamport 时钟、Vector 时钟、Dynamo 论文",
+    "容错压力：不降级容错需要冗余工作，带来性能资源成本；最终一致性以弱保证换压力",
+    "基本原语：Leader 选举（Bully 算法）、分布式状态机复制（Lampson 论文）",
+    "基本结论：CAP、FLP、少于两轮消息交互不可能达成共识",
+    "真实系统：GFS、Spanner、Chubby、BigTable、Dapper、Cassandra、Ceph"
+   ]
+  },
+  {
+   "icon": "📖",
+   "color": "teal",
+   "title": "经典图书",
+   "bullets": [
+    "An Introduction to Distributed Systems：基础课提纲、知识图谱",
+    "Distributed Systems for Fun and Profit：免费电子书，讲 Dynamo、BigTable、MapReduce 核心思想，分五章",
+    "Distributed Systems: Principles and Paradigms：Tanenbaum 经典教材，七大原理",
+    "Scalable Web Architecture：免费小册子，Flickr 例子讲 SOA、读写分离、冗余、横向扩容、缓存、代理、索引",
+    "还有 Designing Data Intensive Applications（DDIA）等"
+   ]
+  }
+ ],
+ "summary": "本文推荐分布式系统基础理论资料：CAP 定理（网络分区时一致性可用性二选一，CA/CP/AP 各有取舍）；分布式计算 8 大错误假设（网络稳定、零延迟、无穷带宽等，核心是把错误处理当功能写进代码）；FLP 不可能性（异步模型下一个进程可能崩溃就无法达成共识）；以及理论学习要点（Lamport 时钟、容错压力、Leader 选举）和经典图书（Fun and Profit、Tanenbaum 教材、Scalable Web Architecture、DDIA）。",
+ "oneliner": "CAP 三选二、FLP 一崩即无解、8 大假设全是坑——把错误处理当功能写进代码。",
+ "num": "29",
+ "date": "2026-08-13"
+}

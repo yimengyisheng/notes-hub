@@ -1,0 +1,85 @@
+{
+ "topic": "86 | 程序员练级攻略：机器学习和人工智能",
+ "questions": [
+  "监督式学习和非监督式学习的区别是什么？",
+  "机器学习有哪些入门资料？",
+  "学习机器学习前为什么要学数据分析？",
+  "监督式学习有哪些经典算法？",
+  "非监督式学习有哪些经典算法？",
+  "机器学习有哪些动手项目和数据集资源？"
+ ],
+ "modules": [
+  {
+   "icon": "🤖",
+   "color": "blue",
+   "title": "两种学习方式",
+   "bullets": [
+    "监督式：提供带标签的样本（训练数据），学到规律后判断未打标数据",
+    "例子：手写数字识别，标出谁是 1 谁是 2 谁是 3",
+    "非监督式：数据未标注，算法找共性——特征点学习",
+    "例子：购买数据找用户属性和商品关系（某年龄段女性买某肥皂→可能怀孕）",
+    "非监督式常用于信用卡诈骗检测、推荐系统",
+    "监督式是告诉正确答案后的学习，非监督式是没有正确答案时的学习"
+   ]
+  },
+  {
+   "icon": "📖",
+   "color": "green",
+   "title": "入门资料",
+   "bullets": [
+    "Machine Learning is Fun!：全世界最简单的入门资料",
+    "Data Science Simplified 系列 11 篇：从原理到回归到分类模型",
+    "先学数据分析：UC Berkeley Data 8、Computational and Inferential Thinking",
+    "Learn Data Science（GitHub 电子书）"
+   ]
+  },
+  {
+   "icon": "🌲",
+   "color": "orange",
+   "title": "监督学习算法",
+   "bullets": [
+    "决策树：自动化放贷、风控",
+    "朴素贝叶斯：垃圾邮件、新闻分类、情感分析、人脸识别",
+    "最小二乘法（OLS）：线性回归",
+    "逻辑回归：信用评分、营销成功率、产品收入预测",
+    "SVM：图像性别检测、图像分类",
+    "集成方法：Bagging、Boosting、贝叶斯平均"
+   ]
+  },
+  {
+   "icon": "🔍",
+   "color": "purple",
+   "title": "非监督学习算法",
+   "bullets": [
+    "聚类：K-Means、Mean-Shift、DBSCAN、EM/GMM、Agglomerative Hierarchical（5 个必知）",
+    "PCA 主成分分析：压缩、简化数据、可视化",
+    "SVD 奇异值分解：PCA 是其简单应用，第一个人脸识别算法用它",
+    "ICA 独立成分分析：揭示隐藏因素"
+   ]
+  },
+  {
+   "icon": "🛠️",
+   "color": "teal",
+   "title": "动手与资源",
+   "bullets": [
+    "SciKit-Learn 文档：监督学习、聚类、矩阵分解、模型选择、预处理",
+    "8 Fun Machine Learning Projects for Beginners：初学者 8 个项目",
+    "Awesome Public Datasets：农业、生物、天气、金融、健康、自然语言等公共数据",
+    "Awesome Deep Learning、Most Cited Deep Learning Papers"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "启示",
+   "callout": {
+    "text": "监督学习是<b>被告诉答案后学习</b>，非监督是<b>在乱数据里找规律</b>；陈皓也自称入门者，动手项目和公共数据集是最好的老师。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "机器学习分监督式（带标签样本学规律）和非监督式（未标注数据找共性，用于诈骗检测、推荐系统）。入门资料：Machine Learning is Fun!、Data Science Simplified 系列；先学数据分析（UC Berkeley Data 8）。监督算法：决策树、朴素贝叶斯、OLS、逻辑回归、SVM、集成方法。非监督算法：K-Means/DBSCAN 等聚类、PCA、SVD、ICA。动手：SciKit-Learn 文档、8 Fun Projects、Awesome Public Datasets。",
+ "oneliner": "监督是告诉答案后学、非监督是乱数据里找规律；算法十大件+动手项目+公共数据集，入门足够。",
+ "num": "87",
+ "date": "2026-08-13"
+}

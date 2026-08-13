@@ -1,0 +1,83 @@
+{
+ "topic": "79 | 程序员练级攻略：Java底层知识",
+ "questions": [
+  "Java 字节码编程是什么？有哪些库？",
+  "Java Agent 技术怎么做代码注入？",
+  "JVM 规范有哪些学习资料？",
+  "Java 内存模型有哪些资料？",
+  "垃圾回收有哪些学习资源？",
+  "为什么字节码注入能分离业务和控制？"
+ ],
+ "modules": [
+  {
+   "icon": "🧬",
+   "color": "blue",
+   "title": "字节码编程",
+   "bullets": [
+    "Java 最黑科技的玩法：动态修改或动态生成字节码",
+    "Java 字节码相当于汇编",
+    "入门：Java Zone Introduction to Java Bytecode、IBM DeveloperWorks Java bytecode",
+    "JVMTI 例子：方法调用统计、静态字节码修改、Heap Tagging 和 Heap Walking",
+    "三个库：asmtools、Byte Buddy（2015 Oracle Duke's Choice 奖）、Jitescript",
+    "陈皓最喜欢 Byte Buddy"
+   ]
+  },
+  {
+   "icon": "🎩",
+   "color": "green",
+   "title": "Java Agent 注入",
+   "bullets": [
+    "最高级玩法：运行时字节码修改和代码注入",
+    "无需在代码埋点做统计/监控，直接把监控代码注入别人的代码",
+    "用 Java Instrumentation API，实现 premain()（比 main 还超前执行）",
+    "启动：java -javaagent:yourAwesomeAgent.jar -jar App.jar",
+    "把业务逻辑和代码控制分离——魔法般的能力"
+   ]
+  },
+  {
+   "icon": "☕",
+   "color": "orange",
+   "title": "JVM 学习",
+   "bullets": [
+    "JVM 规格说明书：系统了解 JVM 规范的最佳文档",
+    "Java SE 8 Edition 官方版，GitHub 有中文翻译 Repo",
+    "JVM Anatomy Park（JVM 解剖公园）：每篇不长但精彩"
+   ]
+  },
+  {
+   "icon": "🧠",
+   "color": "purple",
+   "title": "内存模型",
+   "bullets": [
+    "官方文章：JSR 133",
+    "William Pugh 收集的 Java 内存模型文献",
+    "Doug Lea《The JSR-133 Cookbook for Compiler Writers》：多处理器下读写屏障实现",
+    "Using JDK 9 Memory Order Modes：VarHandle 的 plain、opaque、release/acquire、volatile 四种访问模式"
+   ]
+  },
+  {
+   "icon": "🗑️",
+   "color": "teal",
+   "title": "垃圾回收",
+   "bullets": [
+    "《The Garbage Collection Handbook》：豆瓣 9.9，全面讲 GC 原理设计和算法，相当难啃",
+    "中文版《垃圾回收算法手册》翻译一般，建议读英文",
+    "调优：Garbage Collection Tuning Guide（Hotspot JVM 调优指南）",
+    "Quick Tips for Fast Code on the JVM：写出更快 Java 代码的小提示"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "启示",
+   "callout": {
+    "text": "Java 底层三板斧：<b>字节码注入做无侵入监控、JVM 规范解诡异问题、GC 调优提速</b>——想成高手就得啃这些底层。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "Java 最黑科技是字节码编程（动态修改/生成字节码），常用库 asmtools、Byte Buddy、Jitescript；最高级玩法是 Java Agent 在运行时无侵入注入监控代码（premain() + -javaagent）。JVM 学习读 JVM 规格说明书和 JVM Anatomy Park。内存模型官方是 JSR 133，Doug Lea 的 JSR-133 Cookbook 讲读写屏障。垃圾回收读《The Garbage Collection Handbook》（难啃）和 Hotspot GC Tuning Guide。",
+ "oneliner": "Java 底层：字节码注入玩无侵入监控、JSR 133 搞懂内存模型、GC Handbook 难啃但值得。",
+ "num": "80",
+ "date": "2026-08-13"
+}

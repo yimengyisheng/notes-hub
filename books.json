@@ -304,6 +304,16 @@
       "unit": "讲",
       "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-storage",
       "dataDir": "work/cards"
+    },
+    {
+      "id": "zuoertingfeng",
+      "title": "《左耳听风》康奈尔笔记",
+      "emoji": "👂",
+      "desc": "《左耳听风》读书笔记 · 康奈尔笔记法：洞悉技术本质、分布式与弹力设计、程序员练级攻略、技术管理、学习与成长等核心主题，共 108 讲。",
+      "type": "cornell",
+      "unit": "讲",
+      "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-zuoertingfeng",
+      "dataDir": "work/cards"
     }
   ]
 }

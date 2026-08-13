@@ -1,0 +1,95 @@
+{
+ "topic": "87 | 程序员练级攻略：前端基础和底层原理",
+ "questions": [
+  "前端最基础的三大件是什么？",
+  "浏览器工作原理为什么是前端的硬骨头？",
+  "HTTP 有哪些连接方式？HTTP/2 有什么特点？",
+  "Virtual DOM 为什么是 React 的核心技术？",
+  "HTML5 推荐哪些书？SVG/Canvas/WebGL 各对应什么图？",
+  "CSS 学习的关键是什么？有哪些预处理工具和框架？",
+  "JavaScript 有哪些核心学习资源？",
+  "WebSocket 相比 Polling/Long Polling/Streaming 有何优势？"
+ ],
+ "modules": [
+  {
+   "icon": "🎨",
+   "color": "blue",
+   "title": "前端三大基础",
+   "bullets": [
+    "HTML5、CSS3、JavaScript（ES6）必须学好",
+    "CSS3 引申出 Canvas（位图）、SVG（矢量图）、WebGL（3D 图）",
+    "CSS 图形变换可做丰富渲染和动画效果",
+    "ES6 把 JS 带上新台阶，React/Vue 框架成为不二之选"
+   ]
+  },
+  {
+   "icon": "🧠",
+   "color": "green",
+   "title": "核心硬骨头",
+   "bullets": [
+    "JS 核心原理：语言特性 + 各种坑",
+    "浏览器工作原理：必读《How browsers work》（有中文版）",
+    "网络协议 HTTP：短连接、长连接、Stream、WebSocket",
+    "精简版可看陈皓《浏览器的渲染原理简介》"
+   ]
+  },
+  {
+   "icon": "📕",
+   "color": "orange",
+   "title": "HTML5 学习",
+   "bullets": [
+    "《HTML 5 权威指南》：初学到中级的必读之作",
+    "《HTML 5 Canvas 核心技术》：做 HTML5 游戏必读",
+    "SVG/Canvas/WebGL 学习最好的地方是 MDN",
+    "资源列表：Awesome HTML5 / SVG / Canvas / WebGL"
+   ]
+  },
+  {
+   "icon": "🎨",
+   "color": "purple",
+   "title": "CSS 学习",
+   "bullets": [
+    "关键是把文档读透，难点多是浏览器标准不一致",
+    "用 LESS 和 SaSS 预处理工具提升效率，满足 DRY 洁癖",
+    "学习书写规范：idiomatic CSS、Google HTML/CSS Style Guide",
+    "框架：Bootstrap（最著名）、Semantic UI、Foundation、Bulma（Flexbox）",
+    "标准化库：Normalize、MiniRest.css、sanitize.css"
+   ]
+  },
+  {
+   "icon": "🔁",
+   "color": "teal",
+   "title": "Virtual DOM",
+   "bullets": [
+    "React 核心技术，前端渲染和性能的关键",
+    "前提是先学浏览器工作原理",
+    "学习：How to write your own Virtual DOM、深度剖析：如何实现一个 Virtual DOM 算法",
+    "参考实现：Matt-Esch/Virtual-DOM、Maquette"
+   ]
+  },
+  {
+   "icon": "🌐",
+   "color": "blue",
+   "title": "网络与 HTTP/2",
+   "bullets": [
+    "《High Performance Browser Networking》：谷歌高性能团队权威之作",
+    "HTTP/2 于 2015 年批准，主流浏览器默认启用",
+    "RFC 7540（协议本身）、RFC 7541（HPACK 头部压缩）",
+    "WebSocket 是 Polling/Long Polling/Streaming 的终极解决方案"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "要点",
+   "callout": {
+    "text": "学前端也要从基础出发：三大基础（HTML5/CSS3/ES6）+ 浏览器原理 + 网络协议，工具类知识动手就会，不必重点学。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "前端学习从基础出发：三大基础 HTML5、CSS3、JavaScript（ES6）必须学好，CSS3 引申出 Canvas/SVG/WebGL 渲染。核心硬骨头是 JS 核心原理、浏览器工作原理（How browsers work）和网络协议 HTTP/2、WebSocket。Virtual DOM 是 React 核心渲染与性能技术，需先学浏览器原理。推荐了 HTML5 权威指南、Canvas 核心技术等书和大量 MDN/Awesome 资源。",
+ "oneliner": "前端根基 = HTML5/CSS3/ES6 + 浏览器原理 + HTTP/2/WebSocket；原理懂了，工具自然就会。",
+ "num": "88",
+ "date": "2026-08-13"
+}

@@ -1,0 +1,72 @@
+{
+ "topic": "38 | 编程范式游记（9）- 编程的本质",
+ "questions": [
+  "两个经典表达式分别是什么？出自谁？",
+  "Logic 和 Control 各决定什么？",
+  "为什么要把 Logic 和 Control 分开？",
+  "通配符匹配的例子说明了什么问题？如何改进？",
+  "表单校验的例子如何用 DSL 改进？"
+ ],
+ "modules": [
+  {
+   "icon": "🧮",
+   "color": "blue",
+   "title": "两个经典表达式",
+   "bullets": [
+    "Niklaus Wirth（1976）：<b>Programs = Algorithms + Data Structures</b>",
+    "Robert Kowalski（1979）：<b>Algorithm = Logic + Control</b>",
+    "Wirth 强调数据结构和算法拆分：数据结构设计好算法就简单",
+    "Kowalski 强调复杂的是算法/业务逻辑：logic 指定知识，control 决定解题策略",
+    "合起来：<b>Program = Logic + Control + Data Structure</b>"
+   ]
+  },
+  {
+   "icon": "⚖️",
+   "color": "green",
+   "title": "Logic 与 Control",
+   "bullets": [
+    "<b>Logic 部分</b>：真正解决问题的算法，决定算法的意义",
+    "<b>Control 部分</b>：解决问题的策略，只影响效率",
+    "提高效率可以只改 control 而不改 logic（如递归改迭代、串行改并行）",
+    "阶乘例子：逻辑定义阶乘，控制决定自上而下递归或自下而上迭代",
+    "Kowalski 的最后一句话：<b>把 Logic 和 Control 有效分开，代码更容易改进和维护</b>"
+   ]
+  },
+  {
+   "icon": "🌀",
+   "color": "orange",
+   "title": "混乱代码的根源",
+   "bullets": [
+    "业务逻辑决定程序复杂度下限；Logic+Control 相互交织成为最终复杂度",
+    "通配符匹配 isMatch 代码：为通过性能测试写出的控制逻辑与业务逻辑交叉",
+    "几行代码就够复杂，两三天后自己都看不懂、不敢改",
+    "绝大多数程序复杂的原因：把 Logic 和 Control 纠缠在一起"
+   ]
+  },
+  {
+   "icon": "🔧",
+   "color": "purple",
+   "title": "如何改进",
+   "bullets": [
+    "用一个通用的状态机（NFA/DFA）维护匹配的开始结束状态——这是 Control",
+    "抽象出类似文法分析的东西——也是 Control",
+    "把匹配 * 和 ? 的算法形成不同的匹配策略",
+    "正则高效算法论文：Regular Expression Matching Can Be Simple And Fast",
+    "表单校验：一堆 if 检查 → 用 DSL + 解析器描述字段规则（meta_create_user）"
+   ]
+  },
+  {
+   "icon": "🏗️",
+   "color": "teal",
+   "title": "与架构相通",
+   "callout": {
+    "text": "控制程序流转的方式——并行还是串行、同步还是异步、调度执行路径、数据存储关系——都<b>与业务逻辑无关</b>。分离 Logic、Control 和 Data 是写出好程序的关键所在。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "编程的本质是 Program = Logic + Control + Data Structure：Wirth 提出算法+数据结构，Kowalski 提出算法=逻辑+控制。Logic 决定算法意义，Control 只影响效率，将二者分离代码才易维护。混乱代码的根源是业务逻辑与控制逻辑纠缠（如通配符匹配、表单校验），改进方法是用状态机、DSL+解析器把 Control 抽出来。这与系统架构同理。",
+ "oneliner": "Program = Logic + Control + Data：Logic 定意义、Control 定效率，分开才能写出好程序。",
+ "num": "39",
+ "date": "2026-08-13"
+}

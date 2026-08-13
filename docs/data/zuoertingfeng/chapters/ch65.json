@@ -1,0 +1,124 @@
+{
+ "topic": "64 | 区块链技术细节：哈希算法",
+ "questions": [
+  "区块链的数据块保存哪三个信息？",
+  "hash 算法有哪些功能？MD5 和 SHA-2 是什么？",
+  "区块头六个字段是什么？",
+  "Merkle Root 是怎么算出来的？有什么好处？",
+  "以太坊为什么有三个 Merkle Root 树？",
+  "比特币 UTXO 模型是什么？"
+ ],
+ "modules": [
+  {
+   "icon": "⛓️",
+   "color": "blue",
+   "title": "区块链结构",
+   "bullets": [
+    "对计算机来说区块链像单向链表",
+    "每个数据块保存：真正的数据、自己的地址（ID）、前一个块的地址",
+    "通过追溯前一个块的地址把所有块连成链",
+    "地址编码用 Secure Hash（安全哈希）算法"
+   ]
+  },
+  {
+   "icon": "🔑",
+   "color": "green",
+   "title": "hash 算法功能",
+   "bullets": [
+    "生成唯一标识数据块的 ID，几乎不能重复",
+    "做数据特征码：一个 bit 变了整个 hash 完全不一样",
+    "无法通过 hash 值反推回原数据",
+    "发布软件带 Checksum 校验码验证完整性",
+    "两个著名算法：MD5 和 SHA-2；区块链用 SHA-256",
+    "例：chen hao 的 MD5 改一个字符变成完全不同的值"
+   ]
+  },
+  {
+   "icon": "📋",
+   "color": "orange",
+   "title": "区块头六字段",
+   "table": {
+    "head": [
+     "字段",
+     "含义"
+    ],
+    "rows": [
+     [
+      "Version",
+      "协议版本号，4 字节"
+     ],
+     [
+      "Previous Block Hash",
+      "前一个区块的 hash 地址，32 字节"
+     ],
+     [
+      "Merkle Root",
+      "交易信息的 hash 值，32 字节"
+     ],
+     [
+      "Timestamp",
+      "区块生成时间，4 字节"
+     ],
+     [
+      "Bits",
+      "难度目标 Difficulty Target，4 字节"
+     ],
+     [
+      "Nonce",
+      "随机值，用于找符合条件的 hash，4 字节"
+     ]
+    ]
+   }
+  },
+  {
+   "icon": "🌳",
+   "color": "purple",
+   "title": "Merkle Root",
+   "bullets": [
+    "对区块头做两次 SHA-256：SHA-256(SHA-256(Block Header))",
+    "交易两两合并求 hash，直到算出最后一个 hash 即 Merkle Root",
+    "像二叉树：A/B→Hash-AB，C/D→Hash-CD，再合成 Hash-ABCD",
+    "好处一：交易数据分小组，利于整合和校验",
+    "好处二：存储内存开销不大，提高校验难易度",
+    "好处三：P2P 网络可拆成小数据片传输，提高速度"
+   ]
+  },
+  {
+   "icon": "🏦",
+   "color": "teal",
+   "title": "以太坊的三个树",
+   "bullets": [
+    "交易 hash 的 Merkle Root",
+    "表示状态 State 的（智能合约每一步状态变化）",
+    "交易收据的（记录最终发生的交易信息）",
+    "以太坊称其为 Merkle Patricia Tree"
+   ]
+  },
+  {
+   "icon": "💰",
+   "color": "green",
+   "title": "UTXO 交易模型",
+   "bullets": [
+    "比特币没有余额概念，只有没花出去的交易 UTXO",
+    "input 是支出方，output 是收入方；一笔交易可多个 output",
+    "Alice 有 2+3 两个 UTXO，转 4 给 Bob：两个做 input，Bob 得 4 自己留 1",
+    "输出需要给自己找零、给矿工小费",
+    "UTXO 无账户余额：可并行交易、有匿名性、无状态",
+    "以太坊则使用余额的方式"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "哈希是区块链的<b>指纹和锁链</b>：内容一变指纹就变，前块指纹又锁进后块，加上 Merkle 树分组校验，篡改无处遁形。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "区块链像单向链表，每个块存数据、自己的 hash 地址、前一个块的地址。hash 算法用于生成唯一 ID、做特征码、防篡改，区块链用 SHA-256。区块头六字段：Version、Previous Block Hash、Merkle Root、Timestamp、Bits、Nonce，做两次 SHA-256 得到区块 hash。Merkle Root 把交易两两合并 hash 成树，便于分组校验和 P2P 分片传输。以太坊有三个 Merkle 树（交易/状态/收据）。比特币用 UTXO 模型（无余额、无状态、可并行），以太坊用余额模型。",
+ "oneliner": "哈希是区块链的指纹锁链：内容一变指纹全变，Merkle 树分组校验，UTXO 无余额模型并行交易。",
+ "num": "65",
+ "date": "2026-08-13"
+}

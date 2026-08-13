@@ -1,0 +1,83 @@
+{
+ "topic": "88 | 程序员练级攻略：前端性能优化和框架",
+ "questions": [
+  "前端性能优化有哪些经典图书？",
+  "有哪些最佳实践文档和性能工具？",
+  "前端三大框架是什么？React 的编程思想是什么？",
+  "Vue 相比 React 有什么不同？为什么更好上手？",
+  "函数式编程和 React 有什么关系？",
+  "React 和 Vue 各有哪些核心资源？"
+ ],
+ "modules": [
+  {
+   "icon": "📚",
+   "color": "blue",
+   "title": "性能优化图书",
+   "bullets": [
+    "Web Performance in Action：CSS、图片、字体、JS 调优",
+    "Designing for Performance：在线电子书，整体网页性能优化",
+    "High Performance JavaScript：雅虎尼古拉斯·扎卡斯等，代码加载/运行/DOM 交互/页面生命周期",
+    "High Performance Web Sites：《高性能网站建设指南》，14 条优化原则"
+   ]
+  },
+  {
+   "icon": "📋",
+   "color": "green",
+   "title": "最佳实践与工具",
+   "bullets": [
+    "14 条原则：减少 HTTP 请求、Edge Computing、Expires Header、gzip、CSS/JS 最佳实践、主页内联、Domain 最小化、避免重定向、删重复 JS、关 ETags、Ajax 缓存、最小化",
+    "Browser Diet（前端权威性能指南）、PageSpeed Insights Rules、雅虎 35 个最佳实践",
+    "案例站：WPO Stats（Web Performance Optimization）",
+    "工具：PageSpeed、YSlow、GTmetrix（合并前两者）、Awesome WPO",
+    "国内网络别用 Google 共享 JS，用国内镜像库"
+   ]
+  },
+  {
+   "icon": "⚛️",
+   "color": "orange",
+   "title": "React",
+   "bullets": [
+    "三大框架：Angular.js、React.js、Vue.js",
+    "React 用函数式编程，是后端程序员的思路",
+    "设计模式：Higher Order Components、Presentational and Container Components、Function as Child Components",
+    "资源：Awesome React、React/Redux Links、React Rocks（组件示例）"
+   ]
+  },
+  {
+   "icon": "💚",
+   "color": "purple",
+   "title": "Vue",
+   "bullets": [
+    "更符合前端工程师习惯，从 jQuery 可平滑过渡",
+    "作者尤雨溪（Evan You），完全由支持者和用户资助，接近社区",
+    "上手不难：官网文档 + Vue.js screencasts 视频教程",
+    "《新手向：Vue 2.0 的建议学习顺序》是作者亲写",
+    "资源：Awesome Vue、How not to Vue（了解短板）"
+   ]
+  },
+  {
+   "icon": "🪜",
+   "color": "teal",
+   "title": "函数式编程",
+   "bullets": [
+    "《JS 函数式编程指南中文版》、Master the JavaScript Interview: What is Functional Programming?",
+    "The Rise and Fall and Rise of Functional Programming (Composing Software)",
+    "Functional UI and Components as Higher Order Functions",
+    "React 结合：Function Components、组件即高阶函数"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "结论",
+   "callout": {
+    "text": "React 函数式编程符合后端程序员思路，Vue 更符合前端工程师习惯、更容易上手；性能优化先读书再实践（WPO Stats 案例）。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "前端性能优化推荐四本经典书（含 14 条优化原则）和最佳实践文档、案例站 WPO Stats 与工具 PageSpeed/YSlow/GTmetrix。框架重点讲 React 和 Vue：React 用函数式编程（HOC、容器组件等模式），符合后端程序员思路；Vue 更贴近前端习惯、从 jQuery 平滑过渡、上手快，作者是尤雨溪且完全社区资助。两者都有大量 Awesome 资源列表。",
+ "oneliner": "性能优化有 14 条军规 + WPO 案例；React 函数式、Vue 亲前端，想快上手选 Vue。",
+ "num": "89",
+ "date": "2026-08-13"
+}

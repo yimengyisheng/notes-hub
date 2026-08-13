@@ -1,0 +1,95 @@
+{
+ "topic": "71 | 程序员练级攻略：正式入门",
+ "questions": [
+  "正式入门阶段推荐哪些书和知识块？",
+  "为什么推荐 Java 和 Spring？",
+  "操作系统、网络、数据库、前端分别学什么？",
+  "编程工具需要学习哪些？",
+  "投票系统项目的业务和技术需求是什么？",
+  "为什么入门要故意多学几门语言？"
+ ],
+ "modules": [
+  {
+   "icon": "📖",
+   "color": "blue",
+   "title": "编程技巧与语言",
+   "bullets": [
+    "《代码大全》：好书的标志是不同阶段读有不同收获，可以陪你走很久",
+    "Java：世界上综合排名最好的语言，一定要学好",
+    "《Java 核心技术（卷 1）》，深了就降级看《Head First Java》",
+    "学 Spring：《Spring in Action》或《Spring Boot 实战》",
+    "IoC、AOP 听不懂没事，能看多少看多少"
+   ]
+  },
+  {
+   "icon": "🐧",
+   "color": "green",
+   "title": "系统知识块",
+   "bullets": [
+    "操作系统：《鸟哥的 Linux 私房菜》，看不懂就略过",
+    "网络：MDN 官方 HTTP 文档，掌握 HTTP 头、请求方法、返回码、Cookie/缓存/会话/连接管理",
+    "数据库：慕课网《数据库设计的那些事》（每课 5-6 分钟），搞清范式",
+    "数据库实践：MySQL，看《MySQL 必知必会》"
+   ]
+  },
+  {
+   "icon": "🖥️",
+   "color": "orange",
+   "title": "前端与编码",
+   "bullets": [
+    "前端：jQuery（JS）、Bootstrap（CSS），直接看官网文档",
+    "重点：用 JS Ajax 请求后端 API，而不是后端返回 HTML 页面",
+    "学 JavaScript Promise 模式（阮一峰 ES6 教程）",
+    "字符编码：处理中文乱码要懂 ASCII 和 Unicode"
+   ]
+  },
+  {
+   "icon": "🔧",
+   "color": "purple",
+   "title": "编程工具",
+   "bullets": [
+    "IDE：Eclipse 或 Intellij IDEA（推荐），也可用 VS Code",
+    "版本管理：Git 会取代 P4/SVN/CVS，只学 Git 就好",
+    "Git 教程：《Pro Git 第二版》或《猴子都能懂的 Git 入门》，学会 GitHub",
+    "调试前端：Chrome 调试",
+    "数据库设计工具：MySQL WorkBench"
+   ]
+  },
+  {
+   "icon": "🗳️",
+   "color": "teal",
+   "title": "投票系统项目",
+   "bullets": [
+    "业务：登录后才能生成投票表单；单选/多选；显示结果不能刷票；倒计时；彩色横条+百分比+人数",
+    "技术：Java Spring Boot，后端只返回 JSON 不返回 HTML",
+    "前端 JQuery 操作 HTML 动态生成页面",
+    "Bootstrap 做响应式（手机/电脑不同呈现）",
+    "进阶：微信授权防刷票、动态看结果变化、图表库"
+   ]
+  },
+  {
+   "icon": "🌍",
+   "color": "green",
+   "title": "多学几门语言",
+   "bullets": [
+    "对不同语言比较，让你有更多思考",
+    "培养学习能力：程序员不应只在自己熟悉的技术上工作",
+    "视野决定高度，视野受限就难以成长",
+    "1-2 年完成这些，独立做出项目才算真正入门"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "正式入门=从兴趣到专业：<b>Java+Spring 打底、系统知识补齐、Git 必备</b>，做一个 Spring Boot 投票系统，1-2 年后你就是全栈雏形。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "正式入门阶段：编程技巧看《代码大全》，语言学 Java（综合最强）和 Spring（IoC/AOP 不懂没关系）；操作系统看《鸟哥的 Linux 私房菜》，网络学 MDN HTTP 文档，数据库学范式+MySQL；前端学 jQuery/Bootstrap/Ajax/Promise。工具：Intellij IDEA、Git（Pro Git）、Chrome 调试、MySQL WorkBench。实践项目是 Spring Boot 投票系统（后端只返回 JSON、前端 JQuery+Bootstrap 响应式）。入门故意多学几门语言以拓宽视野。",
+ "oneliner": "正式入门：Java+Spring 打底、HTTP/MySQL/前端补齐、Git 必备，做个投票系统，1-2 年才算出师。",
+ "num": "72",
+ "date": "2026-08-13"
+}

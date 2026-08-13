@@ -1,0 +1,86 @@
+{
+ "topic": "84 | 程序员练级攻略：微服务",
+ "questions": [
+  "微服务架构解决了什么问题？它是不是银弹？",
+  "Martin Fowler 对微服务的定义是什么？",
+  "有哪些微服务教程系列？",
+  "陈皓推荐的时髦微服务技术栈是什么？",
+  "微服务和 SOA 有什么区别？",
+  "微服务有哪些设计模式和最佳实践？"
+ ],
+ "modules": [
+  {
+   "icon": "🧩",
+   "color": "blue",
+   "title": "什么是微服务",
+   "bullets": [
+    "微服务是 SOA 架构的进化，不是银弹",
+    "主要解决快速开发和部署服务",
+    "Martin Fowler《Microservice Architecture》：每个服务与其数据库独立，可无依赖部署",
+    "各家的理解：AWS、Microsoft、Pivotal"
+   ]
+  },
+  {
+   "icon": "📚",
+   "color": "green",
+   "title": "学习教程",
+   "bullets": [
+    "IBM 红皮书《Microservices Best Practices for Java》：Spring Boot/Dropwizard，讲注册、发现、网关、通讯、安全、测试、部署、运维",
+    "《微服务设计》：建模、集成、测试、部署、监控，虚构公司案例",
+    "Nginx 系列：Introduction、API Gateway、服务发现、事件驱动数据管理、拆单体",
+    "Auth0 系列：Part 1-4（含 Service Registry、Dependencies and Data Sharing）",
+    "Dzone Spring Boot 系列：Ribbon 负载均衡、Eureka 命名服务器"
+   ]
+  },
+  {
+   "icon": "🛠️",
+   "color": "orange",
+   "title": "时髦技术栈",
+   "bullets": [
+    "前端：React.js 或 Vue.js",
+    "后端：Go 语言 + Go kit（服务简单，可用任何语言）",
+    "通讯：gRPC——比 Restful 快 20~50 倍",
+    "API：Swagger（标准、语言无关、人机可读、可生成代码）",
+    "网关：Envoy（服务发现、LB、熔断），可经 Ingress 集成进 Kubernetes（contour）",
+    "日志监控：fluentd + ELK；指标：Prometheus",
+    "调用跟踪：Jaeger（时髦）或 Zipkin；自动化运维：Docker + Kubernetes"
+   ]
+  },
+  {
+   "icon": "⚖️",
+   "color": "purple",
+   "title": "微服务 vs SOA",
+   "bullets": [
+    "《Microservices vs. Service-Oriented Architecture》（Mark Richards，十年经验）",
+    "DZone 系列：Microservices vs. SOA",
+    "还有 PaaS vs IaaS、微服务 vs 单体对比文章",
+    "注意：Microservices - Not A Free Lunch、The Hidden Costs Of Microservices"
+   ]
+  },
+  {
+   "icon": "📏",
+   "color": "teal",
+   "title": "模式与最佳实践",
+   "bullets": [
+    "Microservice Patterns：设计模式和最佳实践",
+    "Microservice Antipatterns and Pitfalls：反模式和陷阱",
+    "Microservice Architecture: All The Best Practices",
+    "Simplicity by Distributing Complexity：用事件驱动构建微服务",
+    "资源：Microservices Resource Guide（Fowler 挑选）、Awesome Microservices"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "启示",
+   "callout": {
+    "text": "微服务不是银弹，是<b>迈向卓越架构师的必经之路</b>：一服务一库独立部署，Go+gRPC+Envoy 是时髦组合，但别忘了 Hidden Costs。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "微服务是 SOA 的进化，解决快速开发部署问题，不是银弹。Martin Fowler 定义：每服务与其数据库独立、可无依赖部署。教程：IBM 红皮书、微服务设计、Nginx/Auth0/Spring Boot 系列。陈皓推荐技术栈：React/Vue + Go kit + gRPC（快 20-50 倍）+ Swagger + Envoy 网关 + Prometheus + Jaeger + Docker/K8s。微服务 vs SOA 见 Mark Richards 电子书。设计模式：Microservice Patterns、Antipatterns、事件驱动，注意 Hidden Costs。",
+ "oneliner": "微服务一服务一库独立部署；Go+gRPC+Envoy 是时髦栈，但不是银弹，Hidden Costs 要心里有数。",
+ "num": "85",
+ "date": "2026-08-13"
+}

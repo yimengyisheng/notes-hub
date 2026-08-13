@@ -1,0 +1,99 @@
+{
+ "topic": "81 | 程序员练级攻略：分布式架构入门",
+ "questions": [
+  "分布式系统涵盖哪几个方面？",
+  "学习分布式系统有哪些需要注意的点？",
+  "入门有哪些架构学习资源？",
+  "拜占庭容错研究的三个重要理论是什么？",
+  "8 条荒谬的分布式假设是什么？",
+  "有哪些一致性方面的经典论文？"
+ ],
+ "modules": [
+  {
+   "icon": "🗺️",
+   "color": "blue",
+   "title": "涵盖面",
+   "bullets": [
+    "服务调度：服务发现、配置管理、弹性伸缩、故障恢复",
+    "资源调度：计算、网络、存储资源",
+    "流量调度：路由、负载均衡、流控、熔断",
+    "数据调度：数据复本、一致性、分布式事务、分库分表",
+    "容错处理：隔离、幂等、重试、补偿、异步、降级",
+    "自动化运维：CI/CD、全栈监控、调用链跟踪"
+   ]
+  },
+  {
+   "icon": "⚠️",
+   "color": "green",
+   "title": "七个注意点",
+   "bullets": [
+    "太容易出错：把处理错误的代码当正常功能写",
+    "健壮分布式系统成本是单体的几百倍甚至几万倍",
+    "非常健壮的开源分布式系统基本没有，要用就得 hold 住源码",
+    "管理协调多服务很难：要读很多论文",
+    "出问题很难 debug：需要好的监控跟踪和演练测试",
+    "需要更科学的统计：用 P90 而不是平均值，做容量计划",
+    "需要服务化：SOA 或微服务开发框架",
+    "故障不可怕，可怕的是影响面过大时间过长：需要自动化运维平台"
+   ]
+  },
+  {
+   "icon": "📖",
+   "color": "orange",
+   "title": "入门资源",
+   "bullets": [
+    "Scalable Web Architecture and Distributed Systems：扩展性粗略方法",
+    "Scalability, Availability & Stability Patterns：架构设计全景图",
+    "System Design Primer（GitHub）：收集扩展性相关资源",
+    "涵盖 CAP、一致性模型、可用性模式、DNS、CDN、LB、反向代理、微服务、缓存、异步等",
+    "足够 90% 以上的公司用"
+   ]
+  },
+  {
+   "icon": "🏛️",
+   "color": "purple",
+   "title": "三个理论",
+   "bullets": [
+    "CAP：一致性、可用性、分区容忍性三选二（P 是必选项）",
+    "FLP impossibility：异步环境有恶意节点无法在有限时间达成共识",
+    "DLS：根据同步/异步假设不同，容错上限不同",
+    "拜占庭将军问题：Leslie Lamport 1982 年提出，叛变者 ≤1/3 时有效"
+   ]
+  },
+  {
+   "icon": "🚫",
+   "color": "teal",
+   "title": "8 条荒谬假设",
+   "bullets": [
+    "网络是稳定的；延迟是零；带宽无穷大；网络是安全的",
+    "拓扑不会改变；只有一个系统管理员；传输成本为零；网络是同构的",
+    "8 条假设都是错的：分布式系统中错误不可避免",
+    "能做的不是避免错误，而是把错误处理当成功能写在代码里"
+   ]
+  },
+  {
+   "icon": "📜",
+   "color": "green",
+   "title": "一致性论文",
+   "bullets": [
+    "CAP Twelve Years Later：P 很少遇到，C 和 A 可放宽约束兼顾，不是非此即彼",
+    "Harvest, Yield, and Scalable Tolerant Systems：提出 Harvest 和 Yield 概念",
+    "Base: An Acid Alternative（eBay 2008）：分区后牺牲部分一致性显著提升可伸缩性",
+    "Eventually Consistent（Werner Vogels 2008）：NoSQL 理论基石——最终一致性"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "分布式系统的第一课：<b>错误是常态</b>。接受 8 条荒谬假设的教训，把错误处理写进代码，用 P90 而不是平均值做决策。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "分布式系统涵盖服务、资源、流量、数据调度、容错处理、自动化运维六个方面。学习注意：太容易出错（把错误处理当功能）、成本是单体几百倍、开源系统要 hold 住源码、难 debug 要监控演练、用 P90 统计、需要服务化。入门资源：Scalable Web Architecture、System Design Primer。理论：CAP、FLP、DLS、拜占庭将军问题；8 条荒谬假设提醒错误不可避免。经典论文：CAP Twelve Years Later、Harvest/Yield、BASE（eBay）、Eventually Consistent（Vogels）。",
+ "oneliner": "分布式第一课：错误是常态；CAP/FLP/DLS 三理论、8 条荒谬假设，把错误处理当功能写进代码。",
+ "num": "82",
+ "date": "2026-08-13"
+}

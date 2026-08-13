@@ -1,0 +1,93 @@
+{
+ "topic": "70 | 程序员练级攻略：零基础启蒙",
+ "questions": [
+  "零基础入门推荐哪两门语言？为什么？",
+  "Python 和 JavaScript 有哪些入门资源？",
+  "Web 编程为什么要学？前端后端基础学什么？",
+  "Python、PHP、Node.js 三者的看法？",
+  "实践项目（Blog/BBS）要做哪些功能？",
+  "实践项目中有哪些安全技术点？"
+ ],
+ "modules": [
+  {
+   "icon": "🎮",
+   "color": "blue",
+   "title": "入门思路",
+   "bullets": [
+    "最重要是培养兴趣，兴趣来自成就感，成就感来自打造东西",
+    "入门教程一：《与孩子一起学编程》（Python 小游戏）",
+    "在线学习：Codecademy、People Can Program、CodeAbbey 练习",
+    "入门教程二：MDN Web 开发入门，把网页发布到 GitHub"
+   ]
+  },
+  {
+   "icon": "🐍",
+   "color": "green",
+   "title": "入门语言",
+   "bullets": [
+    "Python：语法简单、库多、语法糖多，零基础不二之选",
+    "JavaScript：前端语言，容易获得成就感",
+    "Python 书：《Python 编程快速上手》（文本处理）、《Python 编程：从入门到实践》（Web/部署，时间有限推荐这本）",
+    "JS 教程：MDN JavaScript（最权威）、W3School、廖雪峰 JS 全栈（含 Node.js）"
+   ]
+  },
+  {
+   "icon": "🐧",
+   "color": "orange",
+   "title": "Linux 与工具",
+   "bullets": [
+    "学 Linux：W3CSchool 在线教程",
+    "IDE：Visual Studio Code，开发 Python/JS/Java/Go/C/C++ 都得心应手",
+    "Web 是第三次工业革命最大发明，程序员不能错过"
+   ]
+  },
+  {
+   "icon": "🌐",
+   "color": "purple",
+   "title": "Web 编程入门",
+   "bullets": [
+    "前端基础：CSS、HTML、JavaScript 三个东西，MDN 文档是查的不用背",
+    "理解 DOM 和动态网页",
+    "后端可选 Python / Node.js / PHP，配 LEMP（Ubuntu/Nginx/PHP/MySQL）",
+    "学 PHP 与 HTML 数据交互，表单提交反显，连 MySQL"
+   ]
+  },
+  {
+   "icon": "⚖️",
+   "color": "teal",
+   "title": "三语言看法",
+   "bullets": [
+    "Python 最看好：应用面广，机器学习/AI、爬虫、运维工具都行（性能一般）",
+    "PHP 次之：主流但发展潜力有限，一般玩玩",
+    "Node.js 最后：后端不能承担大任、问题多；前端用它做粘合层只是掩盖接口设计懒惰",
+    "希望前端程序员认真学习一门真正的后端语言"
+   ]
+  },
+  {
+   "icon": "🛠️",
+   "color": "green",
+   "title": "实践项目",
+   "bullets": [
+    "做简单 Blog/BBS：用户注册登录、发贴、评论",
+    "从前端到后端再到数据库全链路",
+    "技术点：密码用 MD5+Salt 保存（不存明文）",
+    "只能编辑/删除自己的贴子",
+    "三张表：用户表、文章表、评论表",
+    "进阶：图片验证码、上传图片、防 HTML/JS 注入、防 SQL 注入"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "零基础的核心是<b>用成就感点燃兴趣</b>：先做小游戏、再做网页、最后做一个带登录发贴评论的 Blog，把安全细节也学上。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "零基础启蒙以培养兴趣为目标，推荐 Python（语法简单）+ JavaScript（前端有成就感）。资源：《与孩子一起学编程》、Codecademy、MDN Web 入门；Python 两本书、JS 廖雪峰教程。还要学 Linux、VS Code、Web 前端（CSS/HTML/JS）和后端（Python/Node.js/PHP，配 LEMP）。陈皓对三语言看法：Python 最看好、PHP 次之、Node.js 最后。实践项目做一个 Blog/BBS：登录注册、发贴、评论，注意 MD5+Salt、防注入。",
+ "oneliner": "零基础先求成就感：Python 入门、JS 找乐子、Linux 打底，最后做 Blog 把安全细节练一遍。",
+ "num": "71",
+ "date": "2026-08-13"
+}

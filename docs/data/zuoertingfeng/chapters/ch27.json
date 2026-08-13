@@ -1,0 +1,74 @@
+{
+ "topic": "26 | 分布式系统关键技术：流量与数据调度",
+ "questions": [
+  "为什么流量调度和服务治理要分开？",
+  "流量调度系统有哪些功能？",
+  "好的 API Gateway 需要哪些关键技术？",
+  "有状态服务如何变成无状态？",
+  "数据一致性有哪些技术方案？",
+  "为什么说状态数据调度应在 IaaS 层解决？"
+ ],
+ "modules": [
+  {
+   "icon": "🌊",
+   "color": "blue",
+   "title": "流量调度 vs 服务治理",
+   "bullets": [
+    "服务治理是内部系统、数据中心的事",
+    "流量调度是外部接入层的事，应在数据中心之外完成——即边缘计算、CDN",
+    "流量调度功能：依据运行情况自动调度流量提升稳定性；应对爆品等突发事件，在扩缩容窗口内保护系统平稳"
+   ]
+  },
+  {
+   "icon": "🚪",
+   "color": "green",
+   "title": "API Gateway 的职责与关键技术",
+   "bullets": [
+    "服务流控：服务发现、路由、降级、熔断、保护",
+    "流量控制：负载均衡、流量分配、流量控制、异地灾备多活",
+    "流量管理：协议转换、请求校验、数据缓存、数据计算",
+    "关键技术：<b>高性能</b>（高性能语言）、<b>扛流量</b>（集群 + Paxos/Raft/Gossip 共享数据 + 集群分组）、<b>业务逻辑</b>（像 AWS Lambda 注入简单逻辑）、<b>服务化</b>（Admin API 不停机改配置而非改 conf 文件）",
+    "目前几乎没有能做到的 API Gateway——陈皓因此自主开发（MegaEase）"
+   ]
+  },
+  {
+   "icon": "🗄️",
+   "color": "orange",
+   "title": "有状态服务的转移",
+   "bullets": [
+    "最难调度的是有状态服务（State）：数据不能丢失，需随服务一起调度",
+    "转移问题：把状态存到第三方服务（Redis、MySQL、ZooKeeper、NFS、Ceph），让应用变无状态",
+    "于是问题转移到存储：数据结点 Scale 困难，成为单点瓶颈",
+    "数据不丢失只能靠<b>数据副本</b>（冗余），即使分区也要冗余",
+    "高可用要写多份→引发一致性→引发性能问题"
+   ]
+  },
+  {
+   "icon": "🔁",
+   "color": "purple",
+   "title": "一致性与分布式数据库",
+   "bullets": [
+    "副本一致性方案：Master-Slave、Master-Master、两/三阶段提交、Paxos",
+    "应用层事务只有两阶段提交及其变种：阿里 TCC（Try-Confirm-Cancel）、亚马逊 Plan-Reserve-Confirm",
+    "数据层解决事务，Paxos 是不二之选",
+    "AWS Aurora 改写 InnoDB：写 6 副本，复制 SQL 语句而非 bin log，用多线程并行和 SQL merge 降延迟",
+    "TiDB、CockroachDB、OceanBase、MySQL Cluster 都在解决大规模读写；分库分表中间件 TDDL/DAL 是过渡技术"
+   ]
+  },
+  {
+   "icon": "🧱",
+   "color": "teal",
+   "title": "小结：在 IaaS 层解决",
+   "bullets": [
+    "真正解决数据 Scale 要由数据结点自身完成，对上层业务透明",
+    "分布式文件系统让 Kafka/ZooKeeper 新结点只需远程 mount 快速启动",
+    "状态数据调度应在 IaaS 层数据存储解决，而非 PaaS/SaaS 层",
+    "方案：开源（NFS、Ceph、TiDB、CockroachDB、ES、InfluxDB、MySQL/Redis Cluster）、云厂商方案、或商业存储"
+   ]
+  }
+ ],
+ "summary": "流量调度（接入层、CDN 边缘计算）与服务治理（内部数据中心）要分开。流量调度的核心是 API Gateway：高性能、集群扛流量、可注入业务逻辑、Admin API 服务化。有状态服务通过转移问题到第三方存储变无状态，数据不丢失靠副本，副本带来一致性和性能问题；应用层事务只有两阶段提交（TCC、Plan-Reserve-Confirm），数据层用 Paxos/Raft。状态数据调度应在 IaaS 层由分布式存储解决。",
+ "oneliner": "流量调度归 Gateway，状态调度归 IaaS 存储；副本保数据，Paxos 管一致，两阶段提交是应用层唯一解。",
+ "num": "27",
+ "date": "2026-08-13"
+}

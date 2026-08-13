@@ -1,0 +1,96 @@
+{
+ "topic": "85 | 程序员练级攻略：容器化和自动化运维",
+ "questions": [
+  "Docker 有哪些学习路径和底层技术？",
+  "Docker 网络有哪些解决方案？",
+  "Docker 有哪些最佳实践？",
+  "Kubernetes 是什么？有哪些主要功能？",
+  "学习 Kubernetes 有哪些书和资源？",
+  "Kubernetes 有哪些最佳实践来源？"
+ ],
+ "modules": [
+  {
+   "icon": "🐳",
+   "color": "blue",
+   "title": "Docker 学习路径",
+   "bullets": [
+    "官方介绍 Docker Overview → 在线 Playground（Katacoda/Play With Docker）",
+    "跟着 Learn Docker 装环境实操，Docker Curriculum 超详细教程",
+    "然后读 Docker 官方文档（最好的方式）",
+    "底层技术：Linux Namespace（上下）、Cgroup、AUFS、DeviceMapper"
+   ]
+  },
+  {
+   "icon": "🌐",
+   "color": "green",
+   "title": "容器网络",
+   "bullets": [
+    "A container networking overview、Docker networking 101",
+    "理解 CNI（Container Networking Interface）",
+    "解决方案：Calico、Flannel、Weave",
+    "netshoot：诊断 Docker 网络问题的工具集",
+    "性能对比：Battlefield Calico/Flannel/Weave、IBM 虚拟机 vs 容器对比报告"
+   ]
+  },
+  {
+   "icon": "📋",
+   "color": "orange",
+   "title": "Docker 最佳实践",
+   "bullets": [
+    "Best Practices for Dockerfile（官方）",
+    "Docker Best Practices、Container Best Practices（Atomic 项目）",
+    "Eight Docker Development Patterns：共享基础容器、卷共享、工具容器、测试容器、编译容器、防手误安装容器、默认服务容器、胶黏容器",
+    "存储：Network/Cloud、Persistent、Shared Storage and VOLUME"
+   ]
+  },
+  {
+   "icon": "☸️",
+   "color": "purple",
+   "title": "Kubernetes",
+   "bullets": [
+    "Google 开源，是 Borg 的开源版本，CNCF 最重要项目之一",
+    "功能：部署维护滚动升级、负载均衡服务发现、跨机器/地区调度、自动伸缩、有/无状态服务、Volume、插件扩展",
+    "容器编排领域领导者",
+    "必读论文：Borg, Omega, and Kubernetes（Google 十几年经验教训）"
+   ]
+  },
+  {
+   "icon": "📚",
+   "color": "teal",
+   "title": "K8s 学习资源",
+   "bullets": [
+    "免费电子书：《Kubernetes Handbook》（学习教程，面广含 Service Mesh）、《Kubernetes 指南》（参考书）",
+    "《Kubernetes in Action》：完美教科书，只读一本就选它",
+    "官网 Kubernetes.io：文档 + 官方教程",
+    "交互式：Katacoda、Kubernetes Bootcamp",
+    "网络：Kubernetes 101 Networking 系列（Pods/Services/Ingress）",
+    "CI/CD：Jenkins + Packer + Kubernetes、Continuous Deployment Pipeline"
+   ]
+  },
+  {
+   "icon": "🏆",
+   "color": "green",
+   "title": "最佳实践与生态",
+   "bullets": [
+    "Kubernetes Best Practices by Sachin Arote（AWS 工程师）",
+    "by Sandeep Dinesh（Google 云平台工程师）",
+    "10 Most Common Reasons Kubernetes Deployments Fail",
+    "How to Monitor Kubernetes（4 篇）、Logging with Fluentd and Elasticsearch",
+    "The New Stack eBook Series：11 本 Docker/K8s 生态电子书，最系统"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "Docker/K8s 是<b>自动化运维双利器</b>：玩法与传统运维不同但技术不复杂，Docker 官方文档 + Kubernetes in Action 就能入门，别害怕。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "Docker 学习：官方介绍→Playground→Learn Docker→Docker 官方文档；底层技术 Linux Namespace/Cgroup/AUFS/DeviceMapper；网络方案 Calico/Flannel/Weave + CNI。最佳实践：Dockerfile 官方实践、Eight Docker Development Patterns。Kubernetes 是 Google Borg 的开源版、CNCF 最重要项目，功能覆盖部署、LB、调度、伸缩、Volume。学习资源：《Kubernetes Handbook》《Kubernetes in Action》（只读一本选它）、Kubernetes 101 网络系列；最佳实践来自 AWS/Google 工程师，生态看 The New Stack 电子书系列。",
+ "oneliner": "Docker 学官方文档、K8s 读 Kubernetes in Action；双利器玩法不同但不难，自动化运维的必修课。",
+ "num": "86",
+ "date": "2026-08-13"
+}

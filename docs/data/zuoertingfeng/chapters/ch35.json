@@ -1,0 +1,61 @@
+{
+ "topic": "34 | 编程范式游记（5）- 修饰器模式",
+ "questions": [
+  "Python 的 Decorator 和 Java Annotation 有什么区别？",
+  "@hello 语法糖实际被解释成什么？",
+  "带参数的装饰器 makeHtmlTag 为什么需要返回 real_decorator？",
+  "memoization 装饰器如何优化斐波那契递归？",
+  "类方式的 decorator 如何工作？"
+ ],
+ "modules": [
+  {
+   "icon": "🎀",
+   "color": "blue",
+   "title": "装饰器是什么",
+   "bullets": [
+    "Decorator 模式又叫修饰器模式、装饰器模式",
+    "Python 的 @XXX 与 Java Annotation、C# Attribute 使用相似，但 Java/C# 太复杂像学另一门语言",
+    "Python 用语言层面的函数式技巧：<b>用一个函数构造另一个函数</b>",
+    "这是陈皓最喜欢的模式"
+   ]
+  },
+  {
+   "icon": "✨",
+   "color": "green",
+   "title": "语法糖本质",
+   "bullets": [
+    "@decorator 修饰 func 被解释成：<b>func = decorator(func)</b>",
+    "hello(fn) 接收回调函数，返回 wrapper 在回调前后加语句",
+    "注意有赋值语句：把 decorator 返回值赋回原函数名",
+    "带参数版本：makeHtmlTag(tag, css_class) 返回 real_decorator，再返回 wrapped——层层叠叠但本质清晰"
+   ]
+  },
+  {
+   "icon": "🧠",
+   "color": "orange",
+   "title": "memoization 缓存",
+   "bullets": [
+    "斐波那契递归是二叉树式重复调用：fib(3)/fib(2)/fib(1) 至少被调用两次",
+    "装饰器在调用前查缓存，没有才调用并存入",
+    "递归从二叉树式变成线性",
+    "functools.wraps 保证 fib 函数名不被 wrapper 取代"
+   ]
+  },
+  {
+   "icon": "🏷️",
+   "color": "purple",
+   "title": "类方式装饰器",
+   "bullets": [
+    "__init__(fn)：给函数 decorate 时被调用，接收被装饰函数",
+    "__call__()：调用被装饰函数时被调用",
+    "执行顺序：__init__ → 调用时 __call__ 内 self.fn()",
+    "类方式比函数式更易读",
+    "实际例子：URL 路由注册 @app.register('/') 把函数注册进 func_map"
+   ]
+  }
+ ],
+ "summary": "Python Decorator 用函数式技巧——用一个函数构造另一个函数——实现了 Java Annotation 的效果却简单得多。@decorator 本质是 func = decorator(func)。带参数装饰器返回 real_decorator 再返回 wrapped；memoization 装饰器把斐波那契从二叉树递归变成线性递归；类方式用 __init__ 和 __call__ 实现，可用于 URL 路由注册等场景。",
+ "oneliner": "@decorator 就是 func=decorator(func)：用一个函数构造另一个函数，无侵入地扩展能力。",
+ "num": "35",
+ "date": "2026-08-13"
+}

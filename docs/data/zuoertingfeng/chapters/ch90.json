@@ -1,0 +1,90 @@
+{
+ "topic": "89 | 程序员练级攻略：UI/UX设计",
+ "questions": [
+  "为什么前端程序员也要学设计？",
+  "新手入门 UI/UX 设计的步骤是什么？",
+  "有哪些经典的设计图书？",
+  "原子设计（Atomic Design）是什么？为什么适合程序员？",
+  "有哪些知名设计语言和设计系统？",
+  "动画设计遵循什么法则？",
+  "有哪些设计资源网站和优秀设计聚集地？"
+ ],
+ "modules": [
+  {
+   "icon": "🎨",
+   "color": "blue",
+   "title": "前端为何学设计",
+   "bullets": [
+    "前端另一件重要的事就是设计",
+    "了解知名设计语言/规范/方法，拓宽眼界、与时俱进",
+    "陈皓：这些不是设计师专属，前端程序员学设计更有成长空间",
+    "新手入门看 7 steps to become a UI/UX designer"
+   ]
+  },
+  {
+   "icon": "📚",
+   "color": "green",
+   "title": "经典设计图书",
+   "bullets": [
+    "Don't Make Me Think：陈皓看的第一本设计书，短小精悍、平易近人",
+    "《简约至上》：合理删除、分层组织、适时隐藏、巧妙转移四策略",
+    "《认知与设计》：设计准则与认知学/感知科学统一",
+    "《界面设计模式》：收集分析常用界面设计模式"
+   ]
+  },
+  {
+   "icon": "⚛️",
+   "color": "orange",
+   "title": "原子设计",
+   "bullets": [
+    "布拉德·弗罗斯特受化学启发：原子→分子→生物体",
+    "乔希·杜克的 HTML 元素周期表：一切界面由相同 HTML 元素组成",
+    "界面由基本元素组成，像搭积木一样开发设计网页",
+    "对程序员非常好理解：就是代码模块化重用化",
+    "方法论导致 Web 组件化玩法，易规范风格、易维护"
+   ]
+  },
+  {
+   "icon": "🧩",
+   "color": "purple",
+   "title": "设计语言与系统",
+   "bullets": [
+    "Google Material Design、Airbnb Design Language、IBM Carbon、Atlassian Design System、Salesforce Lightning、微软 Fluent Design 等",
+    "Atomic Design 文章：原子设计构建科学规范的设计系统"
+   ]
+  },
+  {
+   "icon": "🎬",
+   "color": "teal",
+   "title": "动画设计",
+   "bullets": [
+    "受迪士尼《The Illusion of Life》的动画 12 项基本法则影响",
+    "动画不是炫技，而是让 UI/UX 活起来：自然、不耗时、讲故事",
+    "每张小动画讲微故事，与品牌产品理念融合，让人记住",
+    "UX in Motion Manifesto：用动效创造可用性"
+   ]
+  },
+  {
+   "icon": "🌐",
+   "color": "blue",
+   "title": "资源与灵感",
+   "bullets": [
+    "文章：Web Designer News、Smashing Magazine、Medium - Design、Sitepoint、The Next Web",
+    "设计聚集地：Awwwards（评分）、One Page Love、Inspired UI、Behance、Dribbble、UI Movement"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "观点",
+   "callout": {
+    "text": "UI/UX 设计不只是设计师的事：<b>经典设计原则 + 原子设计方法论 + 大厂设计系统 + 动画法则</b>，前端学了收获方法更收获灵感。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "前端程序员也应学 UI/UX 设计：先学设计原则套路（配色、平衡、排版、一致性）和用户体验 4D 步骤（Discover、Define、Develop、Delivery）。经典书有 Don't Make Me Think、简约至上、认知与设计、界面设计模式。原子设计（原子→分子→生物体）对程序员就是模块化重用化，催生 Web 组件化。还介绍了大厂设计系统、动画 12 项基本法则及大量文章资源和 Dribbble/Awwwards 等灵感聚集地。",
+ "oneliner": "前端学设计：原则打底、原子设计做模块化、大厂设计系统开眼界、动画法则让 UI 活起来。",
+ "num": "90",
+ "date": "2026-08-13"
+}

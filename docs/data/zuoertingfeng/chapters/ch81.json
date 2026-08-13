@@ -1,0 +1,75 @@
+{
+ "topic": "80 | 程序员练级攻略：数据库",
+ "questions": [
+  "为什么说数据库是程序员的事而不是 DBA 的事？",
+  "关系型数据库两大代表是什么？学习 MySQL 有哪些资料？",
+  "NoSQL 解决关系型数据库的哪两个大问题？",
+  "有哪些 NoSQL 类型？各自代表是什么？",
+  "列数据库和文档数据库有哪些案例？",
+  "时序、图、搜索数据库分别有哪些资源？"
+ ],
+ "modules": [
+  {
+   "icon": "🗄️",
+   "color": "blue",
+   "title": "数据库是程序员的事",
+   "bullets": [
+    "程序需要和数据打交道",
+    "程序员/架构师不仅设计数据模型，还要保证系统稳定性和可用性",
+    "数据是系统中关键中的关键",
+    "数据库方向重点：SQL 关系型 + NoSQL 非关系型"
+   ]
+  },
+  {
+   "icon": "🐬",
+   "color": "green",
+   "title": "关系型数据库",
+   "bullets": [
+    "两大代表：Oracle（闭源）和 MySQL（开源），还有 SQL Server、DB2、PostgreSQL",
+    "Oracle 必读：《Oracle Database 9i/10g/11g 编程艺术》（Thomas Kyte，Oracle 技术副总裁）",
+    "MySQL：官方手册 + 官方 PPT（性能调优、安全、高可用 InnoDB Cluster）",
+    "《高性能 MySQL》：MySQL 领域经典，DBA 和开发都适合",
+    "《MySQL 技术内幕：InnoDB 存储引擎》、MySQL Internals Manual",
+    "《数据库的索引设计与优化》：索引性能清楚估算，分布式架构也用得上",
+    "MySQL 分支：Percona、MariaDB"
+   ]
+  },
+  {
+   "icon": "🔀",
+   "color": "orange",
+   "title": "NoSQL 解决的两大问题",
+   "bullets": [
+    "数据 Schema 非常多：关系型表示不同 Schema 很笨拙",
+    "需要不同数据库：时序型、键值对型、搜索型、文档型、图结构型",
+    "ACID 很讨厌：极大影响性能和扩展性",
+    "NoSQL 做妥协解决大规模伸缩问题"
+   ]
+  },
+  {
+   "icon": "🧩",
+   "color": "purple",
+   "title": "NoSQL 类型",
+   "bullets": [
+    "列数据库：HBase（HBase 实战、HBase 权威指南）、ClickHouse、Redshift",
+    "文档数据库：MongoDB、SimpleDB、CouchDB（eBay、Parse 案例）",
+    "数据结构数据库：Redis（Twitter 105TB RAM、39MM QPS、1 万+实例）",
+    "时序数据库：Beringei@Facebook、Atlas@Netflix",
+    "图数据库：Neo4j（Walmart/eBay/AirBnB/NASA）、FlockDB@Twitter、JanusGraph、Amazon Neptune",
+    "搜索数据库：ElasticSearch（官方 Definitive Guide + eBay/Kickstarter 调优）"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "teal",
+   "title": "启示",
+   "callout": {
+    "text": "数据库不是 DBA 的专属，<b>数据是系统的关键</b>：MySQL 读《高性能 MySQL》，NoSQL 按类型各取所需，多看大厂工程实践。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "数据库是程序员的事：程序要跟数据打交道，架构师要设计数据模型并保证稳定性可用性。关系型两大代表 Oracle 和 MySQL：Oracle 读《编程艺术》，MySQL 读官方手册和《高性能 MySQL》《MySQL 技术内幕》。NoSQL 解决 Schema 多和 ACID 拖累性能两大问题，类型包括列数据库（HBase/ClickHouse）、文档数据库（MongoDB）、键值（Redis）、时序（Beringei）、图（Neo4j）、搜索（ElasticSearch）。多读大厂工程实践了解各库优劣。",
+ "oneliner": "数据库是程序员的事：MySQL 读高性能 MySQL，NoSQL 按类型选库，大厂实践见优劣。",
+ "num": "81",
+ "date": "2026-08-13"
+}

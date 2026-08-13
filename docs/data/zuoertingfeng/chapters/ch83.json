@@ -1,0 +1,88 @@
+{
+ "topic": "82 | 程序员练级攻略：分布式架构经典图书和论文",
+ "questions": [
+  "分布式架构有哪些经典图书？",
+  "Paxos 算法是谁提出的？怎么进入工程界？",
+  "Google 三大经典论文是什么？",
+  "分布式存储和数据库有哪些重要论文？",
+  "分布式消息系统有哪些论文？",
+  "日志和数据有哪些必读文章？"
+ ],
+ "modules": [
+  {
+   "icon": "📚",
+   "color": "blue",
+   "title": "经典图书",
+   "bullets": [
+    "Distributed Systems for fun and profit：免费电子书，讲 Dynamo、Bigtable、MapReduce 核心思想",
+    "Designing Data Intensive Applications（Martin Kleppmann）：数据节点扩展，B-Tree/SSTables/LSM，每章几百个 Reference",
+    "Distributed Systems: Principles and Paradigms（Tanenbaum）：七大核心原理，经典教材",
+    "Scalable Web Architecture and Distributed Systems：免费小册子",
+    "Principles of Distributed Systems：苏黎世联邦理工教材，讲分布式算法"
+   ]
+  },
+  {
+   "icon": "🏛️",
+   "color": "green",
+   "title": "Paxos 与 Google",
+   "bullets": [
+    "Paxos：Leslie Lamport 1990 年提出，基于消息传递、高度容错的一致性算法",
+    "太晦涩，长期停留在理论；经 Google Chubby 锁服务（用于 Bigtable）进入工程圈",
+    "Bigtable: A Distributed Storage System for Structured Data",
+    "The Chubby lock service for loosely-coupled distributed systems",
+    "The Google File System、MapReduce: Simplified Data Processing"
+   ]
+  },
+  {
+   "icon": "🗄️",
+   "color": "orange",
+   "title": "存储与数据库论文",
+   "bullets": [
+    "Amazon Aurora：高吞吐云原生关系数据库",
+    "Google Spanner：全球分布式数据库；2017 新版 Spanner, TrueTime & CAP",
+    "F1：支持 Google 广告业务的容错分布式 RDBMS",
+    "Cassandra: A Decentralized Structured Storage System",
+    "CRUSH：Ceph 数据放置算法（RADOS）",
+    "Vector Clock：Why Vector Clocks are Easy/Hard",
+    "Gossip 协议：Efficient Reconciliation and Flow Control（Cassandra 数据复制协议，一传十十传百）"
+   ]
+  },
+  {
+   "icon": "📨",
+   "color": "purple",
+   "title": "消息系统论文",
+   "bullets": [
+    "Kafka: a Distributed Messaging System for Log Processing——必读",
+    "Wormhole（Facebook）：非侵入式 Pub-Sub，直接扫数据源 transaction logs，无需自身存储",
+    "All Aboard the Databus!（LinkedIn）：Change Data Capture，每个数据变化用单调递增 SCN 标注",
+    "Databus 方法可用在异地双活系统架构中"
+   ]
+  },
+  {
+   "icon": "📜",
+   "color": "teal",
+   "title": "日志和数据",
+   "bullets": [
+    "The Log: What every software engineer should know——实时数据统一抽象，必看",
+    "LSM-Tree：Bigtable 的文件组织方式，用于 HBase、Cassandra、LevelDB、SQLite、MongoDB",
+    "Immutability Changes Everything（Pat Helland，CIDR 2015）",
+    "Tango: Distributed Data Structures over a Shared Log——不可变架构设计",
+    "Dapper：Google 分布式跟踪，开源实现 Zipkin/Pinpoint/HTrace（陈皓喜欢 Zipkin）",
+    "RDD 论文：内存计算性能提高一个数量级；Dremel 与 MapReduce 互补"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "启示",
+   "callout": {
+    "text": "分布式架构的基石是<b>经典论文</b>：Paxos、Bigtable、Dynamo、Aurora、Spanner、Kafka、LSM——每篇都值得精读。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "分布式经典图书：Designing Data Intensive Applications（数据扩展、LSM）、Tanenbaum 的分布式系统教材等。Paxos 由 Lamport 1990 年提出，经 Google Chubby 进入工程界；Google 三大论文是 GFS、MapReduce、Bigtable。存储数据库论文：Aurora、Spanner、F1、Cassandra、CRUSH/Ceph；消息系统：Kafka、Wormhole、LinkedIn Databus。日志数据：The Log（必看）、LSM-Tree、Immutability、Tango、Dapper（Zipkin 等实现）、RDD。",
+ "oneliner": "分布式靠论文立身：Paxos、GFS、Bigtable、Aurora、Spanner、Kafka、LSM，读透就是架构师。",
+ "num": "83",
+ "date": "2026-08-13"
+}

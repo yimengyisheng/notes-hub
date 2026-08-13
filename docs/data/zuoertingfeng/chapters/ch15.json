@@ -1,0 +1,74 @@
+{
+ "topic": "14 | 推荐阅读：机器学习101",
+ "questions": [
+  "监督式学习和非监督式学习的区别是什么？",
+  "监督式学习有哪些问题？噪音数据怎么处理？",
+  "非监督式学习用在哪些场景？",
+  "入门必须上的课有哪些？",
+  "值得读的书有哪些？"
+ ],
+ "modules": [
+  {
+   "icon": "🎓",
+   "color": "blue",
+   "title": "两种学习方法",
+   "vs": {
+    "a": {
+     "h": "监督式学习",
+     "t": "提供带标签的样本（训练数据），学规律后判断未打标签的数据。如手写数字识别、股票预测、垃圾邮件识别"
+    },
+    "b": {
+     "h": "非监督式学习",
+     "t": "数据未标注，算法自己找共性，又称特征点学习。自动分类、找人类难发现的规律，成本较高"
+    }
+   }
+  },
+  {
+   "icon": "📉",
+   "color": "green",
+   "title": "监督学习的问题",
+   "bullets": [
+    "没有历史数据就不好做：新上市商品（iPhone X）要借类似商品（iPhone 7）的历史数据",
+    "历史数据含噪音：名人推荐导致的销量上升不是规律性数据，要去掉",
+    "Michael Jackson 去世导致的销量上升不算噪音：每年忌日销量上升可能性高，是有规律的样本"
+   ]
+  },
+  {
+   "icon": "🛒",
+   "color": "orange",
+   "title": "非监督学习场景",
+   "bullets": [
+    "交易数据：某年龄段女生买某种肥皂可能预示怀孕，用于精准营销",
+    "异常检测：信用卡诈骗或盗刷",
+    "推荐系统：买了这个的人又买什么，喜欢某文章/音乐可能喜欢某车/明星"
+   ]
+  },
+  {
+   "icon": "🎬",
+   "color": "purple",
+   "title": "必修课程",
+   "bullets": [
+    "<b>吴恩达（Andrew Ng）</b> Coursera 机器学习课：强烈建议入门首选，作业尽量拿满分",
+    "卡内基梅隆 Tom Mitchell：AI 顶级大牛，著《机器学习》教科书",
+    "加州理工 Yaser Abu-Mostafa 的 Learning from Data：适合进阶",
+    "视频：Google Developers Machine Learning Recipes（9 集每集不到 10 分钟）、Neural Networks 等"
+   ]
+  },
+  {
+   "icon": "📚",
+   "color": "teal",
+   "title": "推荐图书",
+   "bullets": [
+    "周志华《机器学习》（西瓜书）：入门教科书，像地图一样观其大略",
+    "A Course In Machine Learning（Hal Daumé III）：免费电子版，覆盖经典算法",
+    "Deep Learning（Goodfellow 等）：深度学习经典，官网免费电子版",
+    "Reinforcement Learning（Sutton & Barto）：强化学习入门，覆盖 MDP、Q-Learning、Sarsa",
+    "Pattern Recognition and Machine Learning（Bishop）：模式识别经典"
+   ]
+  }
+ ],
+ "summary": "机器学习分监督式（有标签样本学习规律）与非监督式（未标注数据找共性）。监督式的问题是没有历史数据时借用类似事物数据、以及过滤噪音数据；非监督式用于精准营销、异常检测、推荐系统。入门课程首推吴恩达 Coursera 课，进阶有 Learning from Data；图书方面周志华《机器学习》是中文地图，Deep Learning、Reinforcement Learning、PRML 是各方向经典。",
+ "oneliner": "监督学习靠标签，非监督学习找共性；入门吴恩达，进阶西瓜书，深度学习看 Goodfellow。",
+ "num": "15",
+ "date": "2026-08-13"
+}

@@ -1,0 +1,94 @@
+{
+ "topic": "55 | 管理设计篇之“服务网格”",
+ "questions": [
+  "Service Mesh 是什么？有哪几个特点？",
+  "Service Mesh 的演化路径是怎样的？",
+  "Istio 的架构由哪些组件组成？",
+  "Service Mesh 和 Kubernetes/Docker 有什么本质区别？",
+  "主流 Service Mesh 开源软件有哪些？",
+  "Service Mesh 有哪些设计要点？"
+ ],
+ "modules": [
+  {
+   "icon": "🌐",
+   "color": "blue",
+   "title": "什么是 Service Mesh",
+   "bullets": [
+    "CNCF 主力推动的新一代微服务架构",
+    "定义：专门处理服务间通讯的基础设施层",
+    "特点：基础设施、轻量网络代理、对应用透明无侵入、解耦控制面",
+    "像 TCP 之于应用层：管好丢包重传、拥塞控制，上层只关心业务"
+   ]
+  },
+  {
+   "icon": "🛤️",
+   "color": "green",
+   "title": "演化路径",
+   "bullets": [
+    "两台主机进程直接通信→分离网络层",
+    "接收速度不一致→应用层做流控→交给网络层（TCP/IP 成功）",
+    "分布式 8 大谬论→加入限流、熔断、服务发现、监控等弹力设计",
+    "弹力模式可标准化→写成 SDK/Lib 集成",
+    "SDK 不能跨语言、改动要重编译→出现 Sidecar→Sidecar 集群 = Service Mesh",
+    "绿色业务服务 + 蓝色 Sidecar 组成网格，加控制面板成完整架构"
+   ]
+  },
+  {
+   "icon": "🧩",
+   "color": "orange",
+   "title": "Istio 架构",
+   "bullets": [
+    "Envoy（使者）：核心 Sidecar，协调出入站流量，提供服务发现、LB、限流熔断、收集性能指标",
+    "Mixer：收集器，从 Envoy 收集流量特征和性能指标",
+    "Pilot：控制器，把规则发送到 Envoy 让其实施",
+    "Istio-Auth：身份认证组件，做服务间访问安全控制"
+   ]
+  },
+  {
+   "icon": "⚡",
+   "color": "purple",
+   "title": "与 K8s/Docker 的区别",
+   "bullets": [
+    "K8s/Docker 对应用透明且干扰少，其进程失败不影响应用",
+    "Service Mesh 调度流量，有 bug 或 Sidecar 不可用会导致整个架构致命问题",
+    "所以 Service Mesh 必须高可靠，或有 workaround",
+    "做法：本机 Sidecar 之外，再部署集中式 Sidecar 兜底"
+   ]
+  },
+  {
+   "icon": "🛠️",
+   "color": "teal",
+   "title": "主流开源软件",
+   "bullets": [
+    "Istio：最主流，架构清晰，可在 Kubernetes 集成",
+    "Linkerd：较早的 Service Mesh",
+    "Conduit：Linkerd 作者新作，Rust 数据面 + Go 控制面，更快更轻更简单",
+    "推荐 Rust/Go 实现的 Istio 和 Conduit，性能远好于 Scala"
+   ]
+  },
+  {
+   "icon": "🏗️",
+   "color": "green",
+   "title": "设计要点",
+   "bullets": [
+    "Sidecar 粒度可细到服务实例、粗到一组服务、粗到整体接入",
+    "越看越像 Gateway 的事——用 Gateway 来做最合适，想象空间更大",
+    "Service Mesh 不像 Sidecar 要和 Service 一起打包部署，它完全独立部署",
+    "独立部署后 Service Mesh 成为基础设施（PaaS 平台），和 Kubernetes 密切结合成为关键"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "Service Mesh 把 Sidecar 标准化成集群：<b>业务服务只写逻辑，流量控制全交给网格</b>；但它调度流量，必须高可靠，必要时用集中式 Sidecar 兜底。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "Service Mesh 是 CNCF 推动的新一代微服务架构，作为处理服务间通讯的轻量代理基础设施，对应用透明无侵入。演化路径：直接通信→网络层→应用层流控→弹力设计 SDK→Sidecar→Sidecar 集群即 Service Mesh。Istio 由 Envoy（Sidecar）、Mixer（收集器）、Pilot（控制器）、Istio-Auth（认证）组成；开源还有 Linkerd、Conduit（Rust/Go）。与 K8s/Docker 不同，Service Mesh 调度流量，必须高可靠并备集中式 Sidecar 兜底，且完全独立部署、与 Kubernetes 紧密结合。",
+ "oneliner": "Service Mesh = Sidecar 集群化：业务只写逻辑、控制全交给网格；它调度流量故须高可靠，用集中 Sidecar 兜底。",
+ "num": "56",
+ "date": "2026-08-13"
+}

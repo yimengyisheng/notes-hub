@@ -1,0 +1,64 @@
+{
+ "topic": "36 | 编程范式游记（7）- 基于原型的编程范式",
+ "questions": [
+  "基于原型的编程和基于类的编程有什么区别？",
+  "__proto__ 和 prototype 各是什么？",
+  "如何用 __proto__ 实现继承？自有属性如何遮蔽原型属性？",
+  "构造函数模式如何工作？",
+  "修改 Person.prototype 为什么会影响已创建的实例？"
+ ],
+ "modules": [
+  {
+   "icon": "🧬",
+   "color": "blue",
+   "title": "原型编程思想",
+   "bullets": [
+    "基于原型（prototype）编程：没有 class，直接使用对象，又叫基于实例的编程",
+    "主流语言是 JavaScript",
+    "类式语言：先有类定义行为和结构，再实例化，区分规则先行为结构后状态",
+    "原型语言：关注一系列对象实例的行为，再把相似对象划分到原型对象",
+    "很多原型系统提倡运行时修改原型；类式系统只有动态语言（Smalltalk、Python、Ruby 等）允许运行时改类"
+   ]
+  },
+  {
+   "icon": "🔗",
+   "color": "green",
+   "title": "__proto__ 与 prototype",
+   "bullets": [
+    "<b>__proto__</b>：放在实际对象中，产生原型链链接，用于寻找方法名或属性",
+    "<b>prototype</b>：构造函数的一个属性，用 new 创建对象时构造 __proto__ 用",
+    "Function.__proto__ 就是 Function.prototype",
+    "bar.__proto__ = foo 后，bar 能访问 foo 的属性（原型链）",
+    "自有属性遮蔽原型属性：bar.name=bar 不影响 foo.name"
+   ]
+  },
+  {
+   "icon": "🏗️",
+   "color": "orange",
+   "title": "构造函数模式",
+   "bullets": [
+    "function Foo(y){this.y=y;}，然后 Foo.prototype.x=10、Foo.prototype.calculate=...",
+    "new Foo(20) 创建 b，b.__proto__ === Foo.prototype",
+    "Foo.prototype 自动创建 constructor 属性指向函数自己",
+    "b.constructor === Foo；b.calculate === b.__proto__.calculate === Foo.prototype.calculate",
+    "ES5 规定原型继承用 Object.create(a, {y:{value:20}})"
+   ]
+  },
+  {
+   "icon": "🎭",
+   "color": "purple",
+   "title": "动态修改的影响",
+   "bullets": [
+    "创建 function Person(){} 时，Person.__proto__ 指向 Function.prototype",
+    "var p = new Person() 时，p.__proto__ 指向 Person.prototype",
+    "修改 Person.prototype 增加 name 和 sayHello 后，已创建的 p 也跟着改变",
+    "因为 p.__proto__ 指向的正是被修改的 Person.prototype",
+    "示例来源：JavaScript, The Core"
+   ]
+  }
+ ],
+ "summary": "基于原型的编程是无 class 的面向对象，主流是 JavaScript。类式编程先定义类再实例化，原型编程直接操作对象、运行时修改原型。核心概念是 __proto__（对象原型链链接指针）和 prototype（构造函数属性，new 时构造 __proto__）。通过设置 __proto__、构造函数 + prototype、Object.create 实现继承；修改 prototype 会动态影响所有已创建实例。",
+ "oneliner": "原型编程：__proto__ 是链，prototype 是模板；改模板，所有实例立即变。",
+ "num": "37",
+ "date": "2026-08-13"
+}

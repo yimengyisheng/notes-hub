@@ -1,0 +1,100 @@
+{
+ "topic": "72 | 程序员练级攻略：程序员修养",
+ "questions": [
+  "Quora 上最基础的程序员修养有哪些？",
+  "为什么英文能力对程序员高手如此重要？",
+  "学好英文有哪些建议？",
+  "《提问的智慧》讲了什么？STFW/RTFM 是什么？",
+  "写代码的修养推荐哪些书？",
+  "各语言编程规范有哪些经典资料？"
+ ],
+ "modules": [
+  {
+   "icon": "🏛️",
+   "color": "blue",
+   "title": "程序员基本修养",
+   "bullets": [
+    "坏架构比坏代码造成更多问题",
+    "思考的时间比写代码的时间多",
+    "最好的程序员总是在构建东西",
+    "总有更好的方法；同行 Code Review 让大家都变好",
+    "少功能好代码是最终正确答案；没测试就不算工作",
+    "不重复造轮子；难懂的代码难维护，难维护的代码近乎无用",
+    "要知道公司怎么赚钱；有成就感就去技术公司"
+   ]
+  },
+  {
+   "icon": "🇬🇧",
+   "color": "green",
+   "title": "英文能力",
+   "bullets": [
+    "所有计算机技术来自西方国家，要到信息源头去",
+    "英文世界是价值信息的集散地：官网手册、StackOverflow、YouTube、GitHub、Google、名校公开课",
+    "英文不好基本无法成为高手",
+    "不只是读写，还有听和说"
+   ]
+  },
+  {
+   "icon": "📝",
+   "color": "orange",
+   "title": "学英文建议",
+   "bullets": [
+    "坚持 Google 英文关键词，不搜中文",
+    "GitHub 只用英文：注释、commit、Issue、PR、Wiki 全英文",
+    "每天 YouTube 看 5 分钟视频，开字幕",
+    "用英文字典（剑桥、Dictionary.com），不用中文的",
+    "用英文教材（BBC Learning English、ESL）",
+    "花钱上线上英文课程，和老外练习"
+   ]
+  },
+  {
+   "icon": "🙋",
+   "color": "purple",
+   "title": "提问的智慧",
+   "bullets": [
+    "Eric Steven Raymond 所著，描述发问者事前该做什么、不该做什么",
+    "STFW：Search The Fxxking Web（先自己搜）",
+    "RTFM：Read The Fxxking Manual（先读手册）",
+    "小心 X-Y Problem：问 Y 方案，实际问题是 X",
+    "不做伸手党，去 StackOverflow 前先读这些"
+   ]
+  },
+  {
+   "icon": "📚",
+   "color": "teal",
+   "title": "写代码的修养",
+   "bullets": [
+    "《重构》：Martin Fowler 经典，也指导从零构建避免不良风格",
+    "《修改代码的艺术》：继重构后探讨修改代码技术的里程碑",
+    "理解、测试和修改代码的原理、技术、工具（自动化重构、单元测试、仿对象、集成测试）",
+    "还有 97 Things Every Programmer Should Know"
+   ]
+  },
+  {
+   "icon": "📐",
+   "color": "green",
+   "title": "编程规范资源",
+   "bullets": [
+    "通用：Mozilla Coding Style Guide、Google 各种 Style Guide",
+    "JS：Airbnb JavaScript、W3Schools、JavaScript Style Guides",
+    "PHP：PHP FIG、PHP The Right Way、Clean Code PHP",
+    "Python：PEP8、Google Python Style Guide、The Hitchhiker's Guide to Python",
+    "前端：CSS Guidelines、SMACSS、Front-End Checklist",
+    "移动端：Swift/Objective-C/Kotlin 规范；API：Microsoft REST API Guidelines、API Security Checklist"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "修养是<b>工程师文化的价值观</b>：技术不够学再多也没用。先到英文源头去，再学会正确提问，最后按规范写代码。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "程序员修养是工程师文化和价值观：坏架构比坏代码问题更大、思考比编码更重要、Code Review 让大家变好、没测试就不算工作等。英文能力是成为高手的前提（信息源头在英文世界），建议 Google 英文关键词、GitHub 全英文、YouTube 每天 5 分钟、英文字典、英文教材。《提问的智慧》的 STFW/RTFM 和 X-Y Problem 让程序员不做伸手党。写代码修养读《重构》《修改代码的艺术》，并遵守各语言编程规范。",
+ "oneliner": "修养是价值观：坏架构比坏代码更要命；英文到源头去，提问别当伸手党，代码按规范写。",
+ "num": "73",
+ "date": "2026-08-13"
+}

@@ -1,0 +1,75 @@
+{
+ "topic": "29 | 推荐阅读：分布式数据调度相关论文",
+ "questions": [
+  "Paxos 是谁提出的？它如何进入工程界？",
+  "谷三篇指什么？它带来了什么影响？",
+  "Raft 如何让一致性算法变得可理解？",
+  "Aurora 是怎么设计存储的？",
+  "Spanner 的架构要点是什么？",
+  "为什么说分库分表会过时？"
+ ],
+ "modules": [
+  {
+   "icon": "🗳️",
+   "color": "blue",
+   "title": "Paxos 与谷三篇",
+   "bullets": [
+    "Paxos：Leslie Lamport 1990 年提出，基于消息传递、高度容错的一致性算法，但太晦涩",
+    "Google Chubby lock（用于 Bigtable）让 Paxos 进入工程界",
+    "谷三篇：<b>GFS、MapReduce、Bigtable</b>——世界工程系统因此向分布式演化，云计算关键技术因此成熟",
+    "雅虎基于谷三篇开发了开源 Hadoop",
+    "Paxos Made Live 讲工程实现细节与理论到应用的鸿沟"
+   ]
+  },
+  {
+   "icon": "🚣",
+   "color": "green",
+   "title": "Raft 与 Gossip",
+   "bullets": [
+    "Raft（In Search of an Understandable Consensus Algorithm）：性能功能与 Paxos 相同但结构不同",
+    "分解为四部分：领导选举、日志复制、安全性、成员变化",
+    "节点三状态：Leader、Candidate、Follower；Follower 收不到消息就变 Candidate 开始选举",
+    "ZooKeeper 不是 Paxos，而是自己发明的 <b>Zab</b> 协议",
+    "Gossip 协议：Cassandra 基于整体协调的 push/pull 模式"
+   ]
+  },
+  {
+   "icon": "📀",
+   "color": "orange",
+   "title": "Aurora 论文",
+   "bullets": [
+    "AWS Aurora：把 MySQL 计算和存储分离，计算节点 scale up、存储节点 scale out",
+    "把 redo log 独立设计成存储服务，分布式的事全甩给底层存储",
+    "写 6 份拷贝，但只要一个 Quorum 的日志写成功即可",
+    "核心是低延迟：异步模型 + 拼命并行处理 + Gossip 协议",
+    "流程：本地落地即可 ACK；6 个存储结点大于 4 个 ACK 算写成功；产生 cache 页便于查询；S3 做 Snapshot（Checkpoint）"
+   ]
+  },
+  {
+   "icon": "🌍",
+   "color": "purple",
+   "title": "Spanner 论文",
+   "bullets": [
+    "Google 全球分布式数据库：可扩展到数百万台机器、数百数据中心、上万亿行",
+    "通过同步复制和多版本满足外部一致性",
+    "每数据中心有 Colossus（第二代 GFS）；机器上有 100-1000 个 tablet",
+    "tablet 上层用 Paxos 跨数据中心同步；Leader 寿命默认 10s，读走任意 replica、写只走 Leader",
+    "最小传输复制单元 directory：共同前缀的 key 记录",
+    "开源实现：CockroachDB、TiDB"
+   ]
+  },
+  {
+   "icon": "🔮",
+   "color": "teal",
+   "title": "趋势判断",
+   "callout": {
+    "text": "各大公司都在用<b>底层分布式文件系统做存储引擎、把存储和计算分离、用一致性协议支撑</b>。分库分表 + 数据访问代理的玩法不久就会过时，真正的现代化分布式存储是 Aurora 和 Spanner 这样的方式。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "数据调度的核心论文：Paxos（Lamport 1990）经 Google Chubby 进入工程界，谷三篇（GFS/MapReduce/Bigtable）催生了 Hadoop 和整个分布式时代；Raft 把一致性拆成领导选举、日志复制、安全性、成员变化让算法可理解。AWS Aurora 分离计算存储、写 6 份副本用 Quorum；Google Spanner 用 Colossus + tablet + Paxos 达成全球级外部一致性。结论：分库分表将过时，Aurora/Spanner 是现代化方向。",
+ "oneliner": "谷三篇开启分布式时代；Paxos 晦涩、Raft 易懂；Aurora 与 Spanner 是存储调度的未来。",
+ "num": "30",
+ "date": "2026-08-13"
+}

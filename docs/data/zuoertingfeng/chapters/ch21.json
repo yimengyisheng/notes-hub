@@ -1,0 +1,64 @@
+{
+ "topic": "20 | Git协同工作流，你该怎么选？",
+ "questions": [
+  "Git 相比传统版本管理工具有哪些优势？",
+  "SVN 式中心工作流怎么运作？为什么大团队不适合？",
+  "GitFlow 有哪五种分支？它有什么问题？",
+  "GitHub Flow 是怎么运作的？",
+  "GitLab Flow 改进了什么？",
+  "协同工作流的本质是什么？"
+ ],
+ "modules": [
+  {
+   "icon": "🐙",
+   "color": "blue",
+   "title": "Git 的优势",
+   "bullets": [
+    "分布式且可单机：没网络也能 commit",
+    "合并分支时逐个应用提交，合并后能看到整个变更记录",
+    "切换分支快：不像其它工具每个分支一份拷贝",
+    "好用的命令：git stash 暂存未完成的事、git cherry-pick 选择性合并、git add -p 挑选改动、git grep 在所有提交中找代码",
+    "GitHub/GitLab 平台化：wiki、fork、pull request、issue 规范团队工作"
+   ]
+  },
+  {
+   "icon": "🏛️",
+   "color": "green",
+   "title": "中心工作流与 GitFlow",
+   "bullets": [
+    "中心工作流：pull origin master → commit → push；push 失败用 git pull --rebase 避免 merge",
+    "大家都在主干开发，大团队/大项目代码干扰太严重",
+    "GitFlow（Vincent Driessen 2010）五分支：Master 发布、Feature 功能、Developer 集成、Release 预发、Hotfix 线上 bug",
+    "Release/Hotfix 要同时向 Master 和 Developer 合并，易忘操作导致不一致",
+    "问题：分支太多 git log 混乱（--no-ff）、维护两分支无聊、回滚难、易切错分支"
+   ]
+  },
+  {
+   "icon": "🍴",
+   "color": "orange",
+   "title": "GitHub Flow 与 GitLab Flow",
+   "bullets": [
+    "GitHub Flow（Forking flow）：fork 官方库到自己的库开发→本地功能分支→push 到自己的库→PR + Code Review→合并 Master 即 release",
+    "需要自动化 CI/CD 做辅助",
+    "GitLab Flow：引入预发布/生产环境分支，以及 2.3.stable 之类的版本分支",
+    "解决两个问题：环境与代码分支对应、版本与代码分支对应",
+    "陈皓：喜欢 GitHub Flow，必要时用 GitLab 的版本/环境分支；版本要短暂，新版本发布后删除老的"
+   ]
+  },
+  {
+   "icon": "🧬",
+   "color": "purple",
+   "title": "协同工作流的本质",
+   "bullets": [
+    "SCM（软件配置管理）本质四件事：团队尽可能并行开发、软件版本与代码一致、环境与代码一致、线上代码对应稳定代码",
+    "软件架构趋势：微服务/SOA 拆分 + DevOps CI/CD，让每个仓库变小、迭代变快，工作流自然变简单",
+    "GitFlow 只在大型重构、A/B 测试等特殊时期使用，不是常态",
+    "结论：与其花时间在 Git 工作流上，不如花时间调整软件架构和自动化生产运维流程"
+   ]
+  }
+ ],
+ "summary": "Git 的优势在于分布式、合并保留变更记录、切分支快和强大命令，GitHub/GitLab 平台化是它成功的原因。中心工作流适合小团队，GitFlow 五种分支太重（log 混乱、回滚难）；GitHub Flow 用 fork + PR + Code Review 更轻，GitLab Flow 加环境/版本分支。协同工作流本质是并行、版本一致、环境一致、稳定代码，服务化与 DevOps 才是简化协同的根本。",
+ "oneliner": "协同工作流越简单越好：服务化+DevOps 简化分支策略，GitFlow 只在大型重构的特殊时期用。",
+ "num": "21",
+ "date": "2026-08-13"
+}

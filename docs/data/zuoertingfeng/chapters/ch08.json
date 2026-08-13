@@ -1,0 +1,74 @@
+{
+ "topic": "07 | 推荐阅读：每个程序员都该知道的知识",
+ "questions": [
+  "本期推荐了哪 5 类内容？",
+  "程序员必读书单里有哪些经典？",
+  "Matthew Might 的文章从哪四个问题出发？",
+  "LinkedIn 高效 Code Review 有哪些技巧？",
+  "GitHub 语言与代码质量研究报告得出了什么结论？",
+  "Agner Fog 的 C++ 优化书讲了什么？"
+ ],
+ "modules": [
+  {
+   "icon": "📚",
+   "color": "blue",
+   "title": "程序员必读书单",
+   "bullets": [
+    "《代码大全》《程序员修练之道》《计算机程序的构造和解释》《算法导论》",
+    "《设计模式》《重构》《人月神话》《代码整洁之道》",
+    "《Effective C++》《More Effective C++》《Effective Java》",
+    "《Unix 编程艺术》《Unix 高级环境编程》"
+   ]
+  },
+  {
+   "icon": "🎓",
+   "color": "green",
+   "title": "计算机专业学生应有的知识",
+   "bullets": [
+    "作者马修·迈特（Matthew Might），犹他大学计算机学院副教授",
+    "从四问出发：找好工作要知道什么、一辈子有工作要知道什么、进研究生院要知道什么、对社会有益要知道什么",
+    "<b>作品集（Portfolio）比简历（Resume）更有参考意义</b>，最好有个人网址",
+    "也要学交流技巧：写演示文稿、面对质疑辩论",
+    "硬技能全景：工程数学、Unix 哲学、系统管理、语言、离散数学、算法、体系结构、操作系统、网络、安全、密码学、测试、UX、可视化、并行、软工、形式化方法、图形学、机器人、AI、ML、数据库",
+    "第三部分是知识资源向导库"
+   ]
+  },
+  {
+   "icon": "👀",
+   "color": "orange",
+   "title": "LinkedIn 高效 Code Review",
+   "bullets": [
+    "签入版本管理系统前对代码做清晰说明，让 Reviewer 了解背景和目的",
+    "写说明文档的过程是重新梳理：常常发现自己把事干复杂了而回去简化——写文档就是在写代码",
+    "允许提出正面反馈（这段代码很棒），鼓励好代码作者",
+    "为 Review 结果写有目的性的注释：消除重复代码、增加测试覆盖率",
+    "不但 Review 代码，还要 Review 提交者做过的测试；对 Review 有明确期望，不过分关注细枝末节"
+   ]
+  },
+  {
+   "icon": "📊",
+   "color": "purple",
+   "title": "GitHub 语言与代码质量报告",
+   "bullets": [
+    "研究规模：728 个项目、6300 万行代码、近 3 万提交人、150 万次 commits、17 种语言",
+    "C、C++、Objective-C、PHP、Python 的 bug fix commits 很多；Clojure、Haskell、Ruby、Scala 明显少",
+    "函数式语言 bug 明显更少；强类型优于隐式类型转换；函数式静态类型优于函数式动态类型",
+    "bug 数与软件领域无关，但 bug 类型与语言强相关"
+   ]
+  },
+  {
+   "icon": "🚀",
+   "color": "teal",
+   "title": "Agner Fog 的 C++ 性能优化",
+   "bullets": [
+    "《Optimizing Software in C++》从语言、编译器、内存访问、多线程、CPU 层面讲性能调优",
+    "同作者还有 x86 汇编优化指南、Intel/AMD/VIA CPU 微架构、指令延迟表、调用约定等",
+    "陈皓：推荐内容比较干，需要慢慢吸收并到实践中用"
+   ]
+  }
+ ],
+ "summary": "本期推荐 5 类资料：Stack Overflow 程序员必读书单（代码大全、SICP、算法导论、设计模式、Effective C++ 等）；Matthew Might 的《每个计算机专业学生应有的知识》（从四个问题出发，强调作品集大于简历，给出硬技能全景和资源库）；LinkedIn 高效 Code Review 实践（提交前写说明、允许正面反馈、Review 测试）；GitHub 728 项目语言质量研究（函数式与强类型语言 bug 更少）；Agner Fog 的 C++ 性能优化电子书。",
+ "oneliner": "作品集＞简历；写文档就是在写代码；函数式+强类型语言 bug 更少。",
+ "num": "08",
+ "date": "2026-08-13"
+}

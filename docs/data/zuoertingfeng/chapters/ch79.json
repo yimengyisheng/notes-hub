@@ -1,0 +1,98 @@
+{
+ "topic": "78 | 程序员练级攻略：异步I/O模型和Lock-Free编程",
+ "questions": [
+  "Stevens 介绍的五种 I/O 模型是什么？",
+  "异步 I/O 模型的技术演进路线是什么？",
+  "Reactor 模式是什么？",
+  "Lock-Free 为什么重要？有哪些学习资源？",
+  "无锁队列有哪些经典论文？",
+  "系统底层还有哪些重要知识？"
+ ],
+ "modules": [
+  {
+   "icon": "🔄",
+   "color": "blue",
+   "title": "五种 I/O 模型",
+   "bullets": [
+    "阻塞 I/O",
+    "非阻塞 I/O",
+    "I/O 多路复用（select 和 poll）",
+    "信号驱动 I/O（SIGIO）",
+    "异步 I/O（POSIX aio_functions）",
+    "出自 Stevens《UNIX 网络编程》6.2 节，配合 C10K Problem 学习"
+   ]
+  },
+  {
+   "icon": "🛤️",
+   "color": "green",
+   "title": "演进路线",
+   "bullets": [
+    "select → poll → epoll → aio → libevent → libuv",
+    "Unix/Linux 花了几十年走过这些技术变迁",
+    "陈皓观点：都不如 Windows I/O Completion Port 设计得好",
+    "相关资料：IBM AIO 文章、Libevent 2.0 book、Libuv Design Overview",
+    "Java 视角：Doug Lea《Scalable IO in Java》、Thousands of Threads PPT"
+   ]
+  },
+  {
+   "icon": "🔁",
+   "color": "orange",
+   "title": "Reactor 模式",
+   "bullets": [
+    "看各种异步 I/O 实现后会看到这个编程模式",
+    "Understanding Reactor Pattern: Thread-Based and Event-Driven",
+    "Reactor Pattern、reactor pattern and non-blocking IO 三篇就够",
+    "延伸：C10M 问题——内核才是问题不是解决方案",
+    "争议文章：Select/Epoll is fundamentally broken"
+   ]
+  },
+  {
+   "icon": "🔓",
+   "color": "purple",
+   "title": "Lock-Free 无锁",
+   "bullets": [
+    "锁对性能影响太大，高性能程序必须学 Lock-Free",
+    "教程：Dr.Dobb's Lock-Free Data Structures、Andrei Alexandrescu",
+    "必看电子书：Paul E. McKenney《Is Parallel Programming Hard》——并行编程经典",
+    "维基词条：Non-blocking algorithm、Read-copy-update、Seqlock",
+    "博客订阅：1024cores、Paul E. McKenney、Concurrency Freaks、Preshing on Programming"
+   ]
+  },
+  {
+   "icon": "📜",
+   "color": "teal",
+   "title": "经典论文",
+   "bullets": [
+    "Implementing Lock-Free Queues（无锁队列的实现）",
+    "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms",
+    "合适的模型和数据结构可让性能提升 10 多倍"
+   ]
+  },
+  {
+   "icon": "🖥️",
+   "color": "green",
+   "title": "其它底层知识",
+   "bullets": [
+    "64 位编程、Improving OpenSSL Performance",
+    "压缩：eBay 购物车用压缩解决网络 I/O 瓶颈；LinkedIn 用 Brotli 替换 gzip",
+    "SSD 性能测试：Performance Testing with SSDs Part 1/2",
+    "Secure Programming HOWTO：Linux/Unix 安全编程",
+    "Butler Lampson《Hints for Computer System Design》（图灵奖）",
+    "Jim Gray 的 5 分钟法则（内存 vs 磁盘）、5 字节法则（内存 vs CPU）"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "异步 I/O 和 Lock-Free 是<b>所有程序员的必修课</b>：I/O 演进到 libuv、并发学 McKenney 的书，设计模式可借鉴到分布式架构。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "Stevens 五种 I/O 模型：阻塞、非阻塞、多路复用（select/poll）、信号驱动、异步 I/O。异步 I/O 演进：select→poll→epoll→aio→libevent→libuv，陈皓认为都不如 Windows IOCP。常见编程模式是 Reactor，延伸有 C10M 问题。Lock-Free 因锁影响性能而重要，必读 Paul E. McKenney 的并行编程电子书，无锁队列有两篇经典论文。其它底层知识：64 位编程、Brotli 压缩、SSD 测试、Butler Lampson 系统设计忠告、Jim Gray 的 5 分钟/5 字节法则。",
+ "oneliner": "I/O 演进 select→epoll→libuv，锁是性能大敌；无锁编程看 McKenney，5 分钟法则权衡内存与磁盘。",
+ "num": "79",
+ "date": "2026-08-13"
+}

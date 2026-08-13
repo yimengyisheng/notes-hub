@@ -1,0 +1,91 @@
+{
+ "topic": "90 | 程序员练级攻略：技术资源集散地",
+ "questions": [
+  "有哪些必看的个人技术博客？",
+  "哪些编程相关 YouTube 频道值得关注？",
+  "有哪些公司技术博客可跟踪趋势？",
+  "如何读论文？有哪些方法文章？",
+  "有哪些计算机论文集散地？",
+  "陈皓对学习的态度是什么？"
+ ],
+ "modules": [
+  {
+   "icon": "👨‍💻",
+   "color": "blue",
+   "title": "个人技术博客",
+   "bullets": [
+    "Coding Horror（Jeff Atwood）：《高效能程序员的修练》，2008 年与 Joel 创办 StackOverflow",
+    "Joel on Software（Joel Spolsky）：《软件随想录》8.7 分",
+    "Clean Coder Blog（Bob 大叔 Robert C. Martin）：《程序员的职业素养》8.8 分",
+    "Martin Fowler：重构、分析模式、企业应用架构模式、NoSQL 精粹",
+    "Paul Graham Essays：《黑客与画家》，YC 孵化器，创业必读三篇（How to Get Startup Ideas / Do Things that Don't Scale / Startup = Growth）",
+    "Steve Yegge（Amazon→Google）、Bruce Eckel（Thinking in Java）、Herb Sutter（C++ 标准委员会）"
+   ]
+  },
+  {
+   "icon": "🔧",
+   "color": "green",
+   "title": "底层性能博客",
+   "bullets": [
+    "Brendan D. Gregg（Netflix）：Linux 性能分析，玩底层性能必看",
+    "Eli Bendersky：C/C++/Python 原理型干货",
+    "Julia Evans：Linux debug 工具和网络",
+    "null program：Linux 系统调用、GPU、无锁编程、JIT",
+    "Fluent {C++}、Preshing on Programming：C/C++ 干货"
+   ]
+  },
+  {
+   "icon": "📺",
+   "color": "orange",
+   "title": "YouTube 频道",
+   "bullets": [
+    "Coding Tech、Amazon Web Services、Facebook Developers、Google Developer 等",
+    "GOTO Conferences、Devoxx、JSConf、CSSConf、Hacker News"
+   ]
+  },
+  {
+   "icon": "🏢",
+   "color": "purple",
+   "title": "公司技术博客",
+   "bullets": [
+    "Airbnb、AWS、Cloudera、Dropbox、Facebook、Google、Netflix、GitHub、Twitter Engineering、Yelp 等",
+    "跟公司博客可看到工程技术，还能掌握技术方向和趋势"
+   ]
+  },
+  {
+   "icon": "📄",
+   "color": "teal",
+   "title": "如何读论文",
+   "bullets": [
+    "How to read an academic article、Advice on reading academic papers",
+    "How to read and understand a scientific paper",
+    "Should I Read Papers?、The Refreshingly Rewarding Realm of Research Papers"
+   ]
+  },
+  {
+   "icon": "🗂️",
+   "color": "blue",
+   "title": "论文集散地",
+   "bullets": [
+    "2 Minute Papers（YouTube 两分钟论文）、Best Paper Awards in CS",
+    "Google Scholar（阿努拉格·阿查里雅开发，2004 年发布）",
+    "Facebook 论文、Research at Google、Microsoft Research、MIT AI Lab",
+    "arXiv：始于 1991 年，2014 年底超 100 万篇，开放获取运动推动者",
+    "SciRate（arXiv 好论文评分）、Usenix Best Papers、The Morning Paper（每日一篇）、Papers We Love（GitHub 近 3 万星）"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "学习观",
+   "callout": {
+    "text": "学习需要自我驱动，要学会自己找食物，而不是等着喂。练级攻略只是起点，还有很多知识需要不断探索发现。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "技术资源集散地：个人博客推荐 Coding Horror、Joel on Software、Clean Coder、Martin Fowler、Paul Graham（创业三篇）、Steve Yegge、Brendan Gregg（Linux 性能）等；YouTube 频道有 Coding Tech、Google Developer 等；公司技术博客可跟踪趋势（Airbnb/AWS/Netflix 等）。想成长高手必须读论文：有读论文方法文章和 Google Scholar、arXiv（超百万篇）、The Morning Paper、Papers We Love 等集散地。陈皓强调自我驱动、自己找食物。",
+ "oneliner": "高手之路 = 好博客开眼界 + 公司博客跟趋势 + 论文集散地练内功；学会自己找食物。",
+ "num": "91",
+ "date": "2026-08-13"
+}

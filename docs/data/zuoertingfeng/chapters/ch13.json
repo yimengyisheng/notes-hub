@@ -1,0 +1,67 @@
+{
+ "topic": "12 | 程序中的错误处理：异步编程以及我的最佳实践",
+ "questions": [
+  "为什么异步编程中返回码和异常都不好用？",
+  "Callback 方式有什么问题？Promise 如何解决？",
+  "async/await 如何简化异步错误处理？",
+  "Java 的 CompletableFuture 有哪些类似 Promise 的方法？",
+  "错误处理最佳实践有哪些？"
+ ],
+ "modules": [
+  {
+   "icon": "⚡",
+   "color": "blue",
+   "title": "异步的困境",
+   "bullets": [
+    "返回码失效：异步函数立即返回，返回的只是处理权不是结果",
+    "异常失效：异常在另一个线程抛出，主线程 catch 看不到不同栈的异常",
+    "最常用的是 callback：注册 OnSuccess/OnFailure 让异步代码回调"
+   ]
+  },
+  {
+   "icon": "🪝",
+   "color": "green",
+   "title": "Callback 到 Promise",
+   "bullets": [
+    "多个异步函数顺序执行时出现 <b>Callback Hell</b>：层层嵌套、错误处理混乱",
+    "Promise：then() 串联，catch() 统一错误处理",
+    "成功调 resolve() 继续下一个 then；失败调 reject() 跳过 then 直到 catch()",
+    "Promise 可同时等待多个异步：Promise.when(p1, p2).then(...)",
+    "ECMAScript 2017 的 async/await 取代 Promise 链，可用 try-catch，暂停不阻塞主线程",
+    "pipeline：用 reduce 编排函数链，async/await 下 for 循环即可"
+   ]
+  },
+  {
+   "icon": "☕",
+   "color": "orange",
+   "title": "Java CompletableFuture",
+   "bullets": [
+    "JDK 1.8 引入，类似 Promise",
+    "链式：supplyAsync → thenApply → thenAccept",
+    "合并两个异步结果：thenCombine",
+    "错误处理：exceptionally() 类似 catch()；handle() 同时拿结果和异常"
+   ]
+  },
+  {
+   "icon": "🛠️",
+   "color": "purple",
+   "title": "错误处理最佳实践",
+   "bullets": [
+    "统一分类的错误字典：如 HTTP 4XX 客户端错、5XX 服务端错",
+    "同类错误可扩展：用继承或 Go 接口多态",
+    "定义严重程度：Fatal/Error/Warning/Info/Debug",
+    "日志输出用错误码而非错误信息（如 PageNotFound 而非 404），利于自动化监控",
+    "忽略错误要有日志；同一处不停报错只打一条加次数",
+    "不要用异常处理业务逻辑，用 if-else 条件判断",
+    "同类错误用一样模式；尽可能在错误发生处处理；向上返回原始错误",
+    "处理错误时总清理资源：RAII、try-catch-finally、Go defer",
+    "不推荐在循环体里 try-catch；一个 try 只做一件简单的事",
+    "RESTful API 用 Swagger 文档化错误；异步推荐 Promise；分布式用 Zipkin 关联错误"
+   ]
+  }
+ ],
+ "summary": "异步世界里返回码和异常都失效，常用 callback 但会产生 Callback Hell，于是演化出 Promise（then/catch）、async/await 语法糖、Java CompletableFuture（exceptionally/handle）。陈皓总结的实践包括：统一错误字典、可扩展的错误分类、错误严重程度分级、日志用错误码、同类错误同模式、就地处理并向上返回原始错误、及时清理资源、不在循环里 try-catch、异步用 Promise、分布式用 Zipkin 关联。",
+ "oneliner": "异步错误靠 Promise：then 串联、catch 兜底；错误字典统一、日志用码不用话。",
+ "num": "13",
+ "date": "2026-08-13"
+}

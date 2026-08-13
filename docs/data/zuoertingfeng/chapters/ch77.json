@@ -1,0 +1,121 @@
+{
+ "topic": "76 | 程序员练级攻略：软件设计",
+ "questions": [
+  "Linus 说程序员最大的区别是什么？",
+  "学习编程范式有哪些资料？",
+  "软件设计有哪些经典原则？",
+  "S.O.L.I.D 五原则各是什么？",
+  "LoD、DbC、ADP 是什么？",
+  "有哪些软件设计必读好书和工程文章？"
+ ],
+ "modules": [
+  {
+   "icon": "🎨",
+   "color": "blue",
+   "title": "品位的区别",
+   "bullets": [
+    "Linus：程序员高下之分，最大区别是品味",
+    "有品味 vs 没品味，代码和软件差距非常大",
+    "软件设计不是一朝一夕能学会的，要靠实践、时间、错误、教训、痛苦体会",
+    "像饮茶：一开始苦，慢慢回甘",
+    "需要耐心和恒心，在实践和理论中螺旋式学习"
+   ]
+  },
+  {
+   "icon": "🧩",
+   "color": "green",
+   "title": "编程范式资料",
+   "bullets": [
+    "《编程范式游记》系列 11 篇（起源、泛型、类型系统、函数式、修饰器、OOP、原型、Go 委托、本质、逻辑、总结）",
+    "Wikipedia Programming paradigm 页面",
+    "Six programming paradigms：并发默认、依赖类型、连接性语言、声明式、符号式、基于知识",
+    "Peter Van Roy《Programming Paradigms for Dummies》：Erlang/E/Distributed Oz 等分布式语言",
+    "斯坦福公开课：编程范式（C、C++、Scheme、Python、并发）"
+   ]
+  },
+  {
+   "icon": "📏",
+   "color": "orange",
+   "title": "经典原则",
+   "bullets": [
+    "DRY：避免重复原则",
+    "KISS：简单原则",
+    "LoD 迪米特法则：最少知识原则，不要和陌生人说话——对狗说还是对四条腿说？",
+    "LoD 正式表述：方法只能访问 O、相关组件对象、自己创建的对象、参数对象",
+    "CCP 共同封闭原则：一起修改的类应组合在同一包里",
+    "关注点分离：把部分抽象包装起来，使用者不关心内部实现"
+   ]
+  },
+  {
+   "icon": "🏛️",
+   "color": "purple",
+   "title": "S.O.L.I.D 五原则",
+   "table": {
+    "head": [
+     "原则",
+     "核心"
+    ],
+    "rows": [
+     [
+      "SRP 单一职责",
+      "一个类只做一件事，只有一个引起变化的原因"
+     ],
+     [
+      "OCP 开闭",
+      "对扩展开放、对修改封闭"
+     ],
+     [
+      "LSP 里氏替换",
+      "子类必须能替换基类，不出现对子类类型判断的 if/else"
+     ],
+     [
+      "ISP 接口隔离",
+      "多个专门接口优于单一总接口"
+     ],
+     [
+      "DIP 依赖倒置",
+      "高层不依赖低层实现，依赖抽象（开关 vs 电灯）"
+     ]
+    ]
+   }
+  },
+  {
+   "icon": "📜",
+   "color": "teal",
+   "title": "DbC 与 ADP",
+   "bullets": [
+    "DbC 契约式设计：客户与供应商的契约",
+    "先验条件：客户义务/供应商权利；后验条件：供应商义务/客户权利；不变式",
+    "ADP 无环依赖：包依赖必须是无环图",
+    "破环方法：抽公共类建新包 D，或用 DIP+ISP"
+   ]
+  },
+  {
+   "icon": "📚",
+   "color": "green",
+   "title": "必读好书与文章",
+   "bullets": [
+    "《领域驱动设计》：真实项目案例，系统化方法",
+    "《UNIX 编程艺术》：Eric Raymond 的 Unix 哲学",
+    "《Clean Architecture》：Bob 大叔，架构元素方法清晰",
+    "The Twelve-Factor App：SaaS 方法论，架构师必读",
+    "Avoid Over Engineering：避免过度设计",
+    "Instagram 三法则：用稳定技术、不造轮子、Keep it very simple",
+    "Joshua Bloch《How To Design A Good API》、RESTful API 设计指南、The Problem With Logging"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "软件设计是<b>品位的修行</b>：范式开眼界、SOLID/DRY/迪米特立规矩、DDD/Unix 哲学提境界，工程上 Keep it simple。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "Linus 说程序员最大的区别是品味。软件设计需系统学习：编程范式（《编程范式游记》、Six paradigms、斯坦福公开课），经典原则（DRY、KISS、LoD 迪米特法则、CCP、关注点分离、S.O.L.I.D 五原则、DbC 契约式设计、ADP 无环依赖）。必读：《领域驱动设计》《UNIX 编程艺术》《Clean Architecture》、The Twelve-Factor App；工程文章：Avoid Over Engineering、Instagram 三法则、API 设计、日志问题。软件设计要像饮茶一样反复回炉。",
+ "oneliner": "软件设计是品位的修行：范式开眼界、SOLID/DRY/迪米特立规矩、DDD 与 Unix 哲学提境界，Keep it simple。",
+ "num": "77",
+ "date": "2026-08-13"
+}

@@ -1,0 +1,87 @@
+{
+ "topic": "77 | 程序员练级攻略：Linux系统、内存和网络",
+ "questions": [
+  "高手成长篇包含哪些部分？",
+  "学习内存管理有哪些资料？三种内存分配器是什么？",
+  "网络学习推荐哪些书和教程？",
+  "有哪些网络调优资料？",
+  "TCP 有哪些经典 RFC？TCP 最牛的是什么？",
+  "HTTP/1.1 和 HTTP/2 的 RFC 是什么？"
+ ],
+ "modules": [
+  {
+   "icon": "🗺️",
+   "color": "blue",
+   "title": "高手成长篇构成",
+   "bullets": [
+    "系统底层（Linux/内存/网络/异步 I/O/Lock-free）",
+    "数据库（MySQL 和开源 NoSQL）",
+    "分布式架构（入门、经典论文、工程设计、大厂架构）",
+    "微服务、容器化和自动化运维（Docker/K8s）",
+    "机器学习与 AI、前端开发、信息源",
+    "信息源只留 30% 最经济有价值的，当成索引"
+   ]
+  },
+  {
+   "icon": "🧠",
+   "color": "green",
+   "title": "内存管理",
+   "bullets": [
+    "LWN 系列《What every programmer should know about memory》9 部分",
+    "内存屏障论文：Memory Barriers: a Hardware View for Software Hackers",
+    "ARM/POWER 宽松内存模型 vs x86 TSO 模型",
+    "三种内存分配器：ptmalloc（glibc）、tcmalloc（Google，快两倍以上）、jemalloc（BSD，可并行）",
+    "实例：Decreasing RAM Usage by 40% Using jemalloc with Python & Celery"
+   ]
+  },
+  {
+   "icon": "🌐",
+   "color": "orange",
+   "title": "网络学习",
+   "bullets": [
+    "《计算机网络（第五版）》：国内外最权威经典教材，自下而上讲协议",
+    "含无线、3G、RFID、P2P、流媒体、IP 语音、安全一章",
+    "入门教程：渥太华大学 Computer Network Design、GeeksforGeeks 教程",
+    "调优：《Linux 高级路由和流量控制 HOWTO》、RHEL Network Performance Tuning Guide、Making Linux TCP Fast"
+   ]
+  },
+  {
+   "icon": "📜",
+   "color": "purple",
+   "title": "TCP 经典 RFC",
+   "bullets": [
+    "RFC 793：最初 TCP 标准定义",
+    "RFC 813：窗口与确认策略；RFC 879：MSS",
+    "RFC 896：拥塞控制；RFC 2581：慢启动、拥塞防御、快重传、快恢复",
+    "RFC 2018/2883：选择性确认 SACK",
+    "RFC 2988：Karn/Partridge 重传算法；RFC 6298：Jacobson/Karels 重传算法",
+    "TCP 最牛的不是不丢包，而是拥塞控制"
+   ]
+  },
+  {
+   "icon": "📡",
+   "color": "teal",
+   "title": "HTTP 协议",
+   "bullets": [
+    "《HTTP 权威指南》：可当参考书",
+    "HTTP/1.1 原始 RFC 2616（1999），2014 后被 RFC 7230-7235 取代",
+    "HTTP/2 于 2015 年批准，主流浏览器默认启用",
+    "HTTP/2 RFC：RFC 7540（协议本身）、RFC 7541（HPACK 头压缩）",
+    "学习资源：HTTP/2 详解、http2 explained、Nginx HTTP/2 白皮书"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "green",
+   "title": "启示",
+   "callout": {
+    "text": "高手成长篇不是喂饭，是<b>梳理信息源</b>：内存读 LWN 九讲、网络啃 RFC、TCP 看拥塞控制，坚持日进一步 3-5 年成大厂抢手货。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "高手成长篇包含系统底层、数据库、分布式架构、微服务、容器化运维、AI、前端和信息源，只留 30% 最有价值的信息当索引。内存管理：LWN 九讲、内存屏障论文、三种分配器（ptmalloc/tcmalloc/jemalloc）。网络：《计算机网络（第五版）》、TCP 经典 RFC（793/813/896/2581/2018/2988/6298），TCP 最牛是拥塞控制。HTTP：HTTP/1.1 用 RFC 7230-7235，HTTP/2 用 RFC 7540/7541。学习方法是从书本走到社区，自己找食吃。",
+ "oneliner": "高手篇是信息源索引：内存读 LWN 九讲、TCP 啃拥塞控制 RFC、HTTP/2 看 7540；坚持日进一步 3-5 年。",
+ "num": "78",
+ "date": "2026-08-13"
+}

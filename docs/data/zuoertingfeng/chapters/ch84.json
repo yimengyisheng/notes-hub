@@ -1,0 +1,97 @@
+{
+ "topic": "83 | 程序员练级攻略：分布式架构工程设计",
+ "questions": [
+  "分布式架构设计原则有哪些经典文章？",
+  "Box 平台构建的四件事是什么？",
+  "混沌工程（Chaos Engineering）是什么？",
+  "分布式设计模式有哪些网站？",
+  "消息系统（Kafka）有哪些工程实践？",
+  "各公司架构实践在哪里看？"
+ ],
+ "modules": [
+  {
+   "icon": "📐",
+   "color": "blue",
+   "title": "架构设计原则",
+   "bullets": [
+    "Jeff Dean《Designs, Lessons and Advice from Building Large Distributed Systems》",
+    "The Twelve-Factor App：SaaS 方法论，架构师必读",
+    "Notes on Distributed Systems for Young Bloods：给新人的忠告",
+    "微软《On Designing and Deploying Internet-Scale Services》",
+    "Netflix《Principles of Chaos Engineering》：Chaos Monkey 测试系统健壮性",
+    "Ilya Grigorik《Building Fast & Resilient Web Applications》",
+    "Azure 设计原则：Design for Self-healing、Scaling Out、Evolution",
+    "Facebook《Automate and Abstract》：自动化和抽象是软件工程最重要的两件事"
+   ]
+  },
+  {
+   "icon": "📦",
+   "color": "green",
+   "title": "Box 平台四件事",
+   "bullets": [
+    "Design Broadly, Build Narrowly：设计要广、构建要窄",
+    "Platforms Are Powerful and Flexible. Choose wisely what to expose when!",
+    "Build Incrementally, Get Feedback, and Iterate：增量构建、反馈、迭代",
+    "Create a Platform-first Mentality：平台优先思维"
+   ]
+  },
+  {
+   "icon": "🧩",
+   "color": "orange",
+   "title": "设计模式网站",
+   "bullets": [
+    "Azure Cloud Design Patterns：最全面完整，含可用性/数据管理/消息/监控/性能/弹力/安全分类",
+    "AWS Cloud Pattern",
+    "Google《Design patterns for container-based distributed systems》",
+    "A Pattern Language for Micro-Services、SOA Patterns"
+   ]
+  },
+  {
+   "icon": "📨",
+   "color": "purple",
+   "title": "Kafka 工程实践",
+   "bullets": [
+    "Uber：Chaperone 端到端审计 Kafka、Dead Letter Queues",
+    "纽约时报：Publishing with Apache Kafka",
+    "Salesforce：Platform Events Architecture",
+    "Exactly-once Semantics：Kafka 只发一次语义（业界难题）",
+    "Yahoo! Benchmarking：Flink、Storm、Spark 流式计算基准测试"
+   ]
+  },
+  {
+   "icon": "📜",
+   "color": "teal",
+   "title": "日志与性能",
+   "bullets": [
+    "Martin Kleppmann《Using Logs to Build a Solid Data Infrastructure》",
+    "Twitter DistributedLog：高性能分布式日志系统",
+    "Facebook LogDevice：分布式日志存储",
+    "Understand Latency、Common Bottlenecks（20 个常见瓶颈）",
+    "CloudFlare：限流扩展到数百万域（anycast + PoP 分布式限流）"
+   ]
+  },
+  {
+   "icon": "🏢",
+   "color": "green",
+   "title": "大厂架构实践",
+   "bullets": [
+    "High Scalability 网站定期分享大规模系统架构",
+    "YouTube、Pinterest、Google、Twitter、WhatsApp、Flickr、Amazon、Stack Overflow 等",
+    "搜索架构：Instagram、eBay、LinkedIn、Slack、Twitter、Airbnb"
+   ]
+  },
+  {
+   "icon": "💡",
+   "color": "orange",
+   "title": "启示",
+   "callout": {
+    "text": "架构工程 = <b>方法论 + 设计模式 + 大厂实践</b>：12-Factor 立规矩、Azure 模式找套路、High Scalability 看别人怎么建。",
+    "star": true
+   }
+  }
+ ],
+ "summary": "分布式架构工程设计先学设计原则：Jeff Dean 演讲、12-Factor、混沌工程（Chaos Monkey）、Azure 自愈/扩展/演进原则、Box 平台四件事（设计广构建窄、平台思维等）。设计模式网站：Azure Cloud Design Patterns 最全面、AWS Cloud Pattern、容器化设计模式。工程实践：Kafka 生态（Uber/纽约时报/Salesforce/Exactly-once）、日志系统（DistributedLog、LogDevice）、性能（Latency、限流）。大厂架构看 High Scalability（YouTube、Twitter、WhatsApp 等）。",
+ "oneliner": "架构工程 = 方法论 + 模式 + 实践：12-Factor 立规矩、Azure 模式找套路、High Scalability 抄作业。",
+ "num": "84",
+ "date": "2026-08-13"
+}
