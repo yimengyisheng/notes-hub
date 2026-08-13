@@ -1,0 +1,50 @@
+{
+ "num": "36",
+ "topic": "3.14 双向链表",
+ "date": "2026-08-13",
+ "questions": [
+  "单链表查找上一结点有什么问题？双向链表如何解决？",
+  "双向链表的结点结构是什么？",
+  "双向链表插入操作的顺序为什么重要？",
+  "双向链表删除操作怎么做？有什么代价与收益？"
+ ],
+ "modules": [
+  {
+   "icon": "🔁",
+   "color": "blue",
+   "title": "双向链表定义",
+   "bullets": [
+    "单链表查找下一结点 O(1)，查找上一结点最坏 O(n)，每次都要从头遍历",
+    "双向链表：在单链表每个结点中再设置一个指向其前驱结点的指针域",
+    "结点有两个指针域：prior 指向直接前驱，next 指向直接后继",
+    "代码：typedef struct DuLNode{ ElemType data; struct DuLNode *prior; struct DuLNode *next; } DulNode, *DuLinkList;",
+    "双向链表也可以是循环表",
+    "性质：p->next->prior = p = p->prior->next（后继的前驱还是自己）"
+   ]
+  },
+  {
+   "icon": "➕",
+   "color": "green",
+   "title": "插入操作（顺序重要）",
+   "bullets": [
+    "把 s 插入 p 和 p->next 之间四步：",
+    "① s->prior=p；② s->next=p->next；③ p->next->prior=s；④ p->next=s",
+    "关键：第 2、3 步都用到了 p->next，若第 4 步先执行会使 p->next 提前变成 s，插入失败",
+    "记忆顺序：先搞定 s 的前驱和后继，再搞定后结点的前驱，最后解决前结点的后继"
+   ]
+  },
+  {
+   "icon": "➖",
+   "color": "orange",
+   "title": "删除与代价",
+   "bullets": [
+    "删除结点 p 两步：p->prior->next=p->next; p->next->prior=p->prior; 然后 free(p)",
+    "代价：插入和删除需要更改两个指针变量，比单链表复杂",
+    "空间代价：每个结点记录两份指针，占用略多一些——用空间换时间",
+    "收益：良好对称性，对某个结点前后结点的操作带来方便，有效提高时间性能"
+   ]
+  }
+ ],
+ "summary": "双向链表每个结点有两个指针域：prior 指向前驱、next 指向后继，可双向遍历。插入删除需要修改四个指针（如 s->prior=p; s->next=p->next; p->next->prior=s; p->next=s），比单链表稍复杂但更灵活。",
+ "oneliner": "双向链表：既有前驱指针又有后继指针，增删要改四处指针。"
+}

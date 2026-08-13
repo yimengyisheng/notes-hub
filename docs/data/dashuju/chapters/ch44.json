@@ -1,0 +1,49 @@
+{
+ "num": "44",
+ "topic": "4.6 栈的链式存储结构及实现",
+ "date": "2026-08-13",
+ "questions": [
+  "链栈的栈顶放在哪里？为什么不需要头结点？",
+  "链栈的进栈 push 如何实现？",
+  "链栈的出栈 pop 如何实现？",
+  "顺序栈与链栈如何选择？"
+ ],
+ "modules": [
+  {
+   "icon": "🔗",
+   "color": "blue",
+   "title": "链栈结构",
+   "bullets": [
+    "栈的链式存储叫<b>链栈</b>",
+    "单链表有头指针、栈顶指针也是必须的，让二者合二为一：<b>栈顶放在单链表的头部</b>",
+    "栈顶在头部后，头结点失去意义，链栈通常不需要头结点",
+    "链栈基本不存在栈满情况（除非内存耗尽，那已是死机崩溃，而非溢出问题）",
+    "空栈：top==NULL",
+    "代码：typedef struct StackNode{ SElemType data; struct StackNode *next;} StackNode,*LinkStackPtr; typedef struct LinkStack{ LinkStackPtr top; int count;} LinkStack;"
+   ]
+  },
+  {
+   "icon": "⚙️",
+   "color": "green",
+   "title": "进栈与出栈",
+   "bullets": [
+    "进栈 Push：s->data=e; s->next=S->top; S->top=s; S->count++;",
+    "出栈 Pop：*e=S->top->data; p=S->top; S->top=S->top->next; free(p); S->count--;",
+    "进栈出栈都没有循环操作，时间复杂度均为 <b>O(1)</b>"
+   ]
+  },
+  {
+   "icon": "⚖️",
+   "color": "orange",
+   "title": "顺序栈 vs 链栈",
+   "bullets": [
+    "时间复杂度一样，均为 O(1)",
+    "顺序栈：需事先确定固定长度，可能浪费内存空间，但存取定位方便",
+    "链栈：每个元素有指针域增加内存开销，但栈的长度无限制",
+    "选择：元素变化不可预料（有时很小有时很大）→ 用链栈；变化在可控范围内 → 用顺序栈"
+   ]
+  }
+ ],
+ "summary": "链栈把栈顶放在单链表头部，头指针与栈顶指针合二为一。进栈 s->next=S->top; S->top=s，出栈 p=S->top; S->top=p->next; free(p)。顺序栈与链栈时间复杂度都是 O(1)，顺序栈需预分配、链栈动态分配。",
+ "oneliner": "链栈 = 单链表头插头删，栈顶就是链表头。"
+}

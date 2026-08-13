@@ -1,0 +1,54 @@
+{
+ "num": "50",
+ "topic": "4.12 循环队列",
+ "date": "2026-08-13",
+ "questions": [
+  "队列顺序存储的入队和出队时间复杂度各是多少？为什么？",
+  "什么是“假溢出”？公交车座位比喻说明了什么？",
+  "如何判断循环队列空和满？队列长度公式是什么？",
+  "循环队列的入队出队代码如何实现？"
+ ],
+ "modules": [
+  {
+   "icon": "⚠️",
+   "color": "orange",
+   "title": "顺序队列的不足",
+   "bullets": [
+    "入队列：在队尾追加元素，不移动任何元素 → <b>O(1)</b>",
+    "出队列：队头在下标 0，所有元素都得向前移动保证队头不为空 → <b>O(n)</b>",
+    "改进：队头不需要一定在下标 0 的位置",
+    "引入两个指针：front 指向队头元素，rear 指向队尾元素的下一个位置",
+    "front==rear 时是空队列（不是还剩一个元素）",
+    "<b>假溢出</b>：数组末尾已占用但前面还有空闲，再入队会数组越界",
+    "比喻：公交前排有两个空座、后排坐满——当然坐前面，等下一辆的是笨人"
+   ]
+  },
+  {
+   "icon": "🔁",
+   "color": "blue",
+   "title": "循环队列定义",
+   "bullets": [
+    "解决假溢出的办法：后面满了就从头开始，头尾相接的循环——称为<b>循环队列</b>",
+    "队列空：front==rear",
+    "队列满：保留一个元素空间，条件是 <b>(rear+1)%QueueSize==front</b>（取模整合 rear 与 front 大小）",
+    "例：QueueSize=5，front=0、rear=4 → (4+1)%5=0 栈满；front=2、rear=1 → (1+1)%5=2 栈满",
+    "队列长度公式：<b>(rear-front+QueueSize)%QueueSize</b>"
+   ]
+  },
+  {
+   "icon": "💻",
+   "color": "green",
+   "title": "代码实现",
+   "bullets": [
+    "结构：typedef struct{ QElemType data[MAXSIZE]; int front; int rear; } SqQueue;",
+    "初始化：Q->front=0; Q->rear=0;",
+    "长度：return (Q.rear-Q.front+MAXSIZE)%MAXSIZE;",
+    "入队：if ((Q->rear+1)%MAXSIZE==Q->front) return ERROR; Q->data[Q->rear]=e; Q->rear=(Q->rear+1)%MAXSIZE;",
+    "出队：if (Q->front==Q->rear) return ERROR; *e=Q->data[Q->front]; Q->front=(Q->front+1)%MAXSIZE;",
+    "循环队列把插入删除 O(n) 变成了 O(1)"
+   ]
+  }
+ ],
+ "summary": "顺序队列出队要移动所有元素（O(n)），且假溢出浪费空间；循环队列让队头和队尾在数组中循环变化，解决假溢出。循环队列判满用 (rear+1)%MAXSIZE==front（牺牲一个单元），判空用 front==rear。",
+ "oneliner": "循环队列：队尾绕回队头，(rear+1)%m==front 判满、front==rear 判空。"
+}

@@ -1,0 +1,53 @@
+{
+ "num": "60",
+ "topic": "5.7 KMP模式匹配算法",
+ "date": "2026-08-13",
+ "questions": [
+  "KMP 算法的三位提出者是谁？它解决什么问题？",
+  "KMP 算法的核心思想是什么？为什么主串 i 值不用回溯？",
+  "next 数组的含义是什么？如何推导？",
+  "get_next 的代码如何实现？"
+ ],
+ "modules": [
+  {
+   "icon": "👨‍🔬",
+   "color": "blue",
+   "title": "KMP 原理",
+   "bullets": [
+    "D.E. Knuth、J.H. Morris 和 V.R. Pratt 发表（Knuth 和 Pratt 共同研究、Morris 独立研究），称克努特—莫里斯—普拉特算法，简称 <b>KMP</b>",
+    "目的：大大避免模式匹配的重复遍历",
+    "关键：T 串首字符与后面字符均不相等时，主串中已匹配位置后续的判断可以省略",
+    "例子 S=\"abcdefgab\"、T=\"abcdex\"：前 5 位相等、第 6 位不等，朴素算法②③④⑤ 的判断都是多余的",
+    "如果 T 串后面含有与首字符相等的字符（如 T=\"abcabx\"，前缀 ab 与后缀 ab 相等），也可以省略一部分不必要的判断",
+    "核心结论：主串 i 值不必回溯（好马不吃回头草），j 值的变化取决于 T 串结构中是否有重复"
+   ]
+  },
+  {
+   "icon": "📊",
+   "color": "green",
+   "title": "next 数组",
+   "bullets": [
+    "j 值的变化定义为数组 <b>next</b>，next 的长度就是 T 串的长度",
+    "next[j] 取决于当前字符之前的串的前后缀相似度",
+    "例 T=\"abcdex\"：next=011111（无重复字符，j 由 6 变 1）",
+    "例 T=\"abcabx\"：next=011123（前后缀 ab 相等，j 由 6 变 3）",
+    "经验：前后缀一个字符相等 k=2，两个字符 k=3，n 个相等 k=n+1",
+    "例 T=\"ababaaaba\"：next=011234223；例 T=\"aaaaaaaab\"：next=012345678"
+   ]
+  },
+  {
+   "icon": "💻",
+   "color": "orange",
+   "title": "get_next 实现",
+   "bullets": [
+    "代码：i=1; j=0; next[1]=0;",
+    "while (i < T[0]) { if (j==0 || T[i]==T[j]) { ++i; ++j; next[i]=j; } else j=next[j]; }",
+    "T[i] 表示后缀的单个字符，T[j] 表示前缀的单个字符",
+    "字符相同则 i、j 都前进并记下 next；字符不同则 j 值回溯到 next[j]",
+    "得到 next 数组后，KMP 主算法中 i 不回退，j 按 next 跳转，大大减少比较次数"
+   ]
+  }
+ ],
+ "summary": "KMP 模式匹配算法由 Knuth、Morris、Pratt 发表，目的：大大避免模式匹配的重复遍历。核心是 next 数组：next[j] 取决于当前字符之前的串的前后缀相似度，主串指针不回溯，匹配时间复杂度 O(n+m)。",
+ "oneliner": "KMP：主串指针不回溯，靠 next 数组跳过重复比较。"
+}

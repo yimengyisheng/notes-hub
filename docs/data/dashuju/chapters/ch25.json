@@ -1,0 +1,49 @@
+{
+ "num": "25",
+ "topic": "3.3 线性表的抽象数据类型",
+ "date": "2026-08-13",
+ "questions": [
+  "线性表有哪些基本操作？分别对应幼儿园排队的什么场景？",
+  "union 操作是如何用基本操作组合实现的？",
+  "函数参数什么时候用指针传递？"
+ ],
+ "modules": [
+  {
+   "icon": "📋",
+   "color": "blue",
+   "title": "基本操作",
+   "bullets": [
+    "InitList(*L)：初始化操作，建立一个空的线性表 L",
+    "ListEmpty(L)：线性表为空返回 true，否则 false",
+    "ClearList(*L)：将线性表清空",
+    "GetElem(L, i, *e)：将第 i 个位置元素值返回给 e",
+    "LocateElem(L, e)：查找与 e 相等的元素，成功返回序号",
+    "ListInsert(*L, i, e)：在第 i 个位置插入新元素；ListDelete(*L, i, *e)：删除第 i 个元素",
+    "ListLength(L)：返回线性表元素个数"
+   ]
+  },
+  {
+   "icon": "🧩",
+   "color": "green",
+   "title": "用基本操作组合实现 union",
+   "bullets": [
+    "需求：把在线性表 Lb 中但不在 La 中的数据元素插入到 La",
+    "思路：循环 Lb 每个元素，判断是否存在于 La，不存在则插入",
+    "实现用到 ListLength、GetElem、LocateElem、ListInsert 等基本操作",
+    "结论：复杂个性化的操作，其实就是把基本操作组合起来实现的"
+   ]
+  },
+  {
+   "icon": "📌",
+   "color": "orange",
+   "title": "指针传递规则",
+   "bullets": [
+    "传递参数给函数时，参数会不会在函数内被改动决定使用什么参数形式",
+    "需要被改动 → 传递指向这个参数的指针",
+    "不用被改动 → 可以直接传递这个参数"
+   ]
+  }
+ ],
+ "summary": "线性表 ADT 的基本操作有 InitList、ListEmpty、ClearList、GetElem、LocateElem、ListInsert、ListDelete 等。用这些基本操作可以组合实现 union：把 Lb 中不在 La 的元素插入 La。传递参数时，参数会在函数内被改动就要传指针。",
+ "oneliner": "基本操作组合即算法：union 就是用 GetElem + LocateElem + ListInsert 拼出来的。"
+}

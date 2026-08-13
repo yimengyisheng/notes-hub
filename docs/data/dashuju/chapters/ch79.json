@@ -1,0 +1,47 @@
+{
+ "num": "79",
+ "topic": "7.3 图的抽象数据类型",
+ "date": "2026-08-13",
+ "questions": [
+  "图 ADT 的 Data 部分是什么？",
+  "图有哪些基本操作？",
+  "插入弧和删除弧为什么无向图要处理对称弧？"
+ ],
+ "modules": [
+  {
+   "icon": "📦",
+   "color": "blue",
+   "title": "ADT 图",
+   "bullets": [
+    "图结构复杂、运用广泛，不同应用需要不同的运算集合",
+    "ADT 图（Graph）：Data 为顶点的有穷非空集合和边的集合",
+    "这里只给出图的基本操作"
+   ]
+  },
+  {
+   "icon": "🔧",
+   "color": "green",
+   "title": "基本操作",
+   "bullets": [
+    "CreateGraph(*G, V, VR)：按照顶点集 V 和边弧集 VR 的定义构造图 G",
+    "DestroyGraph(*G)：图 G 存在则销毁",
+    "LocateVex(G, u)：若图 G 中存在顶点 u，返回图中的位置",
+    "GetVex(G, v)：返回图 G 中顶点 v 的值；PutVex(G, v, value)：赋值",
+    "FirstAdjVex(G, *v)：返回顶点 v 的一个邻接顶点；NextAdjVex 返回下一个邻接顶点",
+    "InsertVex(*G, v)：增添新顶点；DeleteVex(*G, v)：删除顶点及其相关的弧"
+   ]
+  },
+  {
+   "icon": "🔁",
+   "color": "orange",
+   "title": "弧的操作",
+   "bullets": [
+    "InsertArc(*G, v, w)：增添弧 &lt;v,w&gt;，若 G 是无向图还需增添对称弧 &lt;w,v&gt;",
+    "DeleteArc(*G, v, w)：删除弧 &lt;v,w&gt;，无向图则还删除对称弧",
+    "DFSTraverse(G)：深度优先遍历；BFSTraverse(G)：广度优先遍历"
+   ]
+  }
+ ],
+ "summary": "图 ADT 的 Data 是顶点的有穷非空集合和边的集合。基本操作：CreateGraph、DestroyGraph、LocateVex、GetVex、PutVex、FirstAdjVex、NextAdjVex、InsertVex、DeleteVex、InsertArc、DeleteArc、DFSTraverse、BFSTraverse；无向图插入删除弧要处理对称弧。",
+ "oneliner": "图 ADT：查顶点、查邻接点、增删顶点和弧，外加两种遍历。"
+}

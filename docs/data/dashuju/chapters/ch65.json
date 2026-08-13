@@ -1,0 +1,52 @@
+{
+ "num": "65",
+ "topic": "6.3 树的抽象数据类型",
+ "date": "2026-08-13",
+ "questions": [
+  "树 ADT 的 Data 部分如何描述？",
+  "树有哪些基本和常用操作？",
+  "树的插入删除等操作与线性表有什么不同？"
+ ],
+ "modules": [
+  {
+   "icon": "📦",
+   "color": "blue",
+   "title": "ADT 树",
+   "bullets": [
+    "ADT 树（tree）：树是由一个<b>根结点</b>和若干棵<b>子树</b>构成",
+    "树中结点具有相同数据类型及层次关系",
+    "相对于线性结构，树的操作完全不同"
+   ]
+  },
+  {
+   "icon": "🔧",
+   "color": "green",
+   "title": "基本操作",
+   "bullets": [
+    "InitTree(*T)：构造空树 T",
+    "DestroyTree(*T)：销毁树 T",
+    "CreateTree(*T, definition)：按 definition 中给出的定义来构造树",
+    "ClearTree(*T)：将树 T 清为空树",
+    "TreeEmpty(T)：若 T 为空树返回 true，否则返回 false",
+    "TreeDepth(T)：返回 T 的深度"
+   ]
+  },
+  {
+   "icon": "🎯",
+   "color": "orange",
+   "title": "结点操作",
+   "bullets": [
+    "Root(T)：返回 T 的根结点",
+    "Value(T, cur_e)：返回结点 cur_e 的值",
+    "Assign(T, cur_e, value)：给结点 cur_e 赋值为 value",
+    "Parent(T, cur_e)：若 cur_e 是 T 的非根结点，则返回它的双亲，否则返回空",
+    "LeftChild(T, cur_e)：返回 cur_e 最左孩子，若无则返回空",
+    "RightSibling(T, cur_e)：返回 cur_e 右兄弟，若无则返回空",
+    "InsertChild(*T, *p, i, c)：插入 c 为树 T 中 p 所指结点的第 i 棵子树",
+    "DeleteChild(*T, *p, i)：删除树 T 中 p 所指结点的第 i 棵子树"
+   ]
+  }
+ ],
+ "summary": "树 ADT 的 Data 是根结点和若干子树构成、结点具有相同数据类型及层次关系；操作有 InitTree、DestroyTree、CreateTree、ClearTree、TreeEmpty、TreeDepth、Root、Value、Assign、Parent、LeftChild、RightSibling、InsertChild、DeleteChild 等，与线性表的操作完全不同。",
+ "oneliner": "树 ADT 围绕根、子树、深度、双亲、孩子展开，操作自成体系。"
+}

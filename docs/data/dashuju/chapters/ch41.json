@@ -1,0 +1,38 @@
+{
+ "num": "41",
+ "topic": "4.3 栈的抽象数据类型",
+ "date": "2026-08-13",
+ "questions": [
+  "栈的插入删除操作改名叫什么？为什么？",
+  "栈的抽象数据类型有哪些基本操作？",
+  "栈可以使用哪些存储结构？"
+ ],
+ "modules": [
+  {
+   "icon": "📋",
+   "color": "blue",
+   "title": "基本操作",
+   "bullets": [
+    "Insert/Delete 改名为 <b>push（压）和 pop（弹）</b>，即进栈和出栈，好记",
+    "InitStack(*S)：初始化操作，建立一个空栈 S",
+    "DestroyStack(*S)：若栈存在，则销毁它；ClearStack(*S)：将栈清空",
+    "StackEmpty(S)：若栈为空返回 true，否则 false",
+    "GetTop(S, *e)：用 e 返回栈顶元素",
+    "Push(*S, e)：插入新元素 e 并成为栈顶元素",
+    "Pop(*S, *e)：删除栈顶元素并用 e 返回其值",
+    "StackLength(S)：返回栈 S 的元素个数"
+   ]
+  },
+  {
+   "icon": "🏗️",
+   "color": "green",
+   "title": "存储结构",
+   "bullets": [
+    "栈本身是一个线性表",
+    "线性表的顺序存储和链式存储，对于栈来说也同样适用"
+   ]
+  }
+ ],
+ "summary": "栈的抽象数据类型把线性表的 Insert/Delete 改名为 push（压）和 pop（弹），操作有 InitStack、StackEmpty、Push、Pop、GetTop、ClearStack 等。栈本身是线性表，顺序存储和链式存储都适用。",
+ "oneliner": "栈 ADT：push 压入、pop 弹出，其余操作与线性表一脉相承。"
+}

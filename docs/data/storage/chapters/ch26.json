@@ -1,0 +1,103 @@
+{
+ "num": "26",
+ "topic": "24 | RocksDB：不丢数据的高性能KV存储",
+ "date": "2026-08-13",
+ "questions": [
+  "为什么越来越多新生代数据库用 RocksDB 做存储引擎？",
+  "RocksDB 和 Redis 相比有哪些异同？",
+  "RocksDB 为什么能做到高性能写入？",
+  "LSM-Tree 的写入、合并、查找过程是怎样的？"
+ ],
+ "modules": [
+  {
+   "icon": "🌟",
+   "color": "blue",
+   "title": "未来之星 RocksDB",
+   "bullets": [
+    "RocksDB 是 Facebook 开源的高性能持久化 KV 存储",
+    "很少有项目直接用它保存数据，未来也不大可能像 Redis 那样被业务系统直接使用",
+    "但越来越多新生代数据库不约而同选它做存储引擎",
+    "例子：CockroachDB、MyRocks（给 MySQL 做存储引擎，目标取代 InnoDB，MariaDB 已接纳）、Flink 的 State、MongoDB、Cassandra"
+   ]
+  },
+  {
+   "icon": "⚔️",
+   "color": "green",
+   "title": "RocksDB vs Redis",
+   "table": {
+    "color": "green",
+    "rows": [
+     [
+      "定位",
+      "内存数据库（缓存）",
+      "持久化 KV 存储引擎"
+     ],
+     [
+      "随机读写性能",
+      "约 50 万次/秒",
+      "约 20 万次/秒，同一量级"
+     ],
+     [
+      "数据可靠性",
+      "写内存即成功，不保证落盘",
+      "每条数据都安全写到磁盘"
+     ]
+    ],
+    "head": [
+     "对比",
+     "Redis",
+     "RocksDB"
+    ]
+   },
+   "callout": {
+    "text": "磁盘读写比内存差一两个数量级，读写磁盘的 RocksDB 能和读写内存的 Redis 做到相近性能——这就是 RocksDB 的价值所在。放在一起比像“关公战秦琼”，只为快速了解能力。"
+   }
+  },
+  {
+   "icon": "✍️",
+   "color": "orange",
+   "title": "为什么写入快",
+   "bullets": [
+    "读写性能取决于存储结构（数据如何组织）",
+    "大多数存储用树或哈希表，写入必须到特定位置：B+ 树写固定节点、哈希表写特定槽——导致磁盘上跳来跳去地<b>随机写</b>",
+    "RocksDB 的 LSM-Tree 让绝大多数磁盘写入都是<b>顺序写</b>",
+    "SSD 和 HDD 顺序写性能都远好于随机写，这是高性能写入的根本原因",
+    "Kafka 也是顺序读写所以超级快，但顺序写的数据没结构没法查询",
+    "LSM-Tree 在保证顺序写入的同时兼顾查询性能"
+   ]
+  },
+  {
+   "icon": "🧱",
+   "color": "purple",
+   "title": "LSM-Tree 写入流程",
+   "flow": {
+    "color": "purple",
+    "steps": [
+     "收到写请求 PUT foo bar",
+     "操作命令写入磁盘 WAL 日志（顺序写，用于故障恢复，复制状态机理论）",
+     "写入内存 MemTable（按 Key 组织的跳表 SkipList），写内存很快",
+     "写入 MemTable 后即可返回写入成功，不查找 Key 是否已存在",
+     "MemTable 写满（上限约 32M）转为只读的 Immutable MemTable，新建空 MemTable 继续写",
+     "后台线程把 Immutable MemTable 整块复制成磁盘文件 SSTable（顺序写），释放内存"
+    ]
+   }
+  },
+  {
+   "icon": "🗂️",
+   "color": "red",
+   "title": "合并与查找",
+   "bullets": [
+    "SSTable 文件内 Key 有序，但文件之间无序，无法查找",
+    "分层合并机制：SSTable 分很多层，越上层文件越少、越底层越多，每层容量有上限，下一层是上一层的 10 倍",
+    "某一层写满触发后台线程往下一层合并，合并过程也是排序过程",
+    "除 Level 0 外每层内文件有序、文件内 KV 有序，便于查找",
+    "查找分层进行：先找内存 MemTable/Immutable MemTable，再按顺序找每层 SSTable，找到即返回",
+    "热数据天然靠上：最常读写的 Key 大概率在内存中，不用读写磁盘；穿透很多层查到最底的请求很少",
+    "工程优化：内存缓存 SSTable 的 Key、布隆过滤器避免无谓查找",
+    "LSM-Tree 偏向写入性能优化，更适合需要频繁写入的在线交易类场景"
+   ]
+  }
+ ],
+ "summary": "RocksDB 是 Facebook 开源的高性能持久化 KV 存储，被 CockroachDB、MyRocks、Flink 等新生代数据库选作存储引擎。它读写磁盘却能接近内存 Redis 的性能（20万 vs 50万次/秒）。根本原因是 LSM-Tree 数据结构：写 WAL 日志和 MemTable（跳表），顺序写转成磁盘顺序写，Immutable MemTable 后台转 SSTable 分层合并；查找分层进行，热数据天然靠上，配合布隆过滤器优化。偏向写性能，适合频繁写入的在线交易场景。",
+ "oneliner": "LSM-Tree 把随机写变顺序写：WAL+跳表+SSTable 分层合并，写快且不丢数据。"
+}

@@ -284,6 +284,26 @@
       "unit": "节",
       "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-tcpip",
       "dataDir": "work/cards"
+    },
+    {
+      "id": "dashuju",
+      "title": "《大话数据结构》康奈尔笔记",
+      "emoji": "🧮",
+      "desc": "《大话数据结构》读书笔记 · 康奈尔笔记法：线性表、栈与队列、串、树、图、查找与排序等数据结构核心知识，共 112 节。",
+      "type": "cornell",
+      "unit": "节",
+      "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-dashuju",
+      "dataDir": "work/cards"
+    },
+    {
+      "id": "storage",
+      "title": "《后端存储实战课》康奈尔笔记",
+      "emoji": "💾",
+      "desc": "《后端存储实战课》读书笔记 · 康奈尔笔记法：MySQL 事务与高可用、缓存与读写分离、分库分表、Redis、Elasticsearch、RocksDB 与 NewSQL 等存储核心知识，共 26 讲。",
+      "type": "cornell",
+      "unit": "讲",
+      "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-storage",
+      "dataDir": "work/cards"
     }
   ]
 }

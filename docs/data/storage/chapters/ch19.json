@@ -1,0 +1,83 @@
+{
+ "num": "19",
+ "topic": "17 | 大厂都是怎么做MySQL to Redis同步的?",
+ "date": "2026-08-13",
+ "questions": [
+  "超大规模系统中为什么缓存穿透是不能承受之痛？",
+  "缓存全量数据后如何更新缓存？MQ 方案怎么做的？",
+  "Canal 方案的工作原理是什么？为什么要伪装成 MySQL 从节点？",
+  "Canal 如何保证不丢数据？收到变更后如何处理？"
+ ],
+ "modules": [
+  {
+   "icon": "🌊",
+   "color": "blue",
+   "title": "超大规模系统的缓存穿透",
+   "bullets": [
+    "并发请求基数太大，即使很小比率的穿透，打到数据库的绝对数量仍然不小",
+    "加上大促流量峰值，仍有缓存穿透引发雪崩的风险",
+    "解法：干脆<b>缓存全量数据</b>，读请求只读 Redis 不去读数据库，彻底没有穿透风险",
+    "代价：缓存没读到就只能返回错误，数据库更新后必须及时更新缓存",
+    "不能用分布式事务更新缓存：对更新服务侵入性强、影响下单服务性能和可用性"
+   ]
+  },
+  {
+   "icon": "📬",
+   "color": "green",
+   "title": "方案一：订阅 MQ 消息",
+   "bullets": [
+    "启动一个更新订单缓存的服务，接收订单变更的 MQ 消息，更新 Redis",
+    "订单这类核心业务数据使用方多，本来就要发消息，增加一个消费订阅基本没成本",
+    "订单服务本身不需要任何更改，对其他模块完全没有侵入",
+    "唯一担心：丢消息——消息是缓存数据唯一来源，丢了永远不会补上",
+    "Kafka、RocketMQ 都有高可用高可靠机制，正确配置可满足可靠性要求",
+    "适用：本来就有现成数据变更消息可订阅的场景"
+   ]
+  },
+  {
+   "icon": "🪞",
+   "color": "orange",
+   "title": "方案二：Canal 订阅 Binlog",
+   "bullets": [
+    "数据更新服务只处理业务逻辑更新 MySQL，完全不用管更新缓存",
+    "缓存更新服务把自己伪装成 MySQL 的从节点，从 MySQL 接收 Binlog",
+    "解析 Binlog 得到实时数据变更信息，再更新 Redis",
+    "和 MQ 方案思路一样：都是异步订阅实时数据变更去更新缓存",
+    "通用性更强：不要求业务发消息，也不担心“发消息失败怎么办”",
+    "少了收发 MQ 环节，时延更短、故障可能更低，很多大厂更青睐"
+   ]
+  },
+  {
+   "icon": "⚙️",
+   "color": "purple",
+   "title": "Canal 原理与配置",
+   "flow": {
+    "color": "purple",
+    "steps": [
+     "Canal 模拟 MySQL 主从复制交互协议，伪装成从节点向主节点发 dump 请求",
+     "MySQL 收到请求开始推送 Binlog 给 Canal",
+     "Canal 解析 Binlog 字节流，转换为结构化数据供下游订阅",
+     "MySQL 配置：开启 Binlog、格式设为 ROW、配 server_id",
+     "创建 canal 用户并授权 REPLICATION SLAVE/CLIENT",
+     "配置 instance.properties：master 地址、journal.name、position（取 show master status 的 File/Position）",
+     "启动 Canal 后开启端口 11111 等待客户端连接"
+    ]
+   }
+  },
+  {
+   "icon": "🧩",
+   "color": "red",
+   "title": "客户端消费与可靠性",
+   "bullets": [
+    "客户端从 Canal 拉取一批数据，正确写入 Redis 后返回处理成功响应",
+    "客户端宕机或处理失败，Canal 没收到成功响应，下次拉取还是同一批数据——保证顺序且不丢数据",
+    "程序逻辑：getWithoutAck 拉取 → 有数据处理 → ack 确认；失败 rollback 回滚",
+    "处理逻辑按事件类型：DELETE 删 Redis 对应 key；INSERT/UPDATE 用 SET 写入",
+    "对可靠性和实时性要求高：数据丢失或更新慢了都会造成 Redis 与 MySQL 不同步",
+    "生产环境要准备降级或补偿方案"
+   ]
+  }
+ ],
+ "summary": "超大规模系统并发基数大，少量穿透也可能打死数据库，大厂做法是缓存全量数据只读 Redis。更新缓存两个方案：订阅 MQ 变更消息（适合本来就有消息的场景），更通用的是 Canal 方案——把缓存更新服务伪装成 MySQL 从节点订阅 Binlog 更新 Redis。Canal 通过 ack/rollback 保证顺序不丢数据，按事件类型 DELETE/INSERT/UPDATE 处理。异步更新缓存对可靠性和实时性要求高，需准备降级补偿。",
+ "oneliner": "全量缓存只读 Redis 防穿透；Canal 伪装从节点吃 Binlog 来更新缓存。"
+}

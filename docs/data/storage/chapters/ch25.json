@@ -1,0 +1,106 @@
+{
+ "num": "25",
+ "topic": "23 | MySQL经常遇到的高可用、分片问题，NewSQL是如何解决的？",
+ "date": "2026-08-13",
+ "questions": [
+  "Old SQL、No SQL、New SQL 各自的优缺点是什么？",
+  "CockroachDB 的架构是什么？它复用了哪些成熟技术？",
+  "CockroachDB 的 SQL 执行流程和 MySQL 有什么不同？",
+  "SI 和 SSI 隔离级别是什么？写倾斜问题怎么解决？"
+ ],
+ "modules": [
+  {
+   "icon": "🧬",
+   "color": "blue",
+   "title": "从 Old SQL 到 New SQL",
+   "bullets": [
+    "早期只有 MySQL 这类关系型数据库，支持 SQL，后来叫 Old SQL",
+    "Redis 等 KV 存储性能吊打 MySQL，存储结构简单易组集群、能水平扩展高可靠高可用——叫 No SQL",
+    "No SQL 想替代 Old SQL，但牺牲了 SQL 查询能力和 ACID 事务，用户用脚投票不买账",
+    "SQL 和 ACID 是刚需，这个命革不掉：近几年很多之前不支持 SQL 的数据库都开始支持 SQL（支持程度参差，ACID 基本等于没有）",
+    "<b>New SQL = Old SQL + No SQL 的优点</b>：完整支持 SQL 和 ACID，隔离级别相当；高性能高可靠高可用、支持水平扩容",
+    "代表：Google Cloud Spanner、国产 OceanBase、开源 CockroachDB（蟑螂，俗称小强数据库）"
+   ]
+  },
+  {
+   "icon": "🏗️",
+   "color": "green",
+   "title": "CockroachDB 架构",
+   "bullets": [
+    "分层架构：最上层 SQL 层（库表行列逻辑概念）→ Structured Data API → 底层 Distributed, Monolithic KV Store",
+    "仍是数据库通用的二层架构：SQL 层就是执行器，分布式 KV 集群就是存储引擎",
+    "MySQL 的 InnoDB 基于文件系统 B+ 树，Hive/HBase 基于 HDFS，CockroachDB 用分布式 KV 做存储引擎理论可行",
+    "存储引擎大量借鉴成熟技术：<b>范围分片</b>（对查询最友好、支持范围扫描）",
+    "<b>Raft 一致性协议</b>实现每个分片高可靠高可用强一致——理论基础是复制状态机，etcd 也基于 Raft",
+    "元数据分布式存储在所有节点，靠流言（Gossip）协议传播",
+    "单机存储引擎直接使用 RocksDB",
+    "站在巨人肩膀上，务实"
+   ]
+  },
+  {
+   "icon": "⚙️",
+   "color": "orange",
+   "title": "SQL 执行流程",
+   "bullets": [
+    "和 MySQL 流程差不多：解析 SQL 生成语法树 → 逻辑执行计划 → 物理执行计划 → 优化 → 执行返回",
+    "区别：物理执行计划面对分布式 KV 存储，查找聚合可能涉及多个分片（Range）",
+    "大致类似 Map-Reduce：查元数据确定涉及的分片 → 把物理执行计划转换到每个分片 → 并行执行 → 汇总结果"
+   ]
+  },
+  {
+   "icon": "🔒",
+   "color": "purple",
+   "title": "SI 与 SSI 隔离级别",
+   "table": {
+    "color": "purple",
+    "rows": [
+     [
+      "脏读/不可重复读",
+      "解决",
+      "不会发生",
+      "不会发生"
+     ],
+     [
+      "幻读",
+      "可能产生（影响不大）",
+      "不会发生",
+      "不会发生"
+     ],
+     [
+      "写倾斜",
+      "不会出现",
+      "会有写倾斜问题",
+      "冲突检测+回滚解决"
+     ]
+    ],
+    "head": [
+     "对比",
+     "RR（MySQL 默认）",
+     "SI",
+     "SSI"
+    ]
+   },
+   "bullets": [
+    "CockroachDB 提供的不是 RU/RC/RR/SERIALIZABLE，而是 SI 和 SSI，默认 SSI",
+    "写倾斜例子：主副卡余额可透支，只要两卡余额之和大于 0；两个并发事务更新主副卡，SI 无加锁用快照隔离，可能把之和扣成负数",
+    "写倾斜本质：没有检测读写冲突、没有加锁，导致数据写错了",
+    "SSI 在 SI 基础上加入冲突检测，检测读写冲突后回滚事务解决写倾斜",
+    "代价：降低性能，冲突严重时频繁事务回滚",
+    "SI/SSI 提供的隔离性已与传统 RC/RR 不相上下，满足大多数在线交易系统对 ACID 的要求"
+   ]
+  },
+  {
+   "icon": "🧠",
+   "color": "red",
+   "title": "小结",
+   "bullets": [
+    "New SQL 兼具原生分布式的性能可靠性和传统关系型的 SQL + 真正事务支持，具备支撑在线交易能力",
+    "CockroachDB 集众多现有技术于一身：分布式 KV 存储引擎 + 借鉴 PostgreSQL 的执行器",
+    "有潜质真正取代 MySQL，但还处于高速发展阶段，没被大规模应用",
+    "不建议当小白鼠在重要系统上使用"
+   ]
+  }
+ ],
+ "summary": "New SQL 兼顾 Old SQL（SQL+ACID）和 No SQL（高性能分布式）优点，代表是 Spanner、OceanBase、CockroachDB。CockroachDB 用分布式 KV 集群做存储引擎（范围分片+Raft 一致性+Gossip 元数据+RocksDB），SQL 执行流程类似 MySQL 但物理计划是 Map-Reduce 式跨分片并行。它提供 SI/SSI 隔离级别，SSI 用冲突检测回滚解决 SI 的写倾斜问题，隔离性与 RC/RR 相当。虽潜力大但尚未大规模生产应用。",
+ "oneliner": "NewSQL=SQL+ACID+分布式；CockroachDB 靠 Raft+范围分片+RocksDB，SSI 解决写倾斜。"
+}
