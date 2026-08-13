@@ -1,0 +1,96 @@
+{
+ "num": "57",
+ "topic": "8.6 网络管理",
+ "date": "2026-08-12",
+ "questions": [
+  "SNMP 是基于什么协议的网络管理协议？管理器与代理各指什么？",
+  "SNMPv1、SNMPv2c、SNMPv3 在安全机制上有什么演进？",
+  "SNMPv3 将哪三部分分开考虑？SNMP 共有哪 8 种操作？",
+  "SNMP 的 Fetch 和 Store 模式是什么？Trap 有什么作用？",
+  "MIB 是什么？如何定义？为什么说 MIB 相当于 SNMP 的表示层？",
+  "RMON 与 MIB 的监控对象有什么不同？MRTG 是什么工具？"
+ ],
+ "modules": [
+  {
+   "icon": "🛠️",
+   "color": "blue",
+   "title": "SNMP 概述",
+   "bullets": [
+    "以前网络管理凭借管理员的记忆和直觉进行，随着网络规模变大已无法匹配，需要严密的管理工具或方法",
+    "TCP/IP 网络管理中使用 <b>SNMP</b>（Simple Network Management Protocol，简单网络管理协议）收集必要信息，它是一款<b>基于 UDP/IP</b> 的协议",
+    "管理端叫<b>管理器</b>（Manager，网络监控终端），被管理端叫<b>代理</b>（路由器、交换机等）",
+    "SNMPv3 中管理器和代理都叫<b>实体</b>（Entity）",
+    "决定管理器与代理之间通信中交互信息的正是 SNMP；若把 MIB 看作代理所管理信息在数据库中的值，那么它可以新增一个值"
+   ]
+  },
+  {
+   "icon": "📜",
+   "color": "orange",
+   "title": "版本演进与模块化",
+   "bullets": [
+    "起初 SNMP 的安全机制并不完备",
+    "SNMPv2 中有人提出安全方面的建议，但最终意见未能达成一致，所以支持基于<b>团体认证</b>方式的 SNMPv2c 成为当时的标准——该标准并没有采用安全机制",
+    "后来的 SNMPv3 集合了所有 SNMP 的功能于同一个版本，定义了个别的功能模块（Component），并可以结合各种不同版本进行通信",
+    "SNMPv3 中将「消息处理」「用户安全」「访问控制」三部分分开考虑，可以为每一部分选择各自必要的机制",
+    "消息处理中除 SNMPv3 定义的处理模型外，还有 SNMPv1 和 SNMPv2 的处理模型可选；实际上 SNMPv3 中选用 SNMPv2 消息处理模型通信的情况居多"
+   ]
+  },
+  {
+   "icon": "🔢",
+   "color": "green",
+   "title": "8 种 PDU 操作",
+   "bullets": [
+    "消息处理选择 SNMPv2 模型时，会进行以下 8 种操作：",
+    "① <b>查询请求</b>（GetRequest）",
+    "② 上次要求的下一个信息的查询请求（<b>GetNextRequest-PDU</b>）",
+    "③ <b>应答</b>（Response）",
+    "④ <b>设置请求</b>（SetRequest）",
+    "⑤ 批量查询请求（<b>GetBulkRequest-PDU</b>）",
+    "⑥ 向其他管理器发送信息通知（<b>InformRequest-PDU</b>）",
+    "⑦ <b>事件通知</b>（Trap）",
+    "⑧ 用管理系统定义的命令（<b>Report-PDU</b>）"
+   ]
+  },
+  {
+   "icon": "⚙️",
+   "color": "blue",
+   "title": "Fetch/Store 与 Trap",
+   "bullets": [
+    "根据查询请求和应答可以定期检查设备的运行动作，根据设置请求可以修改设备的参数",
+    "SNMP 处理分为从设备读取数据和向设备写入数据两种，采用 <b>Fetch（取）和 Store（存）</b>模式",
+    "类似计算机的内存映射 I/O：向内存特定地址写入信息、读取特定地址内容，据此进行键盘输入、屏幕显示、磁盘存取等",
+    "SNMP 正是将这些操作应用到了网络上",
+    "<b>Trap</b>：网络设备状况发生变化时，将这个变化通知给 SNMP 管理器；即使没有管理器到代理的请求，也能在设备变化时收到从代理发来的通知"
+   ]
+  },
+  {
+   "icon": "🌳",
+   "color": "green",
+   "title": "MIB",
+   "bullets": [
+    "SNMP 中交互的信息是 <b>MIB</b>（Management Information Base，管理信息库）",
+    "MIB 是在<b>树形结构的数据库</b>中为每个项目附加编号的一种信息结构",
+    "SNMP 访问 MIB 信息时使用数字序列，这些数字序列各自都有易于理解的名字",
+    "MIB 分为标准 MIB（MIB、MIB-II、FDDI-MIB 等）和各个提供商提供的扩展 MIB",
+    "不论哪种 MIB 都通过 <b>SMI</b>（Structure of Management Information，管理信息结构）定义，其中 SMI 使用 ISO 提出的 <b>ASN.1</b>（抽象语法标记法，为标记 OSI 参考模型中表示层协议而开发的一种语言）方法",
+    "MIB 相当于 SNMP 的<b>表示层</b>，是一种能够在网络上传输的结构",
+    "通过读写 MIB 值可以收集冲突次数、流量统计，修改接口 IP 地址，进行路由器启停、设备启动和关闭等处理"
+   ]
+  },
+  {
+   "icon": "📊",
+   "color": "orange",
+   "title": "RMON 与 MRTG",
+   "bullets": [
+    "<b>RMON</b> 是 Remote Monitoring MIB（远程监控 MIB）的缩写",
+    "MIB 由监控网络中<b>某个设备接口（某个点）</b>的众多参数构成；RMON 则由监控网络上<b>线路</b>的众多参数构成——监控范围从点扩展到一条线",
+    "可监控网络流量统计等对用户极有意义的信息：某个特定主机在哪里、通过什么样的协议、正在与谁通信",
+    "从当前使用状况到通信方向性为止，可以终端为单位也可以协议为单位进行监控",
+    "通过 WAN 线路或服务器段的流量信息可统计网络利用率、定位负载较大的主机及其协议，是判断网络是否被充分利用的重要资料",
+    "<b>MRTG</b>（Multi Router Traffic Grapher）是利用 RMON 定期收集网络中路由器流量信息的工具，可以图像化显示网络流量"
+   ]
+  }
+ ],
+ "summary": "SNMP 是基于 UDP/IP 的网络管理协议，管理器（监控终端）与代理（路由器、交换机）之间通过 MIB 交互。安全演进：SNMPv1 不完备 → SNMPv2c 团体认证（无真正安全机制）→ SNMPv3 将消息处理/用户安全/访问控制分离并可混用版本，消息处理共 8 种 PDU 操作，读取用 Fetch、写入用 Store，Trap 可在设备状态变化时主动通知。MIB 是树形编号数据库，经 SMI 用 ASN.1 定义，相当于 SNMP 的表示层。RMON 把监控从单个设备接口扩展到线路，可统计流量与通信关系；MRTG 利用 RMON 图像化显示路由器流量。",
+ "oneliner": "SNMP（UDP/IP）管理器—代理经 MIB 交互：v3 分三大模块、8 种操作，Trap 主动告警，RMON 监控线路、MRTG 画流量图。"
+}

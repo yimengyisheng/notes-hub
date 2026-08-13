@@ -1,0 +1,338 @@
+{
+  "id": "tcpip",
+  "type": "cornell",
+  "count": 66,
+  "chapters": [
+    {
+      "num": "00",
+      "title": "1.1 计算机网络出现的背景",
+      "oneliner": "计算机从单机走向互联：私有网络连成互联网，主机=能设IP地址的计算机。"
+    },
+    {
+      "num": "01",
+      "title": "1.2 计算机与网络发展的7个阶段",
+      "oneliner": "7阶段：批处理→分时→计算机通信→网络→互联网→IP网为中心→安全连接。"
+    },
+    {
+      "num": "02",
+      "title": "1.3 协议",
+      "oneliner": "协议是计算机通信的语言约定：不同则无法交流，分组交换靠报文首部寻址重装。"
+    },
+    {
+      "num": "03",
+      "title": "1.4 协议由谁规定",
+      "oneliner": "协议标准化：ISO 出参考模型，IETF 定 TCP/IP，让异构设备能互通。"
+    },
+    {
+      "num": "04",
+      "title": "1.5 协议分层与OSI参考模型",
+      "oneliner": "七层模型：应用表示会话传输网络链路物理；接口管上下层、协议管同层。"
+    },
+    {
+      "num": "05",
+      "title": "1.6 OSI参考模型通信处理举例",
+      "oneliner": "发数据逐层加首部下传，收数据逐层剥首部上传；传输层保证可靠、网络层定终点。"
+    },
+    {
+      "num": "06",
+      "title": "1.7 传输方式的分类",
+      "oneliner": "有连接像打电话、无连接像寄包裹；单播广播多播任播按接收端数量分。"
+    },
+    {
+      "num": "07",
+      "title": "1.8 地址",
+      "oneliner": "地址要唯一还要分层；MAC 无层次、IP 有网络号主机号，寻址各查各的表。"
+    },
+    {
+      "num": "08",
+      "title": "1.9 网络的构成要素",
+      "oneliner": "物理层中继、链路层网桥、网络层路由器、传输层以上网关，各司其职。"
+    },
+    {
+      "num": "09",
+      "title": "1.10 现代网络实态",
+      "oneliner": "网络如公路：骨干高速、边缘出入、接入汇聚连用户；云靠虚拟化按需分配。"
+    },
+    {
+      "num": "10",
+      "title": "2.1 TCP/IP出现的背景及其历史",
+      "oneliner": "军用容灾催生分组交换，ARPANET 4节点起步，BSD UNIX 让 TCP/IP 走向世界。"
+    },
+    {
+      "num": "11",
+      "title": "2.2 TCP/IP的标准化",
+      "oneliner": "TCP/IP 标准化：先实现后写规范，草案6个月，RFC 改号、STD 不变。"
+    },
+    {
+      "num": "12",
+      "title": "2.3 互联网基础知识",
+      "oneliner": "internet=网际网，Internet=阿帕网进化来的全球网；异构网络靠 IX 互连。"
+    },
+    {
+      "num": "13",
+      "title": "2.4 TCP/IP协议分层模型",
+      "oneliner": "TCP/IP 分层看实现：IP 不重发、TCP 可靠 7 次握手、UDP 无连接适合多媒体。"
+    },
+    {
+      "num": "14",
+      "title": "2.5 TCP/IP分层模型与通信示例",
+      "oneliner": "每层加一个首部，下一层把上层整包当数据；发信 ①②③④、收信 ⑤⑥⑦⑧ 逆序走。"
+    },
+    {
+      "num": "15",
+      "title": "3.1 数据链路的作用",
+      "oneliner": "数据链路=最小传输单位，互联网=数据链路的集合；物理层转信号、链路层组帧。"
+    },
+    {
+      "num": "16",
+      "title": "3.2 数据链路相关技术",
+      "oneliner": "MAC 48 位靠 OUI 唯一；CSMA/CD 冲突重发、令牌无冲突；VLAN 用 VID 切网段。"
+    },
+    {
+      "num": "17",
+      "title": "3.3 以太网",
+      "oneliner": "以太网从 10M 到 100G：帧=前导码+MAC×2+类型+数据46~1500+FCS；类型 0800 是 IP。"
+    },
+    {
+      "num": "18",
+      "title": "3.4 无线通信",
+      "oneliner": "无线按距离分 PAN/LAN/MAN/RAN/WAN：11b/g 用 2.4G、11a 用 5G、11n 靠 MIMO。"
+    },
+    {
+      "num": "19",
+      "title": "3.5 PPP",
+      "oneliner": "PPP 纯链路层：LCP 管连接、IPCP 管 IP；CHAP 用 OTP 比 PAP 安全。"
+    },
+    {
+      "num": "20",
+      "title": "3.6 其他数据链路",
+      "oneliner": "ATM 信元 5+48 字节、VPI/VCI 标识、丢 1 个重发 192 个；FDDI 双环防断。"
+    },
+    {
+      "num": "21",
+      "title": "3.7 公共网络",
+      "oneliner": "ADSL 靠分离器用上电话线高频段；IP-VPN 用 MPLS 标签、企业 VPN 用 IPsec。"
+    },
+    {
+      "num": "22",
+      "title": "4.1 IP即网际协议",
+      "oneliner": "IP 是网络层、管端到端；主机不路由、路由器既配 IP 又路由，节点是统称。"
+    },
+    {
+      "num": "23",
+      "title": "4.2 IP基础知识",
+      "oneliner": "IP 三件事：寻址、多跳路由、分包组包；无连接求快，可靠性交给 TCP。"
+    },
+    {
+      "num": "24",
+      "title": "4.3 IP地址的基础知识",
+      "oneliner": "IPv4 32 位分网/主机：A 1677 万、B 6.5 万、C 254；私有 10/172.16/192.168 靠 NAT。"
+    },
+    {
+      "num": "25",
+      "title": "4.4 路由控制",
+      "oneliner": "路由表靠路由协议做：最长匹配选路，默认 0.0.0.0/0，聚合省条目。"
+    },
+    {
+      "num": "26",
+      "title": "4.5 IP分割处理与再构成处理",
+      "oneliner": "MTU 不同就分片（8 字节倍数），重组只在目标端；PMTUD 用 ICMP 探路避免中途分片。"
+    },
+    {
+      "num": "27",
+      "title": "4.6 IPv6",
+      "oneliner": "IPv6 128 位、冒号分 8 组、双冒号省 0；分片只在发送端、最小 MTU 1280。"
+    },
+    {
+      "num": "28",
+      "title": "4.7 IPv4首部",
+      "oneliner": "IPv4 首部 20 字节固定：TTL 每跳减 1、分片靠 ID+标志+FO、校验和只管首部。"
+    },
+    {
+      "num": "29",
+      "title": "4.8 IPv6首部格式",
+      "oneliner": "IPv6 首部无校验和、8 字节对齐；扩展首部分片 44、ESP 50、AH 51。"
+    },
+    {
+      "num": "30",
+      "title": "5.1 仅凭IP无法完成通信",
+      "oneliner": "光有 IP 不够：域名靠 DNS、MAC 靠 ARP，还有 DHCP/NAT/ICMP 等一串帮手。"
+    },
+    {
+      "num": "31",
+      "title": "5.2 DNS",
+      "oneliner": "DNS 把域名变 IP：先查自己、没有再问根，A/PTR/NS/MX 管四类映射。"
+    },
+    {
+      "num": "32",
+      "title": "5.3 ARP",
+      "oneliner": "ARP 广播问“这个 IP 的 MAC 是谁”，缓存省流量；RARP 反向查，代理 ARP 跨网段。"
+    },
+    {
+      "num": "33",
+      "title": "5.4 ICMP",
+      "oneliner": "ICMP 管诊断：3 不可达、5 重定向、11 超时喂 traceroute、0/8 回送喂 ping。"
+    },
+    {
+      "num": "34",
+      "title": "5.5 DHCP",
+      "oneliner": "DHCP 即插即用：发现+请求两步拿 IP，多网段靠中继代理统一分配。"
+    },
+    {
+      "num": "35",
+      "title": "5.6 NAT",
+      "oneliner": "NAT 转 IP、NAPT 再转端口；五元组定连接，SYN 建表 FIN 删表。"
+    },
+    {
+      "num": "36",
+      "title": "5.7 IP隧道",
+      "oneliner": "IP 隧道=首部外面再套首部：6to4 把 IPv6 装进 IPv4，多播也能单播穿路由。"
+    },
+    {
+      "num": "37",
+      "title": "5.8 其他IP相关技术",
+      "oneliner": "IGMP 管多播、任播就近应答；IntServ 细 DiffServ 粗；Mobile IP 户籍不变、转交地址转发。"
+    },
+    {
+      "num": "38",
+      "title": "6.1 传输层的作用",
+      "oneliner": "传输层用端口号认应用：TCP 可靠有重发、UDP 快而不保证；电话广播选 UDP。"
+    },
+    {
+      "num": "39",
+      "title": "6.2 端口号",
+      "oneliner": "端口号是程序地址；五元组（IP×2+协议+端口×2）定一个通信，知名端口 0-1023。"
+    },
+    {
+      "num": "40",
+      "title": "6.3 UDP",
+      "oneliner": "UDP 无连接原样发：不控流量、不重发、不纠序，细节全交给程序。"
+    },
+    {
+      "num": "41",
+      "title": "6.4 TCP",
+      "oneliner": "TCP 靠序列号+ACK 可靠：三次握手 7 包建断、窗口提速、3 个重复 ACK 快重传。"
+    },
+    {
+      "num": "42",
+      "title": "6.5 其他传输层协议",
+      "oneliner": "UDP-Lite 自选校验范围、SCTP 多宿主多流、DCCP 给 UDP 补拥塞控制。"
+    },
+    {
+      "num": "43",
+      "title": "6.6 UDP首部的格式",
+      "oneliner": "UDP 首部四字段：源/目标端口+长度+校验和；伪首部把 5 元组都验一遍。"
+    },
+    {
+      "num": "44",
+      "title": "6.7 TCP首部格式",
+      "oneliner": "TCP 首部 8 控制位：SYN 建、FIN 断、RST 强断、ACK 必 1；吞吐=窗口÷RTT。"
+    },
+    {
+      "num": "45",
+      "title": "7.1 路由控制的定义",
+      "oneliner": "路由=查表定下一跳；静态手工累、动态自动绕，别只用一种。"
+    },
+    {
+      "num": "46",
+      "title": "7.2 路由控制范围",
+      "oneliner": "AS 自治域：内部 IGP（RIP/OSPF）、外部 EGP（BGP），像 IP 的网络位和主机位。"
+    },
+    {
+      "num": "47",
+      "title": "7.3 路由算法",
+      "oneliner": "DV 看距离和方向、简单易循环；LS 看全网拓扑、稳但费 CPU 内存。"
+    },
+    {
+      "num": "48",
+      "title": "7.4 RIP",
+      "oneliner": "RIP 30 秒广播、跳数定距：16 跳封顶+水平分割防无限计数，毒性逆转加速收敛。"
+    },
+    {
+      "num": "49",
+      "title": "7.5 OSPF",
+      "oneliner": "OSPF 链路状态、总代价最小：HELLO 10 秒心跳、Dijkstra 算路、区域分层减负荷。"
+    },
+    {
+      "num": "50",
+      "title": "7.6 BGP",
+      "oneliner": "BGP 按 AS 号选路：路径向量防环路、支持策略路由，签约中转要花钱。"
+    },
+    {
+      "num": "51",
+      "title": "7.7 MPLS",
+      "oneliner": "MPLS 用 20 比特标记转发：LER 加删垫片头，Push/Swap/Pop 三动作，快且能做 VPN。"
+    },
+    {
+      "num": "52",
+      "title": "8.1 应用层协议概要",
+      "oneliner": "应用协议管 OSI 5/6/7 层：定义消息格式，让浏览器、邮件、远程登录各干各的。"
+    },
+    {
+      "num": "53",
+      "title": "8.2 远程登录",
+      "oneliner": "TELNET 明文连 23 端口发命令；SSH 加密防窃听，还能端口转发做 VPN。"
+    },
+    {
+      "num": "54",
+      "title": "8.3 文件传输",
+      "oneliner": "FTP 双连接：21 控制、20 数据（可 PASV 反向）；命令 ASCII、应答三位数。"
+    },
+    {
+      "num": "55",
+      "title": "8.4 电子邮件",
+      "oneliner": "SMTP 发、POP/IMAP 收：MX 记录指路、MIME 扩格式；IMAP 服务器管邮件多端同步。"
+    },
+    {
+      "num": "56",
+      "title": "8.5 WWW",
+      "oneliner": "WWW=URI+HTML+HTTP：URI 广义定位、HTTP1.1 保连接、CGI 动态、Cookie 记状态。"
+    },
+    {
+      "num": "57",
+      "title": "8.6 网络管理",
+      "oneliner": "SNMP（UDP/IP）管理器—代理经 MIB 交互：v3 分三大模块、8 种操作，Trap 主动告警，RMON 监控线路、MRTG 画流量图。"
+    },
+    {
+      "num": "58",
+      "title": "8.7 其他应用层协议",
+      "oneliner": "实时多媒体走 UDP：H.323/SIP 呼叫控制 + RTP 排序 + 压缩；P2P 对等直连需穿 NAT；LDAP 轻量目录访问。"
+    },
+    {
+      "num": "59",
+      "title": "9.1 TCP/IP与网络安全",
+      "oneliner": "TCP/IP 从封闭走向开放，安全渐成刚需：便利与安全对立并存，靠安全策略+日常运维平衡。"
+    },
+    {
+      "num": "60",
+      "title": "9.2 网络安全构成要素",
+      "oneliner": "安全靠组合拳：防火墙限暴露 + IDS 查入侵 + DMZ 隔离 + 反病毒护 PC + PKI（CA 证书）验身份。"
+    },
+    {
+      "num": "61",
+      "title": "9.3 加密技术基础",
+      "oneliner": "加密分对称（AES/DES，密钥传递难）与公钥（RSA/DH，慢）；认证按所知/所有/体态三类，IDM 统一管理。"
+    },
+    {
+      "num": "62",
+      "title": "9.4 安全协议",
+      "oneliner": "VPN 靠 IPsec（ESP+AH）加密；HTTPS 对称+公钥混合加密、CA 验公钥；802.1X 认证准入、EAP 扩展协议。"
+    },
+    {
+      "num": "63",
+      "title": "附2 IP地址分类",
+      "oneliner": "A/B/C 类按首位 0/10/110 划分：网络 126/16382/2097150 个，每网主机 16777214/65534/254 台（两端保留减 2）。"
+    },
+    {
+      "num": "64",
+      "title": "附3 物理层",
+      "oneliner": "物理层=比特流↔物理信号；TCP/IP 全数字、MODEM 模拟↔数字；NRZI 连续 0 用 4B/5B 破局（125Mbps）。"
+    },
+    {
+      "num": "65",
+      "title": "附4 传输介质",
+      "oneliner": "介质盘点：同轴（10BASE5/2）、双绞线差分信号+STP/UTP+CAT、光纤多模/单模+WDM、无线红外/微波（2.4GHz）。"
+    }
+  ],
+  "sections": []
+}

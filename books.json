@@ -274,6 +274,16 @@
       "unit": "讲",
       "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-arch",
       "dataDir": "work/cards"
+    },
+    {
+      "id": "tcpip",
+      "title": "《图解TCP/IP（第5版）》康奈尔笔记",
+      "emoji": "🔗",
+      "desc": "《图解TCP/IP（第5版）》读书笔记 · 康奈尔笔记法：网络基础、TCP/IP 分层、数据链路、IP、TCP 与 UDP、路由等核心知识，共 66 节。",
+      "type": "cornell",
+      "unit": "节",
+      "srcPath": "/Users/loveinalife/Documents/Codex/2026-08-12/cornell-notes-tcpip",
+      "dataDir": "work/cards"
     }
   ]
 }
